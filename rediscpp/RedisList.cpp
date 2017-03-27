@@ -24,7 +24,7 @@ long long RedisList::LLEN(Buffer key)
 Buffer RedisList::LINDEX(Buffer key, int idx)
 {
     RedisReplyGuard reply{reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.get(),"LINDEX %b", key.getData(), key.getLen()))};
+        ::redisCommand(m_context.get(),"LINDEX %b, %d", key.getData(), key.getLen(), idx))};
     if (!reply)
         throw RedisReplyExceiption("LINDEX null");
     if (reply->type == REDIS_REPLY_NIL)
