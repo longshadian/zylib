@@ -1,4 +1,4 @@
-#include "MySQLConnection.h"
+#include "Connection.h"
 
 #include <mysql.h>
 #include <errmsg.h>
@@ -10,19 +10,19 @@
 
 namespace mysqlcpp {
 
-MySQLConnection::MySQLConnection(const MySQLConnectionInfo& conn_info) 
+Connection::Connection(ConnectionOpt conn_opt) 
     : m_reconnecting(false)
     , m_mysql(nullptr)
-    , m_conn_info(conn_info)
+    , m_conn_info(conn_opt)
 {
 }
 
-MySQLConnection::~MySQLConnection()
+Connection::~Connection()
 {
     close();
 }
 
-void MySQLConnection::close()
+void Connection::close()
 {
     if (m_mysql) {
         ::mysql_close(m_mysql);
@@ -30,7 +30,7 @@ void MySQLConnection::close()
     }
 }
 
-PreparedResultSetPtr MySQLConnection::query(MySQLPreparedStatement& stmt)
+PreparedResultSetPtr Connection::query(PreparedStatement& stmt)
 {
     if (!queryDetail(stmt))
         return nullptr;
@@ -44,7 +44,7 @@ PreparedResultSetPtr MySQLConnection::query(MySQLPreparedStatement& stmt)
     return result;
 }
 
-ResultSetPtr MySQLConnection::query(const char* sql)
+ResultSetPtr Connection::query(const char* sql)
 {
     if (!sql)
         return nullptr;
@@ -58,7 +58,7 @@ ResultSetPtr MySQLConnection::query(const char* sql)
     return result;
 }
 
-uint32 MySQLConnection::open()
+uint32 Connection::open()
 {
     MYSQL* mysql;
     mysql = ::mysql_init(nullptr);
@@ -99,7 +99,7 @@ uint32 MySQLConnection::open()
     }
 }
 
-bool MySQLConnection::execute(const char* sql)
+bool Connection::execute(const char* sql)
 {
     if (!m_mysql)
         return false;
@@ -115,7 +115,7 @@ bool MySQLConnection::execute(const char* sql)
     return true;
 }
 
-bool MySQLConnection::execute(MySQLPreparedStatementUPtr& stmt)
+bool Connection::execute(MySQLPreparedStatementUPtr& stmt)
 {
     if (!m_mysql)
         return false;
@@ -142,7 +142,7 @@ bool MySQLConnection::execute(MySQLPreparedStatementUPtr& stmt)
     return true;
 }
 
-bool MySQLConnection::queryDetail(MySQLPreparedStatement& stmt)
+bool Connection::queryDetail(PreparedStatement& stmt)
 {
     if (!m_mysql)
         return false;
@@ -166,7 +166,7 @@ bool MySQLConnection::queryDetail(MySQLPreparedStatement& stmt)
     return true;
 }
 
-bool MySQLConnection::queryDetail(const char *sql)
+bool Connection::queryDetail(const char *sql)
 {
     if (!m_mysql)
         return false;
@@ -181,22 +181,22 @@ bool MySQLConnection::queryDetail(const char *sql)
     return true;
 }
 
-void MySQLConnection::beginTransaction()
+void Connection::beginTransaction()
 {
     execute("START TRANSACTION");
 }
 
-void MySQLConnection::rollbackTransaction()
+void Connection::rollbackTransaction()
 {
     execute("ROLLBACK");
 }
 
-void MySQLConnection::commitTransaction()
+void Connection::commitTransaction()
 {
     execute("COMMIT");
 }
 
-MySQLPreparedStatementUPtr MySQLConnection::prepareStatement(const char* sql)
+MySQLPreparedStatementUPtr Connection::prepareStatement(const char* sql)
 {
     MYSQL_STMT* stmt = ::mysql_stmt_init(m_mysql);
     if (!stmt) {
@@ -209,10 +209,10 @@ MySQLPreparedStatementUPtr MySQLConnection::prepareStatement(const char* sql)
         ::mysql_stmt_close(stmt);
         return nullptr;
     }
-    return util::make_unique<MySQLPreparedStatement>(stmt);
+    return util::make_unique<PreparedStatement>(stmt);
 }
 
-bool MySQLConnection::handleMySQLErrno(uint32 err_no, uint8 attempts /*= 5*/)
+bool Connection::handleMySQLErrno(uint32 err_no, uint8 attempts /*= 5*/)
 {
     switch (err_no) {
     case CR_SERVER_GONE_ERROR:
@@ -278,12 +278,12 @@ bool MySQLConnection::handleMySQLErrno(uint32 err_no, uint8 attempts /*= 5*/)
 
 }
 
-uint32 MySQLConnection::getErrno() const
+uint32 Connection::getErrno() const
 {
     return ::mysql_errno(m_mysql);
 }
 
-const char* MySQLConnection::getError() const
+const char* Connection::getError() const
 {
     return ::mysql_error(m_mysql);
 }

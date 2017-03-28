@@ -1,5 +1,5 @@
-#ifndef _MYSQLCPP_MYSQLCONNECTION_H
-#define _MYSQLCPP_MYSQLCONNECTION_H
+#ifndef _MYSQLCPP_CONNECTION_H
+#define _MYSQLCPP_CONNECTION_H
 
 #include <mysql.h>
 
@@ -7,10 +7,17 @@
 
 namespace mysqlcpp {
 
-class MySQLPreparedStatement;
+class PreparedStatement;
 
-struct MySQLConnectionInfo
+struct ConnectionOpt
 {
+	ConnectionOpt() = default;
+	~ConnectionOpt() = default;
+	ConnectionOpt(const ConnectionOpt& rhs) = default;
+	ConnectionOpt& operator=(const ConnectionOpt& rhs) = default;
+	ConnectionOpt(ConnectionOpt&& rhs) = default;
+	ConnectionOpt& operator=(ConnectionOpt&& rhs) = default;
+
     std::string user{};
     std::string password{};
     std::string database{};
@@ -18,27 +25,27 @@ struct MySQLConnectionInfo
     uint32      port{3306};
 };
 
-class MySQLConnection
+class Connection
 {
 public:
-    MySQLConnection(const MySQLConnectionInfo& conn_info);
-    ~MySQLConnection();
+    Connection(ConnectionOpt conn_opt);
+    ~Connection();
 
-    MySQLConnection(MySQLConnection const& right) = delete;
-    MySQLConnection& operator=(MySQLConnection const& right) = delete;
+    Connection(Connection const& right) = delete;
+    Connection& operator=(Connection const& right) = delete;
 public:
 
     uint32 open();
     void close();
 
     MySQLPreparedStatementUPtr prepareStatement(const char* sql);
-    PreparedResultSetPtr query(MySQLPreparedStatement& stmt);
+    PreparedResultSetPtr query(PreparedStatement& stmt);
     ResultSetPtr query(const char* sql);
 
     bool execute(const char* sql);
     bool execute(MySQLPreparedStatementUPtr& stmt);
     bool queryDetail(const char *sql);
-    bool queryDetail(MySQLPreparedStatement& stmt);
+    bool queryDetail(PreparedStatement& stmt);
 
     void beginTransaction();
     void rollbackTransaction();
@@ -53,9 +60,9 @@ public:
 private:
     bool handleMySQLErrno(uint32 err_no, uint8 attempts = 5);
 private:
-    bool                        m_reconnecting;
-    MYSQL*                      m_mysql;
-    const MySQLConnectionInfo&  m_conn_info;
+    bool			m_reconnecting;
+    MYSQL*          m_mysql;
+    ConnectionOpt	m_conn_info;
 };
 
 }

@@ -43,6 +43,7 @@ private:
 
 #define FAKE_LOG_INFO() FakeLog(FakeLog::LOG_INFO, __LINE__, __FILE__, __FUNCTION__).stream()
 #define FAKE_LOG_ERROR() FakeLog(FakeLog::LOG_ERROR, __LINE__, __FILE__, __FUNCTION__).stream()
+#define FAKE_LOG_WARRING() FakeLog(FakeLog::LOG_ERROR, __LINE__, __FILE__, __FUNCTION__).stream()
 
 }
 

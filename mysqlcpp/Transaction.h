@@ -8,19 +8,19 @@
 
 namespace mysqlcpp {
 
-class MySQLConnection;
+class Connection;
 
 class Transaction
 {
 public:
-    Transaction(MySQLConnection& conn);
+    Transaction(Connection& conn);
     ~Transaction();
     Transaction(const Transaction& rhs) = delete;
     Transaction& operator=(const Transaction& rhs) = delete;
 
     void commit();
 private:
-    MySQLConnection& m_conn;
+    Connection& m_conn;
     bool             m_rollback;
 };
 

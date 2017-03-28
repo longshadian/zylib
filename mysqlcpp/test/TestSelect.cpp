@@ -12,9 +12,9 @@
 
 #define CREATE_SCHEMA
 
-mysqlcpp::MySQLConnectionInfo initConn()
+mysqlcpp::ConnectionOpt initConn()
 {
-    mysqlcpp::MySQLConnectionInfo conn_info{};
+    mysqlcpp::ConnectionOpt conn_info{};
     conn_info.user = "root";
     conn_info.password = "123456";
     //conn_info.database = "mytest";
@@ -26,13 +26,13 @@ mysqlcpp::MySQLConnectionInfo initConn()
 void test()
 {
     auto conn_info = initConn();
-    mysqlcpp::MySQLConnection conn{conn_info};
+    mysqlcpp::Connection conn{conn_info};
     if (conn.open() != 0) {
         std::cout << "open error\n";
         return;
     }
     std::shared_ptr<mysqlcpp::ResultSet> ret;
-    std::shared_ptr<mysqlcpp::MySQLPreparedStatement> stmt;
+    std::shared_ptr<mysqlcpp::PreparedStatement> stmt;
     const char* sql = nullptr;
 
 #ifdef CREATE_SCHEMA

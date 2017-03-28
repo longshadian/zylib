@@ -9,14 +9,14 @@
 
 namespace mysqlcpp {
 
-class MySQLPreparedStatement
+class PreparedStatement
 {
-    friend class MySQLConnection;
+    friend class Connection;
 public:
-    MySQLPreparedStatement(MYSQL_STMT* stmt);
-    ~MySQLPreparedStatement();
-    MySQLPreparedStatement(const MySQLPreparedStatement& right) = delete;
-    MySQLPreparedStatement& operator=(const MySQLPreparedStatement& right) = delete;
+    PreparedStatement(MYSQL_STMT* stmt);
+    ~PreparedStatement();
+    PreparedStatement(const PreparedStatement& right) = delete;
+    PreparedStatement& operator=(const PreparedStatement& right) = delete;
 public:
 
     void setBool(const uint8 index, const bool value);

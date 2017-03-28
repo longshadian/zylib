@@ -2,11 +2,11 @@
 
 #include <algorithm>
 
-#include "MySQLConnection.h"
+#include "Connection.h"
 
 namespace mysqlcpp {
 
-Transaction::Transaction(MySQLConnection& conn)
+Transaction::Transaction(Connection& conn)
     : m_conn(conn)
     , m_rollback(true)
 {

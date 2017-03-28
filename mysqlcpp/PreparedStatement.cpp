@@ -3,12 +3,12 @@
 #include <cstring>
 
 #include "Assert.h"
-#include "MySQLConnection.h"
+#include "Connection.h"
 #include "FakeLog.h"
 
 namespace mysqlcpp {
 
-MySQLPreparedStatement::MySQLPreparedStatement(MYSQL_STMT* stmt) 
+PreparedStatement::PreparedStatement(MYSQL_STMT* stmt) 
     : m_stmt(stmt)
     , m_bind_param()
     , m_param_set()
@@ -27,13 +27,13 @@ MySQLPreparedStatement::MySQLPreparedStatement(MYSQL_STMT* stmt)
     ::mysql_stmt_attr_set(stmt, STMT_ATTR_UPDATE_MAX_LENGTH, &bool_tmp);
 }
 
-MySQLPreparedStatement::~MySQLPreparedStatement()
+PreparedStatement::~PreparedStatement()
 {
     if (m_stmt)
         ::mysql_stmt_close(m_stmt);
 }
 
-void MySQLPreparedStatement::clearParameters()
+void PreparedStatement::clearParameters()
 {
     m_param_set.clear();
     m_param_set.resize(m_param_count);
@@ -46,31 +46,31 @@ void MySQLPreparedStatement::clearParameters()
     m_bind_param_buffer.resize(m_param_count);
 }
 
-MYSQL_STMT* MySQLPreparedStatement::getMYSQL_STMT() 
+MYSQL_STMT* PreparedStatement::getMYSQL_STMT() 
 { 
     return m_stmt; 
 }
 
-MYSQL_BIND* MySQLPreparedStatement::getMYSQL_BIND() 
+MYSQL_BIND* PreparedStatement::getMYSQL_BIND() 
 { 
     if (m_bind_param.empty())
         return nullptr;
     return m_bind_param.data();
 }
 
-bool MySQLPreparedStatement::checkValidIndex(uint8 index)
+bool PreparedStatement::checkValidIndex(uint8 index)
 {
     ASSERT(index < m_param_count);
     if (m_param_set[index]) FAKE_LOG_ERROR() << "[WARNING] Prepared Statement trying to bind value on already bound index " << index;
     return true;
 }
 
-void MySQLPreparedStatement::setBool(const uint8 index, const bool value)
+void PreparedStatement::setBool(const uint8 index, const bool value)
 {
     setUInt8(index, value ? 1 : 0);
 }
 
-void MySQLPreparedStatement::setUInt8(const uint8 index, const uint8 value)
+void PreparedStatement::setUInt8(const uint8 index, const uint8 value)
 {
     checkValidIndex(index);
     m_param_set[index] = true;
@@ -78,7 +78,7 @@ void MySQLPreparedStatement::setUInt8(const uint8 index, const uint8 value)
     setWholeNumber(index, param, MYSQL_TYPE_TINY, &value, sizeof(uint8), true);
 }
 
-void MySQLPreparedStatement::setUInt16(const uint8 index, const uint16 value)
+void PreparedStatement::setUInt16(const uint8 index, const uint16 value)
 {
     checkValidIndex(index);
     m_param_set[index] = true;
@@ -86,7 +86,7 @@ void MySQLPreparedStatement::setUInt16(const uint8 index, const uint16 value)
     setWholeNumber(index, param, MYSQL_TYPE_SHORT, &value, sizeof(uint16), true);
 }
 
-void MySQLPreparedStatement::setUInt32(const uint8 index, const uint32 value)
+void PreparedStatement::setUInt32(const uint8 index, const uint32 value)
 {
     checkValidIndex(index);
     m_param_set[index] = true;
@@ -94,7 +94,7 @@ void MySQLPreparedStatement::setUInt32(const uint8 index, const uint32 value)
     setWholeNumber(index, param, MYSQL_TYPE_LONG, &value, sizeof(uint32), true);
 }
 
-void MySQLPreparedStatement::setUInt64(const uint8 index, const uint64 value)
+void PreparedStatement::setUInt64(const uint8 index, const uint64 value)
 {
     checkValidIndex(index);
     m_param_set[index] = true;
@@ -102,7 +102,7 @@ void MySQLPreparedStatement::setUInt64(const uint8 index, const uint64 value)
     setWholeNumber(index, param, MYSQL_TYPE_LONGLONG, &value, sizeof(uint64), true);
 }
 
-void MySQLPreparedStatement::setInt8(const uint8 index, const int8 value)
+void PreparedStatement::setInt8(const uint8 index, const int8 value)
 {
     checkValidIndex(index);
     m_param_set[index] = true;
@@ -110,7 +110,7 @@ void MySQLPreparedStatement::setInt8(const uint8 index, const int8 value)
     setWholeNumber(index, param, MYSQL_TYPE_TINY, &value, sizeof(int8), false);
 }
 
-void MySQLPreparedStatement::setInt16(const uint8 index, const int16 value)
+void PreparedStatement::setInt16(const uint8 index, const int16 value)
 {
     checkValidIndex(index);
     m_param_set[index] = true;
@@ -118,7 +118,7 @@ void MySQLPreparedStatement::setInt16(const uint8 index, const int16 value)
     setWholeNumber(index, param, MYSQL_TYPE_SHORT, &value, sizeof(int16), false);
 }
 
-void MySQLPreparedStatement::setInt32(const uint8 index, const int32 value)
+void PreparedStatement::setInt32(const uint8 index, const int32 value)
 {
     checkValidIndex(index);
     m_param_set[index] = true;
@@ -126,7 +126,7 @@ void MySQLPreparedStatement::setInt32(const uint8 index, const int32 value)
     setWholeNumber(index, param, MYSQL_TYPE_LONG, &value, sizeof(int32), false);
 }
 
-void MySQLPreparedStatement::setInt64(const uint8 index, const int64 value)
+void PreparedStatement::setInt64(const uint8 index, const int64 value)
 {
     checkValidIndex(index);
     m_param_set[index] = true;
@@ -134,7 +134,7 @@ void MySQLPreparedStatement::setInt64(const uint8 index, const int64 value)
     setWholeNumber(index, param, MYSQL_TYPE_LONGLONG, &value, sizeof(int64), false);
 }
 
-void MySQLPreparedStatement::setFloat(const uint8 index, const float value)
+void PreparedStatement::setFloat(const uint8 index, const float value)
 {
     checkValidIndex(index);
     m_param_set[index] = true;
@@ -142,7 +142,7 @@ void MySQLPreparedStatement::setFloat(const uint8 index, const float value)
     setRealNumber(index, param, MYSQL_TYPE_FLOAT, &value, sizeof(float));
 }
 
-void MySQLPreparedStatement::setDouble(const uint8 index, const double value)
+void PreparedStatement::setDouble(const uint8 index, const double value)
 {
     checkValidIndex(index);
     m_param_set[index] = true;
@@ -150,14 +150,14 @@ void MySQLPreparedStatement::setDouble(const uint8 index, const double value)
     setRealNumber(index, param, MYSQL_TYPE_DOUBLE, &value, sizeof(double));
 }
 
-void MySQLPreparedStatement::setString(const uint8 index, const std::string& value)
+void PreparedStatement::setString(const uint8 index, const std::string& value)
 {
     const uint8* pos = (const uint8*)value.data();
     std::vector<uint8> buffer{pos, pos + value.size()};
     setBinary(index, std::move(buffer), true);
 }
 
-void MySQLPreparedStatement::setString(const uint8 index, const char* value)
+void PreparedStatement::setString(const uint8 index, const char* value)
 {
     const uint8* pos = (const uint8*)value;
     auto len = std::strlen(value);
@@ -165,7 +165,7 @@ void MySQLPreparedStatement::setString(const uint8 index, const char* value)
     setBinary(index, std::move(buffer), true);
 }
 
-void MySQLPreparedStatement::setBinary(const uint8 index, std::vector<uint8> src, bool is_string)
+void PreparedStatement::setBinary(const uint8 index, std::vector<uint8> src, bool is_string)
 {
     checkValidIndex(index);
     m_param_set[index] = true;
@@ -182,7 +182,7 @@ void MySQLPreparedStatement::setBinary(const uint8 index, std::vector<uint8> src
     }
 }
 
-void MySQLPreparedStatement::setNull(const uint8 index)
+void PreparedStatement::setNull(const uint8 index)
 {
     /* 
      *  my_bool *is_null
@@ -207,7 +207,7 @@ void MySQLPreparedStatement::setNull(const uint8 index)
     param->buffer_type = MYSQL_TYPE_NULL;
 }
 
-void MySQLPreparedStatement::setDateTime(const uint8 index, const DateTime tm)
+void PreparedStatement::setDateTime(const uint8 index, const DateTime tm)
 {
     checkValidIndex(index);
     m_param_set[index] = true;
@@ -222,7 +222,7 @@ void MySQLPreparedStatement::setDateTime(const uint8 index, const DateTime tm)
     param->buffer_type = MYSQL_TYPE_DATETIME;
 }
 
-void MySQLPreparedStatement::setWholeNumber(const uint8 index, MYSQL_BIND* param, enum_field_types type,
+void PreparedStatement::setWholeNumber(const uint8 index, MYSQL_BIND* param, enum_field_types type,
     const void* src, uint32_t src_len, bool is_unsigned)
 {
     m_bind_param_buffer[index].resize(src_len);
@@ -233,7 +233,7 @@ void MySQLPreparedStatement::setWholeNumber(const uint8 index, MYSQL_BIND* param
     param->is_unsigned = is_unsigned ? 1 : 0;
 }
 
-void MySQLPreparedStatement::setRealNumber(const uint8 index, MYSQL_BIND* param, enum_field_types type,
+void PreparedStatement::setRealNumber(const uint8 index, MYSQL_BIND* param, enum_field_types type,
     const void* src, uint32_t src_len)
 {
     m_bind_param_buffer[index].resize(src_len);

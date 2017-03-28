@@ -7,13 +7,13 @@
 namespace mysqlcpp {
 
 class PreparedStatement;
-class MySQLPreparedStatement;
+class PreparedStatement;
 class PreparedResultSet;
 class ResultSet;
 
 
 using PreparedStatementUPtr = std::unique_ptr<PreparedStatement>;
-using MySQLPreparedStatementUPtr = std::unique_ptr<MySQLPreparedStatement>;
+using MySQLPreparedStatementUPtr = std::unique_ptr<PreparedStatement>;
 using PreparedResultSetPtr = std::shared_ptr<PreparedResultSet>;
 using ResultSetPtr = std::shared_ptr<ResultSet>;
 
