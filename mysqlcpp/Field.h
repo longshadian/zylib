@@ -9,34 +9,28 @@
 #include "Types.h"
 
 /**
-    @class Field
+	MYSQL查询结果对应类型
+    |------------------------|----------------------------|
+    | TINYINT                | getBool, getInt8, getUInt8 |
+    | SMALLINT               | getInt16, getUInt16        |
+    | MEDIUMINT, INT         | getInt32, getUInt32        |
+    | BIGINT                 | getInt64, getUInt64        |
+    | FLOAT                  | getFloat                   |
+    | DOUBLE, DECIMAL        | getDouble                  |
+    | CHAR, VARCHAR,         | getString                  |
+    | TINYTEXT, MEDIUMTEXT,  | getString                  |
+    | TEXT, LONGTEXT         | getString                  |
+    | TINYBLOB, MEDIUMBLOB,  | getBinary, getString       |
+    | BLOB, LONGBLOB         | getBinary, getString       |
+    | BINARY, VARBINARY      | getBinary                  |
+    | DATE, TIME			 | getDateTime()			  |
+	| DATETIME, TIMESTAMP    | getDateTime()              |
 
-    @brief Class used to access individual fields of database query result
-
-    Guideline on field type matching:
-
-    |   MySQL type           |  method to use                         |
-    |------------------------|----------------------------------------|
-    | TINYINT                | GetBool, GetInt8, GetUInt8             |
-    | SMALLINT               | GetInt16, GetUInt16                    |
-    | MEDIUMINT, INT         | GetInt32, GetUInt32                    |
-    | BIGINT                 | GetInt64, GetUInt64                    |
-    | FLOAT                  | GetFloat                               |
-    | DOUBLE, DECIMAL        | GetDouble                              |
-    | CHAR, VARCHAR,         | GetCString, GetString                  |
-    | TINYTEXT, MEDIUMTEXT,  | GetCString, GetString                  |
-    | TEXT, LONGTEXT         | GetCString, GetString                  |
-    | TINYBLOB, MEDIUMBLOB,  | GetBinary, GetString                   |
-    | BLOB, LONGBLOB         | GetBinary, GetString                   |
-    | BINARY, VARBINARY      | GetBinary                              |
-
-    Return types of aggregate functions:
-
-    | Function |       Type        |
-    |----------|-------------------|
-    | MIN, MAX | Same as the field |
-    | SUM, AVG | DECIMAL           |
-    | COUNT    | BIGINT            |
+	聚合函数返回值：
+    |----------|------------|
+    | MIN, MAX | 和Field类似 |
+    | SUM, AVG | getDouble  |
+    | COUNT    | getInt64   |
 */
 
 namespace mysqlcpp {

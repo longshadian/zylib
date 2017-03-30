@@ -15,12 +15,18 @@ class ConnectionPool;
 
 class ConnectionGuard
 {
+public:
     ConnectionGuard(ConnectionPool& pool);
     ~ConnectionGuard();
 
+	Connection& operator*() const { return *m_conn; }
+	const std::shared_ptr<Connection>& operator->() const { return m_conn; }
+	operator bool() const { return m_conn != nullptr; }
+
+	Connection* get() const { return m_conn.get(); }
 private:
     ConnectionPool&  m_pool;
-    std::unique_ptr<Connection> m_conn;
+	std::shared_ptr<Connection> m_conn;
 };
 
 struct ConnectionPoolOpt
@@ -52,7 +58,7 @@ class ConnectionPool
         }
     };
 public:
-	ConnectionPool(ConnectionOpt conn_opt, ConnectionPoolOpt pool_opt);
+	ConnectionPool(ConnectionOpt conn_opt, ConnectionPoolOpt pool_opt = {});
     ~ConnectionPool() = default;
 
     ConnectionPool(const ConnectionPool& rhs) = delete;

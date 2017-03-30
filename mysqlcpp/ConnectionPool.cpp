@@ -11,11 +11,14 @@ ConnectionGuard::ConnectionGuard(ConnectionPool& pool)
     : m_pool(pool)
     , m_conn(nullptr)
 {
+	m_conn = m_pool.getConn();
 }
 
 ConnectionGuard::~ConnectionGuard()
 {
-	m_pool.rleaseConn(std::move(m_conn));
+	if (m_conn) {
+		m_pool.rleaseConn(std::move(m_conn));
+	}
 }
 
 ConnectionPool::ConnectionPool(ConnectionOpt conn_opt, ConnectionPoolOpt pool_opt)
@@ -51,7 +54,7 @@ std::shared_ptr<Connection> ConnectionPool::getConn()
 		}
 
 		if (m_pool.size() >= m_pool_opt.m_thread_pool_max_threads) {
-			FAKE_LOG_WARRING() << "too much connection! count:" << m_pool.size();
+			FAKE_LOG_WARNING() << "too much connection! count:" << m_pool.size();
 			return nullptr;
 		}
     }
@@ -115,8 +118,10 @@ void ConnectionPool::destoryTimeout(time_t tnow)
 {
 	for (auto it = m_pool.begin(); it != m_pool.end();) {
 		const Slot& s = *it;
-		if (s.m_in_use)
+		if (s.m_in_use) {
+			++it;
 			continue;
+		}
 		if (tnow - s.m_last_used >= static_cast<time_t>(m_pool_opt.m_thread_pool_idle_timeout)) {
 			it = m_pool.erase(it);
 		} else {

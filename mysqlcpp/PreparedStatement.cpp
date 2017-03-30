@@ -5,6 +5,7 @@
 #include "Assert.h"
 #include "Connection.h"
 #include "FakeLog.h"
+#include "Utils.h"
 
 namespace mysqlcpp {
 
@@ -61,7 +62,8 @@ MYSQL_BIND* PreparedStatement::getMYSQL_BIND()
 bool PreparedStatement::checkValidIndex(uint8 index)
 {
     ASSERT(index < m_param_count);
-    if (m_param_set[index]) FAKE_LOG_ERROR() << "[WARNING] Prepared Statement trying to bind value on already bound index " << index;
+    if (m_param_set[index])
+		FAKE_LOG_WARNING() << "Prepared Statement trying to bind value on already bound index " << index;
     return true;
 }
 
@@ -223,7 +225,7 @@ void PreparedStatement::setDateTime(const uint8 index, const DateTime tm)
 }
 
 void PreparedStatement::setWholeNumber(const uint8 index, MYSQL_BIND* param, enum_field_types type,
-    const void* src, uint32_t src_len, bool is_unsigned)
+    const void* src, uint32 src_len, bool is_unsigned)
 {
     m_bind_param_buffer[index].resize(src_len);
     std::memcpy(m_bind_param_buffer[index].data(), src, src_len);
@@ -234,7 +236,7 @@ void PreparedStatement::setWholeNumber(const uint8 index, MYSQL_BIND* param, enu
 }
 
 void PreparedStatement::setRealNumber(const uint8 index, MYSQL_BIND* param, enum_field_types type,
-    const void* src, uint32_t src_len)
+    const void* src, uint32 src_len)
 {
     m_bind_param_buffer[index].resize(src_len);
     std::memcpy(m_bind_param_buffer[index].data(), src, src_len);
@@ -243,14 +245,75 @@ void PreparedStatement::setRealNumber(const uint8 index, MYSQL_BIND* param, enum
     param->buffer = m_bind_param_buffer[index].data(); 
 }
 
-/*
-std::string MySQLPreparedStatement::getQueryString(std::string const& sqlPattern) const
+std::string PreparedStatement::getQueryString(const std::string& sql_pattern) const
 {
-    std::string queryString = sqlPattern;
+	return sql_pattern;
+	/*
+	std::ostringstream ostm{};
+	util::Tokenizer tk{sql_pattern, '?'};
+	if (tk.size() != m_bind_param.size()) {
+		return {};
+	}
 
+	for (size_t i = 0; i != tk.size(); ++i) {
+		ostm << tk[i];
+		const MYSQL_BIND& param = m_bind_param[i];
+
+        switch (param.type) {
+            case TINYINT:
+				ostm << util::Convert<int8>::convert(m_bind_param_buffer[i]);
+                break;
+            case SMALLINT:
+				ostm << util::Convert<int16>::convert(m_bind_param_buffer[i]);
+                break;
+            case MEDIUMINT:
+			case INT:
+				ostm << util::Convert<int32>::convert(m_bind_param_buffer[i]);
+                break;
+			case BIGINT:
+				ostm << util::Convert<int64>::convert(m_bind_param_buffer[i]);
+                break;
+            case FLOAT:
+				ostm << util::Convert<float>::convert(m_bind_param_buffer[i]);
+                break;
+            case DOUBLE:
+			case DECIMAL:
+				ostm << util::Convert<double>::convert(m_bind_param_buffer[i]);
+                break;
+			case CHAR: 
+			case VARCHAR:
+			case TINYTEXT:
+			case MEDIUMTEXT:
+			case TEXT:
+			case LONGTEXT:
+				ostm << '\'' << util::Convert<std::string>::convert(m_bind_param_buffer[i]) << '\'';
+			case TINYBLOB:
+			case MEDIUMBLOB:
+			case BLOB:
+			case LONGBLOB:
+			case BINARY:
+			case VARBINARY:
+				ostm << "<BINARY>";
+                break;
+            case TYPE_NULL:
+				ostm << "NULL";
+                break;
+			case DATE:
+			case TIME:
+			case DATETIME:
+			case TIMESTAMP:
+				ostm << "<DATETIME>";
+			default:
+				ostm << "<UNKNOWN>";
+        }
+	}
+	return ostm.str();
+	*/
+
+	/*
+    std::string queryString = sql_pattern;
     size_t pos = 0;
-    for (uint32 i = 0; i < m_stmt->statement_data.size(); i++)
-    {
+    for (uint32 i = 0; i < m_stmt->statement_data.size(); i++) {
         pos = queryString.find('?', pos);
         std::stringstream ss;
 
@@ -306,7 +369,7 @@ std::string MySQLPreparedStatement::getQueryString(std::string const& sqlPattern
     }
 
     return queryString;
+	*/
 }
-*/
 
 }

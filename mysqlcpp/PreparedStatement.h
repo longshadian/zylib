@@ -39,16 +39,16 @@ public:
     void clearParameters();
     MYSQL_STMT* getMYSQL_STMT();
     MYSQL_BIND* getMYSQL_BIND();
+    std::string getQueryString(const std::string& sqlPattern) const;
 private:
     bool checkValidIndex(uint8 index);
-    //std::string getQueryString(std::string const& sqlPattern) const;
     void setWholeNumber(const uint8 index, MYSQL_BIND* param, enum_field_types type, const void* src, uint32 src_len, bool is_unsigned);
     void setRealNumber(const uint8 index, MYSQL_BIND* param, enum_field_types type, const void* src, uint32 src_len);
 private:
     MYSQL_STMT*             m_stmt;
     std::vector<MYSQL_BIND> m_bind_param;
     std::vector<bool>       m_param_set;
-    uint32_t                m_param_count;
+    uint32					m_param_count;
     std::vector<std::vector<uint8>> m_bind_param_buffer;
 };
 

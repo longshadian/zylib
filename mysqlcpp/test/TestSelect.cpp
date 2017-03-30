@@ -161,7 +161,7 @@ void test()
         stmt->setDateTime(0, mysqlcpp::DateTime(tnow));     //保存date类型
         stmt->setDateTime(1, mysqlcpp::DateTime(tnow));     //保存time类型
         stmt->setDateTime(2, mysqlcpp::DateTime(tnow));     //保存datetime类型
-        stmt->setDateTime(3, mysqlcpp::DateTime());         //保存默认值
+        stmt->setDateTime(3, mysqlcpp::DateTime());         //保存默认值0000-00-00 00:00:00
         auto ret_ex = conn.query(*stmt);
         ASSERT(ret_ex && ret_ex->getRowCount() == 0);
 

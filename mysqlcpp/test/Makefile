@@ -22,14 +22,17 @@ OBJS = $(SRC_CPP:%.cpp=%.o)
 OBJS += $(SRC_CC:%.cc=%.o)
 
 #OUTPUT = testmisc testselect
-OUTPUT = testselect
+OUTPUT = test_select test_dbservice
 
 all:$(OBJS) $(OUTPUT)
 
-testmisc:$(OBJS) TestMisc.cpp
+test_misc:$(OBJS) TestMisc.cpp
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
     
-testselect:$(OBJS) TestSelect.cpp
+test_select:$(OBJS) TestSelect.cpp
+	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
+
+test_dbservice:$(OBJS) TestDBService.cpp DataBaseService.cpp
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
 
 .cpp.o:

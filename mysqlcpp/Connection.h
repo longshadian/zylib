@@ -22,7 +22,7 @@ struct ConnectionOpt
     std::string password{};
     std::string database{};
     std::string host{};
-    uint32      port{3306};
+    uint32    port{3306};
 };
 
 class Connection
@@ -34,7 +34,6 @@ public:
     Connection(Connection const& right) = delete;
     Connection& operator=(Connection const& right) = delete;
 public:
-
     uint32 open();
     void close();
 
@@ -60,7 +59,6 @@ public:
 private:
     bool handleMySQLErrno(uint32 err_no, uint8 attempts = 5);
 private:
-    bool			m_reconnecting;
     MYSQL*          m_mysql;
     ConnectionOpt	m_conn_info;
 };

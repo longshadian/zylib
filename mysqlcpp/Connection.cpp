@@ -11,8 +11,7 @@
 namespace mysqlcpp {
 
 Connection::Connection(ConnectionOpt conn_opt) 
-    : m_reconnecting(false)
-    , m_mysql(nullptr)
+	: m_mysql(nullptr)
     , m_conn_info(conn_opt)
 {
 }
@@ -60,14 +59,16 @@ ResultSetPtr Connection::query(const char* sql)
 
 uint32 Connection::open()
 {
-    MYSQL* mysql;
-    mysql = ::mysql_init(nullptr);
-    if (!mysql) {
+	if (m_mysql)
+        return CR_UNKNOWN_ERROR;
+
+	m_mysql = ::mysql_init(nullptr);
+    if (!m_mysql) {
         FAKE_LOG_ERROR() << "Could not initialize Mysql connection to database " << m_conn_info.database;
         return CR_UNKNOWN_ERROR;
     }
 
-    ::mysql_options(mysql, MYSQL_SET_CHARSET_NAME, "utf8");
+    ::mysql_options(m_mysql, MYSQL_SET_CHARSET_NAME, "utf8");
 
     //unsigned int timeout = 10;
     //::mysql_options(mysqlInit, MYSQL_OPT_READ_TIMEOUT, (char const*)&timeout);
@@ -77,13 +78,11 @@ uint32 Connection::open()
     const char* db = m_conn_info.database.c_str();
     db = nullptr;
 
-    m_mysql = ::mysql_real_connect(mysql, host, user, passwd, db, m_conn_info.port, nullptr, 0);
+    m_mysql = ::mysql_real_connect(m_mysql, host, user, passwd, db, m_conn_info.port, nullptr, 0);
 
     if (m_mysql) {
-        if (!m_reconnecting) {
-            FAKE_LOG_INFO() << "MySQL client library:" << ::mysql_get_client_info();
-            FAKE_LOG_INFO() << "MySQL server ver: " << ::mysql_get_server_info(m_mysql);
-        }
+		FAKE_LOG_INFO() << "MySQL client library:" << ::mysql_get_client_info();
+		FAKE_LOG_INFO() << "MySQL server ver: " << ::mysql_get_server_info(m_mysql);
 
         FAKE_LOG_INFO() << "Connected to MySQL database at " << m_conn_info.host;
         ::mysql_autocommit(m_mysql, 1);
@@ -93,9 +92,9 @@ uint32 Connection::open()
         ::mysql_set_character_set(m_mysql, "utf8");
         return 0;
     } else {
-        FAKE_LOG_ERROR() << "Could not connect to MySQL database at " << m_conn_info.host.c_str() << " : " << ::mysql_error(mysql);
-        ::mysql_close(mysql);
-        return ::mysql_errno(mysql);
+        FAKE_LOG_ERROR() << "Could not connect to MySQL database at " << m_conn_info.host.c_str() << " : " << ::mysql_error(m_mysql);
+        ::mysql_close(m_mysql);
+        return ::mysql_errno(m_mysql);
     }
 }
 
@@ -228,12 +227,10 @@ bool Connection::handleMySQLErrno(uint32 err_no, uint8 attempts /*= 5*/)
     }
     case CR_CONN_HOST_ERROR: {
         FAKE_LOG_INFO() << "Attempting to reconnect to the MySQL server...";
-        m_reconnecting = true;
         const uint32 err_no_ex = open();
         if (!err_no_ex) {
             FAKE_LOG_INFO() << "Successfully reconnected to " << m_conn_info.database 
                 << " " << m_conn_info.host << " " << m_conn_info.port;
-            m_reconnecting = false;
             return true;
         }
 

@@ -4,6 +4,15 @@
 
 namespace mysqlcpp {
 
+const char* LOG_SEVERITY_NAMES[NUM_SEVERITY] =
+{
+	"DEBU   ",
+	"INFO	",
+	"WARNING",
+	"ERROR  ",
+};
+
+
 std::ostream* g_ostm = nullptr;
 
 void initLog(std::ostream* ostm)
@@ -12,7 +21,7 @@ void initLog(std::ostream* ostm)
         g_ostm = ostm;
 }
 
-FakeLog::FakeLog(int32_t lv, int line, const char* file, const char* function)
+FakeLog::FakeLog(int lv, int line, const char* file, const char* function)
     : m_line(line)
     , m_file(file)
     , m_function(function)
@@ -21,19 +30,23 @@ FakeLog::FakeLog(int32_t lv, int line, const char* file, const char* function)
 {
 }
 
+FakeLog::FakeLog(int lv, const char* file, int line)
+	: m_line(line)
+	, m_file(file)
+	, m_function(nullptr)
+	, m_level(lv)
+	, m_stream()
+{
+}
+
 FakeLog::~FakeLog()
 {
-    auto s = m_stream.m_ostm.str();
-    if (s.empty())
+    auto content = m_stream.m_ostm.str();
+    if (content.empty() || !g_ostm)
         return;
-    if (!g_ostm)
-        return;
-
-    if (m_level == LOG_INFO) {
-        (*g_ostm) << "[INFO ] [" << m_file << ":" << m_line << "] " << s << "\n";
-    } else if (m_level == LOG_ERROR) {
-        (*g_ostm) << "[ERROR] [" << m_file << ":" << m_line << "] " << s << "\n";
-    }
+	if (content[content.size() - 1] == '\n')
+		content.pop_back();
+	(*g_ostm) << '[' << LOG_SEVERITY_NAMES[m_level] << "] [" << m_file << ":" << m_line << "] " << content << "\n";
 }
 
 }

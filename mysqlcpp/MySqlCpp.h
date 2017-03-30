@@ -6,6 +6,7 @@
 #include "QueryResult.h"
 #include "Field.h"
 #include "Transaction.h"
+#include "ConnectionPool.h"
 #include "FakeLog.h"
 
 #endif
