@@ -50,7 +50,7 @@ int testStmt()
     }
 
     const std::string sql = "select fid, fname, fsid from test where fid = ?";
-    auto stmt = conn.prepareStatement(sql.c_str());
+    auto stmt = conn.prepareStmt(sql.c_str());
     if (!stmt) {
         std::cout << "prepareStatement error\n";
         return 0;
@@ -81,7 +81,7 @@ int testStmtUpdate()
     }
 
     const std::string sql = "update test set fname=?, ftime=?, fdate=?, fdatetime = ?, ftimestamp=? where fid = ?";
-    auto stmt = conn.prepareStatement(sql.c_str());
+    auto stmt = conn.prepareStmt(sql.c_str());
     if (!stmt) {
         std::cout << "prepareStatement error\n";
         return 0;

@@ -19,11 +19,11 @@ struct Conn
 
 	int exe(int val)
 	{
-		const char* sql = "SELECT count(fid) as cnt FROM mytest.ttest";
+		const char* sql = "SELECT count(fid) as cnt FROM test.txx";
 		auto ret = m_conn.query(sql);
 		if (!ret) {
-			std::cout << "ret error\n";
-			return 0;
+            std::cout << "ret error " << m_conn.getError() << "\n";
+            throw uint32_t(m_conn.getErrno());
 		}
 		std::ostringstream ostm{};
 		ostm << std::this_thread::get_id() << " success\n";
@@ -44,13 +44,16 @@ public:
     DataBaseService(const DataBaseService& rhs) = delete;
     DataBaseService& operator=(const DataBaseService& rhs) = delete;
 
+    /// \param num_threads how much threads run. must be > 1. 
     bool init(size_t num_threads);
+
     void stop();
-    void waitStop();
+
+    void waitExit();
+
 	void executeRemainTask();
 
 	std::future<int> countID(int val);
-
 
     template<typename F>
     std::future<typename std::result_of<F()>::type> asyncSubmit(F f)
@@ -63,6 +66,8 @@ public:
         m_cond.notify_all();
         return res;
     }
+
+    int countDetail(int val);
 private:
     void threadStart();
     void run();

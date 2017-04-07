@@ -22,7 +22,8 @@ struct ConnectionOpt
     std::string password{};
     std::string database{};
     std::string host{};
-    uint32    port{3306};
+    uint32      port{3306};
+    bool        auto_reconn{false};
 };
 
 class Connection
@@ -37,30 +38,34 @@ public:
     uint32 open();
     void close();
 
-    MySQLPreparedStatementUPtr prepareStatement(const char* sql);
+    PreparedStatementUPtr prepareStmt(const char* sql);
     PreparedResultSetPtr query(PreparedStatement& stmt);
     ResultSetPtr query(const char* sql);
 
     bool execute(const char* sql);
-    bool execute(MySQLPreparedStatementUPtr& stmt);
-    bool queryDetail(const char *sql);
-    bool queryDetail(PreparedStatement& stmt);
+    bool execute(PreparedStatementUPtr& stmt);
 
     void beginTransaction();
     void rollbackTransaction();
     void commitTransaction();
 
     operator bool () const { return m_mysql != NULL; }
-    void ping() { ::mysql_ping(m_mysql); }
-    MYSQL* getMYSQL()  { return m_mysql; }
-
+    void ping();
+    MYSQL* getMYSQL();
     uint32 getErrno() const;
     const char* getError() const;
 private:
-    bool handleMySQLErrno(uint32 err_no, uint8 attempts = 5);
+    bool handleMySQLErrno(uint32 err_no);
+    bool queryDetail(const char *sql);
+    bool queryDetail(PreparedStatement& stmt);
+
+    void storeError(uint32 err_no, const char* err_str);
 private:
     MYSQL*          m_mysql;
     ConnectionOpt	m_conn_info;
+    uint32          m_err_no;
+    const char*     m_err_str;
+    static const char m_null;
 };
 
 }

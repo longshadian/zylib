@@ -17,8 +17,7 @@ enum LOG_LEVEL
 extern const char* LOG_SEVERITY_NAMES[NUM_SEVERITY];
 
 
-
-void initLog(std::ostream* ostm);
+void initLog(std::ostream* ostm, LOG_LEVEL lv = LOG_DEBUG);
 
 struct FakeLogStream
 {

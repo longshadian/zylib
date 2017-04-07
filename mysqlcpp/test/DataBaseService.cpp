@@ -15,7 +15,7 @@ DataBaseService::DataBaseService()
 DataBaseService::~DataBaseService()
 {
     stop();
-    waitStop();
+    waitExit();
 }
 
 bool DataBaseService::init(size_t num_threads)
@@ -26,7 +26,7 @@ bool DataBaseService::init(size_t num_threads)
 	mysqlcpp::ConnectionOpt conn_opt{};
 	conn_opt.user = "root";
 	conn_opt.password = "123456";
-	conn_opt.database = "mytest";
+	conn_opt.database = "test";
 	conn_opt.host = "127.0.0.1";
 	conn_opt.port = 3306;
 
@@ -46,7 +46,8 @@ bool DataBaseService::init(size_t num_threads)
 
 void DataBaseService::stop()
 {
-    m_running = false;
+    if (!m_running.exchange(false))
+        return;
     std::lock_guard<std::mutex> lk(m_mtx);
 	for (size_t i = 0; i != m_threads.size(); ++i) {
 		m_queue.push(zylib::AsyncTask());
@@ -54,7 +55,7 @@ void DataBaseService::stop()
     m_cond.notify_all();
 }
 
-void DataBaseService::waitStop()
+void DataBaseService::waitExit()
 {
 	for (auto& thread : m_threads) {
 		if (thread.joinable()) {
@@ -102,16 +103,32 @@ void DataBaseService::run()
     }
 }
 
+int DataBaseService::countDetail(int val)
+{
+    mysqlcpp::ConnectionGuard conn_guard{*m_db_pool};
+    if (conn_guard) {
+        Conn cn(*conn_guard);
+
+        int n = 10;
+        while (--n > 0) {
+            std::cout << "n:" << n << "\n";
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+        }
+        return cn.exe(val);
+    }
+    std::cout << "conn error\n";
+    return 0;
+}
+
 std::future<int> DataBaseService::countID(int val)
 {
 	return asyncSubmit([this, val]() -> int
 	{
-		mysqlcpp::ConnectionGuard conn_guard{*m_db_pool};
-		if (conn_guard) {
-			Conn cn(*conn_guard);
-			return cn.exe(val);
-		}
-		std::cout << "conn error\n";
-		return 0;
+        try {
+            return countDetail(val);
+        } catch (uint32_t mysql_errno) {
+            std::cout << "mysql errno:" << mysql_errno << "\n";
+        }
+        return 1;
 	});
 }

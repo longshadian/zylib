@@ -7,6 +7,7 @@
 #include <sys/time.h>
 
 #include "MySqlCpp.h"
+#include "DataBaseService.h"
 
 #define ASSERT assert
 
@@ -156,7 +157,7 @@ void test()
         time_t tnow = 1475791730;   //2016-10-07 06:08:50
         sql = " INSERT INTO `test` (pk, fdate, ftime, fdatetime, ftimestamp) VALUES "
             " (0, ?, ?, ?, ?)";
-        stmt = conn.prepareStatement(sql);
+        stmt = conn.prepareStmt(sql);
         ASSERT(stmt);
         stmt->setDateTime(0, mysqlcpp::DateTime(tnow));     //保存date类型
         stmt->setDateTime(1, mysqlcpp::DateTime(tnow));     //保存time类型
@@ -185,7 +186,7 @@ void test()
         ASSERT(ret_ex && ret_ex->getRowCount() == 0);
 
         sql = "update `test` set `fint`=?, `fvarchar`=? where pk=?";
-        stmt = conn.prepareStatement(sql);
+        stmt = conn.prepareStmt(sql);
         stmt->setInt32(0, 100);
         stmt->setString(1, "xxx");
         stmt->setInt32(2, 0);
@@ -215,7 +216,7 @@ void test()
         mysqlcpp::Transaction transaction{conn};
 
         sql = "update `test` set `fint`=?, `fvarchar`=? where pk=?";
-        stmt = conn.prepareStatement(sql);
+        stmt = conn.prepareStmt(sql);
         stmt->setInt32(0, 9900);
         stmt->setString(1, "hh");
         stmt->setInt32(2, 0);
@@ -233,7 +234,6 @@ void test()
 
     return;
 }
-
 
 int main()
 {
