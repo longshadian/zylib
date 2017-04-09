@@ -6,15 +6,15 @@
 
 namespace rediscpp {
 
-struct RedisException : public std::runtime_error
+struct Exception : public std::runtime_error
 {
-    RedisException(const std::string& s);
-    RedisException(const char* s);
-    virtual ~RedisException() throw () {}
+    Exception(const std::string& s);
+    Exception(const char* s);
+    virtual ~Exception() throw () {}
 };
 
 //redis服务端没有返回
-struct ReplyNullException : public RedisException
+struct ReplyNullException : public Exception
 {
     ReplyNullException(const std::string& s);
     ReplyNullException(const char* s);
@@ -22,7 +22,7 @@ struct ReplyNullException : public RedisException
 };
 
 //redis返回内容出错
-struct ReplyErrorException : public RedisException
+struct ReplyErrorException : public Exception
 {
     ReplyErrorException(const std::string& s);
     ReplyErrorException(const char* str);
@@ -30,7 +30,7 @@ struct ReplyErrorException : public RedisException
 };
 
 //redis返回类型出错
-struct ReplyTypeException : public RedisException
+struct ReplyTypeException : public Exception
 {
     ReplyTypeException(const std::string& s);
     ReplyTypeException(const char* str);

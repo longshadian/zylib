@@ -2,45 +2,45 @@
 
 namespace rediscpp {
 
-RedisException::RedisException(const std::string& s)
+Exception::Exception(const std::string& s)
     : std::runtime_error(s)
 {
 }
 
-RedisException::RedisException(const char* s)
+Exception::Exception(const char* s)
     : std::runtime_error(s)
 {
 }
 
 
 ReplyNullException::ReplyNullException(const std::string& s)
-    : RedisException(s)
+    : Exception(s)
 {
 }
 
 ReplyNullException::ReplyNullException(const char* s)
-    : RedisException(s)
+    : Exception(s)
 {
 }
 
 
 ReplyErrorException::ReplyErrorException(const std::string& s)
-    : RedisException(s)
+    : Exception(s)
 {
 }
 
 ReplyErrorException::ReplyErrorException(const char* str)
-    : RedisException(str)
+    : Exception(str)
 {
 }
 
 ReplyTypeException::ReplyTypeException(const char* str)
-    : RedisException(str)
+    : Exception(str)
 {
 }
 
 ReplyTypeException::ReplyTypeException(const std::string& str)
-    : RedisException(str)
+    : Exception(str)
 {
 }
 

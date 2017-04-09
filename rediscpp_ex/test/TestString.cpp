@@ -36,7 +36,7 @@ bool test_SET_GET()
         TEST(redis.GET(Buffer("d")).asString() == "12345678901234567890");
         TEST(redis.GET(Buffer("e")).getDataVector() == temp);
         return true;
-    } catch (const RedisException& e) {
+    } catch (const Exception& e) {
         std::cout << "RedisException:" << __LINE__ << ":" << __FUNCTION__ << ":" << e.what() << "\n";
         return false;
     }
@@ -51,7 +51,7 @@ bool test_INCR_INCRBY()
         TEST(redis.INCRBY(key, 100000) == 100000);
         TEST(redis.INCR(key) == 100000 + 1);
         return true;
-    } catch (const RedisException& e) {
+    } catch (const Exception& e) {
         std::cout << "RedisException:" << __LINE__ << ":" << __FUNCTION__ << ":" << e.what() << "\n";
         return false;
     }

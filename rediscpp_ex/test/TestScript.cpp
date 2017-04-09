@@ -42,7 +42,7 @@ bool test_LOAD()
         pout(arr);
         std::cout << "\n";
         return true;
-    } catch (const RedisException& e) {
+    } catch (const Exception& e) {
         std::cout << "RedisException:" << __LINE__ << ":" << __FUNCTION__ << ":" << e.what() << "\n";
         return false;
     }

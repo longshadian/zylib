@@ -30,7 +30,7 @@ bool test_Set()
         TEST(redis.SISMEMBER(key, Buffer("a")));
         TEST(!redis.SISMEMBER(key, Buffer("aa")));
         return true;
-    } catch (const RedisException& e) {
+    } catch (const Exception& e) {
         std::cout << "RedisException:" << __LINE__ << ":" << __FUNCTION__ << ":" << e.what() << "\n";
         return false;
     }

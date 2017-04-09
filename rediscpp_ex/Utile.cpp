@@ -61,7 +61,7 @@ Buffer replyToRedisBuffer(const void* p)
 std::vector<std::pair<Buffer, Buffer>> replyArrayToPair(const redisReply* reply, size_t count)
 {
     if (count % 2 != 0) {
-        throw RedisException("replyArrayToPair count error");
+        throw Exception("replyArrayToPair count error");
     }
 
     std::vector<std::pair<Buffer, Buffer>> ret;
@@ -69,7 +69,7 @@ std::vector<std::pair<Buffer, Buffer>> replyArrayToPair(const redisReply* reply,
         Buffer key = replyToRedisBuffer(reply->element[i]);
         ++i;
         if (i >= count) {
-            throw RedisException("Array count error");
+            throw Exception("Array count error");
         }
         Buffer value = replyToRedisBuffer(reply->element[i]);
         ret.emplace_back(std::make_pair(key, value));

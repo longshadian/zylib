@@ -34,7 +34,7 @@ bool test()
             std::cout << val.first.asString() << " " << val.second.asString() << "\n";
         }
         return true;
-    } catch (const RedisException& e) {
+    } catch (const Exception& e) {
         std::cout << "RedisException:" << __LINE__ << ":" << __FUNCTION__ << ":" << e.what() << "\n";
         return false;
     }

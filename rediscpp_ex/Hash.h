@@ -1,6 +1,6 @@
 #pragma once
 
-#include "RedisType.h"
+#include "Type.h"
 
 namespace rediscpp {
 
