@@ -7,8 +7,8 @@
 
 namespace rediscpp {
 
-Hash::Hash(Connection& context)
-    : m_conn(context)
+Hash::Hash(Connection& conn)
+    : m_conn(conn)
 {
 }
 
@@ -21,7 +21,7 @@ std::vector<std::pair<Buffer, Buffer>> Hash::HGETALL(Buffer key)
     };
     redisReply* r = reply.getRedisReply();
     if (!r)
-        throw ReplyNullException("HGETALL reply null");
+        throw ConnectionException("HGETALL reply null");
     if (r->type == REDIS_REPLY_NIL)
         return {};
     if (r->type == REDIS_REPLY_ERROR)
@@ -41,7 +41,7 @@ long long Hash::HINCRBY(Buffer key, Buffer mkey, long long increment)
     };
     redisReply* r = reply.getRedisReply();
     if (!r)
-        throw ReplyNullException("HINCRBY reply null");
+        throw ConnectionException("HINCRBY reply null");
     if (r->type == REDIS_REPLY_ERROR)
         throw ReplyErrorException(r->str);
     if (r->type != REDIS_REPLY_INTEGER)
@@ -59,7 +59,7 @@ long long Hash::HSET(Buffer key, Buffer mkey, Buffer value)
     };
     redisReply* r = reply.getRedisReply();
     if (!r)
-        throw ReplyNullException("HSET reply null");
+        throw ConnectionException("HSET reply null");
     if (r->type == REDIS_REPLY_ERROR)
         throw ReplyErrorException(r->str);
     if (r->type != REDIS_REPLY_INTEGER)
@@ -77,7 +77,7 @@ Buffer Hash::HGET(Buffer key, Buffer mkey)
     };
     redisReply* r = reply.getRedisReply();
     if (!r)
-        throw ReplyNullException("HGET reply null");
+        throw ConnectionException("HGET reply null");
     if (r->type == REDIS_REPLY_NIL)
         return {};
     if (r->type == REDIS_REPLY_ERROR)
@@ -96,7 +96,7 @@ long long Hash::HDEL(Buffer key, Buffer mkey)
     };
     redisReply* r = reply.getRedisReply();
     if (!r)
-        throw ReplyNullException("HDEL reply null");
+        throw ConnectionException("HDEL reply null");
     if (r->type == REDIS_REPLY_ERROR)
         throw ReplyErrorException(r->str);
     if (r->type != REDIS_REPLY_INTEGER)

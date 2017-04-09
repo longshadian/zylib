@@ -12,19 +12,19 @@
 
 namespace rediscpp {
 
-Script::Script(Connection& context)
-    : m_context(context)
+Script::Script(Connection& conn)
+    : m_conn(conn)
 {}
 
 Buffer Script::LOAD(Buffer cmd)
 {
     Reply reply{ reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.getRedisContext(),"SCRIPT LOAD %b", cmd.getData(), cmd.getLen())
+        ::redisCommand(m_conn.getRedisContext(),"SCRIPT LOAD %b", cmd.getData(), cmd.getLen())
         )
     };
     redisReply* r = reply.getRedisReply();
     if (!r)
-        throw ReplyNullException("SCRIPT LOAD reply null");
+        throw ConnectionException("SCRIPT LOAD reply null");
     if (r->type == REDIS_REPLY_ERROR) 
         throw ReplyErrorException(r->str);
     if (r->type != REDIS_REPLY_STRING)
@@ -87,11 +87,11 @@ BufferArray Script::evalInternal(std::string eval_cmd, Buffer cmd,
 
     Reply reply{ 
         reinterpret_cast<redisReply*>(
-            ::redisCommandArgv(m_context.getRedisContext(), static_cast<int>(argv.size()), argv.data(), arglen.data()))
+            ::redisCommandArgv(m_conn.getRedisContext(), static_cast<int>(argv.size()), argv.data(), arglen.data()))
     };
     redisReply* r = reply.getRedisReply();
     if (!r)
-        throw ReplyNullException("EVALSHA reply null");
+        throw ConnectionException("EVALSHA reply null");
     if (r->type == REDIS_REPLY_ERROR)
         throw ReplyErrorException(r->str);
     return luaToRedis(r);
@@ -100,15 +100,15 @@ BufferArray Script::evalInternal(std::string eval_cmd, Buffer cmd,
 BufferArray Script::luaToRedis(const redisReply* reply)
 {
     /*
-    Lua to Redis conversion table.
-    Lua number->Redis integer reply(the number is converted into an integer)
-    Lua string->Redis bulk reply
-    Lua table(array)->Redis multi bulk reply(truncated to the first nil inside the Lua array if any)
-    Lua table with a single ok field->Redis status reply
-    Lua table with a single err field->Redis error reply
-    Lua boolean false->Redis Nil bulk reply.
-    There is an additional Lua - to - Redis conversion rule that has no corresponding Redis to Lua conversion rule :
-    Lua boolean true->Redis integer reply with value of 1.
+     * Lua to Redis conversion table.
+     * Lua number->Redis integer reply(the number is converted into an integer)
+     * Lua string->Redis bulk reply
+     * Lua table(array)->Redis multi bulk reply(truncated to the first nil inside the Lua array if any)
+     * Lua table with a single ok field->Redis status reply
+     * Lua table with a single err field->Redis error reply
+     * Lua boolean false->Redis Nil bulk reply.
+     * There is an additional Lua - to - Redis conversion rule that has no corresponding Redis to Lua conversion rule :
+     * Lua boolean true->Redis integer reply with value of 1.
     */
 
     switch (reply->type) {

@@ -7,20 +7,20 @@
 
 namespace rediscpp {
 
-Set::Set(Connection& context)
-    : m_context(context)
+Set::Set(Connection& conn)
+    : m_conn(conn)
 {}
 
 long long Set::SADD(Buffer key, Buffer value)
 {
     Reply reply{ reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.getRedisContext(),"SADD %b %b", key.getData(), key.getLen(),
+        ::redisCommand(m_conn.getRedisContext(),"SADD %b %b", key.getData(), key.getLen(),
             value.getData(), value.getLen())
         )
     };
     redisReply* r = reply.getRedisReply();
     if (!r)
-        throw ReplyNullException("SADD reply null");
+        throw ConnectionException("SADD reply null");
     if (r->type == REDIS_REPLY_ERROR) 
         throw ReplyErrorException(r->str);
     if (r->type != REDIS_REPLY_INTEGER)
@@ -31,13 +31,13 @@ long long Set::SADD(Buffer key, Buffer value)
 bool Set::SISMEMBER(Buffer key, Buffer value)
 {
     Reply reply{ reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.getRedisContext(),"SISMEMBER %b %b", key.getData(), key.getLen(),
+        ::redisCommand(m_conn.getRedisContext(),"SISMEMBER %b %b", key.getData(), key.getLen(),
             value.getData(), value.getLen())
         )
     };
     redisReply* r = reply.getRedisReply();
     if (!r)
-        throw ReplyNullException("SISMEMBER reply null");
+        throw ConnectionException("SISMEMBER reply null");
     if (r->type == REDIS_REPLY_ERROR) 
         throw ReplyErrorException(r->str);
     if (r->type != REDIS_REPLY_INTEGER)

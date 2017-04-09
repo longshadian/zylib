@@ -25,7 +25,7 @@ OBJS += $(CURRENT_OBJS:%.cpp=%.o)
 OBJS = $(SRC_CPP:%.cpp=%.o)
 OBJS += $(SRC_CC:%.cc=%.o)
 
-OUTPUT = tstring tlist tzset tscript tset
+OUTPUT = tstring tlist tzset tscript tset tconn
 
 all:$(OBJS) $(OUTPUT)
 
@@ -41,6 +41,9 @@ tzset:$(OBJS) TestZset.cpp TestTool.cpp
     
 tscript:$(OBJS) TestScript.cpp TestTool.cpp
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@    
+	
+tconn:$(OBJS) TestConn.cpp TestTool.cpp
+	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@ 
         
 tset:$(OBJS) TestSet.cpp TestTool.cpp
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@    

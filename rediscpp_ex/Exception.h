@@ -6,6 +6,7 @@
 
 namespace rediscpp {
 
+//异常基类
 struct Exception : public std::runtime_error
 {
     Exception(const std::string& s);
@@ -13,16 +14,24 @@ struct Exception : public std::runtime_error
     virtual ~Exception() throw () {}
 };
 
-//redis服务端没有返回
-struct ReplyNullException : public Exception
+//redis服务返回异常
+struct ReplyException : public Exception
 {
-    ReplyNullException(const std::string& s);
-    ReplyNullException(const char* s);
-    virtual ~ReplyNullException() throw () {}
+    ReplyException(const std::string& s);
+    ReplyException(const char* s);
+    virtual ~ReplyException() throw () {}
+};
+
+//redis服务连接异常
+struct ConnectionException : public Exception
+{
+    ConnectionException(const std::string& s);
+    ConnectionException(const char* s);
+    virtual ~ConnectionException() throw () {}
 };
 
 //redis返回内容出错
-struct ReplyErrorException : public Exception
+struct ReplyErrorException : public ReplyException
 {
     ReplyErrorException(const std::string& s);
     ReplyErrorException(const char* str);
@@ -30,7 +39,7 @@ struct ReplyErrorException : public Exception
 };
 
 //redis返回类型出错
-struct ReplyTypeException : public Exception
+struct ReplyTypeException : public ReplyException
 {
     ReplyTypeException(const std::string& s);
     ReplyTypeException(const char* str);

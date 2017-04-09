@@ -18,7 +18,7 @@ Connection g_context;
 bool test_SET_GET()
 {
     try {
-        RedisString redis{g_context};
+        String redis{g_context};
         redis.SET(Buffer("a"), Buffer(12));
         redis.SET(Buffer("b"), Buffer(120000));
         redis.SET(Buffer("c"), Buffer(123.23));
@@ -45,7 +45,7 @@ bool test_SET_GET()
 bool test_INCR_INCRBY()
 {
     try {
-        RedisString redis{g_context};
+        String redis{g_context};
         Buffer key{"a"};
         redis.SET(key, Buffer(0));
         TEST(redis.INCRBY(key, 100000) == 100000);

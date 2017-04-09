@@ -6,11 +6,11 @@ namespace rediscpp {
 class Buffer;
 class Connection;
 
-class RedisString
+class String
 {
 public:
-    RedisString(Connection& context);
-    ~RedisString() = default;
+    String(Connection& conn);
+    ~String() = default;
 
     void SET(Buffer key, Buffer value);
     Buffer GET(Buffer key);
@@ -25,7 +25,7 @@ public:
     long long INCRBY(Buffer key, long long increment);
     Buffer INCRBYFLOAT(Buffer key, Buffer value);
 private:
-    Connection& m_context;
+    Connection& m_conn;
 };
 
 }

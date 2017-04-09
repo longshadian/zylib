@@ -19,7 +19,7 @@ bool test()
         Buffer key{"a"};
         DEL(g_context, key);
 
-        RedisList redis{g_context};
+        List redis{g_context};
         TEST(redis.RPUSH(key, Buffer("b")) == 1);
         TEST(redis.RPUSH(key, Buffer(123)) == 2);
         TEST(redis.LPUSH(key, Buffer(12.98)) == 3);

@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <chrono>
+#include <thread>
 
 #include "TestTool.h"
 
@@ -17,24 +18,30 @@ Connection g_context;
 
 bool test()
 {
+    Buffer key{ "a" };
+    String redis{ g_context };
     try {
-        Buffer key{ "a" };
-        DEL(g_context, key);
+        std::cout << redis.GET(key).asInt() << "\n";
 
-        Zset redis{ g_context };
-        TEST(redis.ZADD(key, 100, Buffer("b")) == 100);
-        TEST(redis.ZADD(key, 100, Buffer("c")) == 100);
-        TEST(redis.ZADD(key, 101, Buffer("c")) == 101);
-
-        auto arr = redis.ZRANGE(key, 0, -1);
-        pout(arr);
-
-        auto arr_pair = redis.ZRANGE_WITHSCORES(key, 0, -1);
-        for (const auto& val : arr_pair) {
-            std::cout << val.first.asString() << " " << val.second.asString() << "\n";
+        int n = 10;
+        while (--n) {
+            std::cout << n << "\n";
+            std::this_thread::sleep_for(std::chrono::seconds(1));
         }
+
+        std::cout << redis.GET(key).asInt() << "\n";
         return true;
-    } catch (const Exception& e) {
+    } catch (const ConnectionException& e) {
+        std::cout << "rediscpp ConnectionException:" << e.what() 
+            << " context_err:" << g_context.getRedisContext()->err 
+            << " " << g_context.getRedisContext()->errstr << "\n";
+        if (g_context.reconnection()) {
+            std::cout << "reconnection success\n";
+            std::cout << redis.GET(key).asInt() << "\n";
+        } else {
+            std::cout << "reconnection fail\n";
+        }
+    } catch (const ReplyException& e) {
         std::cout << "RedisException:" << __LINE__ << ":" << __FUNCTION__ << ":" << e.what() << "\n";
         return false;
     }

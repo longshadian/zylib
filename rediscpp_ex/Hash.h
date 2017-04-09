@@ -10,7 +10,7 @@ class Buffer;
 class Hash
 {
 public:
-    Hash(Connection& context);
+    Hash(Connection& conn);
     ~Hash() = default;
 
     //让所有的字段和值在指定的键存储在一个哈希

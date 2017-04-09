@@ -14,11 +14,8 @@ Connection redisConnect(std::string ip, int port)
     return Connection{::redisConnect(ip.c_str(), port)};
 }
 
-Connection redisConnectWithTimeout(std::string ip, int port, int seconds, int microseconds)
+Connection redisConnectWithTimeout(std::string ip, int port, timeval tv)
 {
-    struct timeval tv;
-    tv.tv_sec = seconds;
-    tv.tv_usec = microseconds;
     return Connection{::redisConnectWithTimeout(ip.c_str(), port, tv)};
 }
 
@@ -89,30 +86,30 @@ std::vector<Buffer> replyArrayToBuffer(const redisReply* reply, size_t count)
     return ret;
 }
 
-long long DEL(Connection& context, std::string key)
+long long DEL(Connection& conn, std::string key)
 {
     std::vector<std::string> temp;
     temp.emplace_back(std::move(key));
-    return DEL(context, temp);
+    return DEL(conn, temp);
 }
 
-long long DEL(Connection& context, std::vector<std::string> keys)
+long long DEL(Connection& conn, std::vector<std::string> keys)
 {
     std::vector<Buffer> temp;
     for (const auto& it : keys) {
         temp.emplace_back(Buffer(it));
     }
-    return DEL(context, temp);
+    return DEL(conn, temp);
 }
 
-long long DEL(Connection& context, Buffer key)
+long long DEL(Connection& conn, Buffer key)
 {
     std::vector<Buffer> temp;
     temp.emplace_back(std::move(key));
-    return DEL(context, std::move(temp));
+    return DEL(conn, std::move(temp));
 }
 
-long long DEL(Connection& context, std::vector<Buffer> keys)
+long long DEL(Connection& conn, std::vector<Buffer> keys)
 {
     if (keys.empty()) {
         return 0;
@@ -125,10 +122,10 @@ long long DEL(Connection& context, std::vector<Buffer> keys)
     }
 
     std::string cmd = ostm.str();
-    Reply reply{ reinterpret_cast<redisReply*>(::redisCommand(context.getRedisContext(), cmd.c_str()))};
+    Reply reply{ reinterpret_cast<redisReply*>(::redisCommand(conn.getRedisContext(), cmd.c_str()))};
     redisReply* r = reply.getRedisReply();
     if (!r)
-        throw ReplyNullException("DEL reply null");
+        throw ConnectionException("DEL reply null");
     if (r->type == REDIS_REPLY_ERROR)
         throw ReplyErrorException(r->str);
     if (r->type != REDIS_REPLY_INTEGER)
@@ -138,16 +135,16 @@ long long DEL(Connection& context, std::vector<Buffer> keys)
 
 std::string catFile(std::string path)
 {
-    std::string context;
+    std::string content;
     std::ifstream ifsm(path);
     if (!ifsm)
         return {};
     auto a = ifsm.get();
     while (a != EOF) {
-        context.push_back(static_cast<char>(a));
+        content.push_back(static_cast<char>(a));
         a = ifsm.get();
     }
-    return context;
+    return content;
 }
 
 }

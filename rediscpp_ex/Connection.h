@@ -44,6 +44,7 @@ public:
 public:
     operator bool() const;
     redisContext* getRedisContext();
+    bool reconnection();
 
 private:
     redisContext* m_redis_context;

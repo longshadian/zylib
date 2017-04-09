@@ -34,6 +34,7 @@ public:
     Buffer(Buffer&& rhs);
     Buffer& operator=(Buffer&& rhs);
 
+public:
     std::string asString() const;
 
     int asInt() const;
@@ -80,19 +81,22 @@ public:
         BUFFER = 0,
         ARRAY = 1,
     };
-private:
-    BufferArray(TYPE t);
-public:
+
     using array_type    = std::vector<BufferArray>;
     using iterator      = array_type::iterator;
     using const_iterator = array_type::const_iterator;      
 
+private:
+    BufferArray(TYPE t);
+
+public:
     ~BufferArray() = default;
     BufferArray(const BufferArray& rhs); 
     BufferArray& operator=(const BufferArray& rhs); 
     BufferArray(BufferArray&& rhs); 
     BufferArray& operator=(BufferArray&& rhs); 
 
+public:
     static BufferArray initBuffer();
     static BufferArray initArray();
 

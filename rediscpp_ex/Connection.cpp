@@ -76,4 +76,9 @@ redisContext* Connection::getRedisContext()
     return m_redis_context;
 }
 
+bool Connection::reconnection()
+{
+    return ::redisReconnect(m_redis_context) == REDIS_OK;
+}
+
 }

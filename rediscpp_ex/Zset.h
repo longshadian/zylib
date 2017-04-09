@@ -10,7 +10,7 @@ class Connection;
 class Zset
 {
 public:
-    Zset(Connection& context);
+    Zset(Connection& conn);
     ~Zset() = default;
 
     long long ZADD(Buffer key, long long score, Buffer value);
@@ -28,7 +28,7 @@ public:
     //在有序集合增加成员的分数
     long long ZINCRBY(Buffer key, long long increment, Buffer value);
 private:
-    Connection& m_context;
+    Connection& m_conn;
 };
 
 }

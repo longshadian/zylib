@@ -7,17 +7,17 @@
 
 namespace rediscpp {
 
-RedisList::RedisList(Connection& context)
-    : m_context(context)
+List::List(Connection& conn)
+    : m_conn(conn)
 {}
 
-long long RedisList::LLEN(Buffer key)
+long long List::LLEN(Buffer key)
 {
     Reply reply{reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.getRedisContext(),"LLEN %b", key.getData(), key.getLen()))};
+        ::redisCommand(m_conn.getRedisContext(),"LLEN %b", key.getData(), key.getLen()))};
     redisReply* r = reply.getRedisReply();
     if (!r)
-        throw ReplyNullException("LLEN reply null");
+        throw ConnectionException("LLEN reply null");
     if (r->type == REDIS_REPLY_ERROR)
         throw ReplyErrorException(r->str);
     if (r->type != REDIS_REPLY_INTEGER)
@@ -25,13 +25,13 @@ long long RedisList::LLEN(Buffer key)
     return r->integer;
 }
 
-Buffer RedisList::LPOP(Buffer key)
+Buffer List::LPOP(Buffer key)
 {
     Reply reply{reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.getRedisContext(),"LPOP %b", key.getData(), key.getLen()))};
+        ::redisCommand(m_conn.getRedisContext(),"LPOP %b", key.getData(), key.getLen()))};
     redisReply* r = reply.getRedisReply();
     if (!r)
-        throw ReplyNullException("LPOP reply null");
+        throw ConnectionException("LPOP reply null");
     if (r->type == REDIS_REPLY_NIL)
         return {};
     if (r->type == REDIS_REPLY_ERROR)
@@ -41,13 +41,13 @@ Buffer RedisList::LPOP(Buffer key)
     return replyToRedisBuffer(r);
 }
 
-Buffer RedisList::RPOP(Buffer key)
+Buffer List::RPOP(Buffer key)
 {
     Reply reply{reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.getRedisContext(),"RPOP %b", key.getData(), key.getLen()))};
+        ::redisCommand(m_conn.getRedisContext(),"RPOP %b", key.getData(), key.getLen()))};
     redisReply* r = reply.getRedisReply();
     if (!r)
-        throw ReplyNullException("RPOP reply null");
+        throw ConnectionException("RPOP reply null");
     if (r->type == REDIS_REPLY_NIL)
         return {};
     if (r->type == REDIS_REPLY_ERROR)
@@ -57,13 +57,13 @@ Buffer RedisList::RPOP(Buffer key)
     return replyToRedisBuffer(r);
 }
 
-std::vector<Buffer> RedisList::LRANGE(Buffer key, int start, int stop)
+std::vector<Buffer> List::LRANGE(Buffer key, int start, int stop)
 {
     Reply reply{reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.getRedisContext(), "LRANGE %b %d %d", key.getData(), key.getLen(), start, stop))};
+        ::redisCommand(m_conn.getRedisContext(), "LRANGE %b %d %d", key.getData(), key.getLen(), start, stop))};
     redisReply* r = reply.getRedisReply();
     if (!r)
-        throw ReplyNullException("LRANGE reply null");
+        throw ConnectionException("LRANGE reply null");
     if (r->type == REDIS_REPLY_NIL)
         return {};
     if (r->type == REDIS_REPLY_ERROR)
@@ -73,13 +73,13 @@ std::vector<Buffer> RedisList::LRANGE(Buffer key, int start, int stop)
     return replyArrayToBuffer(r, r->elements);
 }
 
-long long RedisList::LPUSH(Buffer key, Buffer val)
+long long List::LPUSH(Buffer key, Buffer val)
 {
     Reply reply{reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.getRedisContext(), "LPUSH %b %b", key.getData(), key.getLen(), val.getData(), val.getLen()))};
+        ::redisCommand(m_conn.getRedisContext(), "LPUSH %b %b", key.getData(), key.getLen(), val.getData(), val.getLen()))};
     redisReply* r = reply.getRedisReply();
     if (!r)
-        throw ReplyNullException("LPUSH reply null");
+        throw ConnectionException("LPUSH reply null");
     if (r->type == REDIS_REPLY_ERROR)
         throw ReplyErrorException(r->str);
     if (r->type != REDIS_REPLY_INTEGER)
@@ -87,14 +87,14 @@ long long RedisList::LPUSH(Buffer key, Buffer val)
     return r->integer;
 }
 
-long long RedisList::RPUSH(Buffer key, Buffer val)
+long long List::RPUSH(Buffer key, Buffer val)
 {
     Reply reply{reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.getRedisContext(), "RPUSH %b %b", key.getData(), key.getLen(),
+        ::redisCommand(m_conn.getRedisContext(), "RPUSH %b %b", key.getData(), key.getLen(),
             val.getData(), val.getLen()))};
     redisReply* r = reply.getRedisReply();
     if (!r)
-        throw ReplyNullException("RPUSH reply null");
+        throw ConnectionException("RPUSH reply null");
     if (r->type == REDIS_REPLY_ERROR)
         throw ReplyErrorException(r->str);
     if (r->type != REDIS_REPLY_INTEGER)

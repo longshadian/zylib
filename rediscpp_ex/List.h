@@ -8,11 +8,11 @@ namespace rediscpp {
 class Connection;
 class Buffer;
 
-class RedisList 
+class List 
 {
 public:
-    RedisList(Connection& context);
-    ~RedisList() = default;
+    List(Connection& conn);
+    ~List() = default;
 public:
 
     //获取列表的长度
@@ -29,7 +29,7 @@ public:
     long long LPUSH(Buffer key, Buffer val);
     long long RPUSH(Buffer key, Buffer val);
 private:
-    Connection& m_context;
+    Connection& m_conn;
 };
 
 }

@@ -7,20 +7,20 @@
 
 namespace rediscpp {
 
-Zset::Zset(Connection& context)
-    : m_context(context)
+Zset::Zset(Connection& conn)
+    : m_conn(conn)
 {}
 
 long long Zset::ZADD(Buffer key, long long score, Buffer value)
 {
     Reply reply{ reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.getRedisContext(),"ZADD %b %lld %b", key.getData(), key.getLen(),
+        ::redisCommand(m_conn.getRedisContext(),"ZADD %b %lld %b", key.getData(), key.getLen(),
             score, value.getData(), value.getLen())
         )
     };
     redisReply* r = reply.getRedisReply();
     if (!r)
-        throw ReplyNullException("ZADD reply null");
+        throw ConnectionException("ZADD reply null");
     if (r->type == REDIS_REPLY_ERROR) 
         throw ReplyErrorException(r->str);
     if (r->type != REDIS_REPLY_INTEGER)
@@ -31,11 +31,11 @@ long long Zset::ZADD(Buffer key, long long score, Buffer value)
 std::vector<Buffer> Zset::ZRANGE(Buffer key, int start, int end)
 {
     Reply reply{ reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.getRedisContext(), "ZRANGE %b %d %d", key.getData(), key.getLen(), start, end))
+        ::redisCommand(m_conn.getRedisContext(), "ZRANGE %b %d %d", key.getData(), key.getLen(), start, end))
     };
     redisReply* r = reply.getRedisReply();
     if (!r)
-        throw ReplyNullException("ZRANGE reply null");
+        throw ConnectionException("ZRANGE reply null");
     if (r->type == REDIS_REPLY_NIL)
         return {};
     if (r->type == REDIS_REPLY_ERROR)
@@ -49,11 +49,11 @@ std::vector<std::pair<Buffer, Buffer>>
 Zset::ZRANGE_WITHSCORES(Buffer key, int start, int end)
 {
     Reply reply{ reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.getRedisContext(), "ZRANGE %b %d %d WITHSCORES", key.getData(), key.getLen(), start, end))
+        ::redisCommand(m_conn.getRedisContext(), "ZRANGE %b %d %d WITHSCORES", key.getData(), key.getLen(), start, end))
     };
     redisReply* r = reply.getRedisReply();
     if (!r)
-        throw ReplyNullException("ZRANGE_WITHSCORES reply null");
+        throw ConnectionException("ZRANGE_WITHSCORES reply null");
     if (r->type == REDIS_REPLY_NIL)
         return {};
     if (r->type == REDIS_REPLY_ERROR)
@@ -66,11 +66,11 @@ Zset::ZRANGE_WITHSCORES(Buffer key, int start, int end)
 std::vector<Buffer> Zset::ZREVRANGE(Buffer key, int start, int end)
 {
     Reply reply{ reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.getRedisContext(), "ZREVRANGE %b %d %d", key.getData(), key.getLen(), start, end))
+        ::redisCommand(m_conn.getRedisContext(), "ZREVRANGE %b %d %d", key.getData(), key.getLen(), start, end))
     };
     redisReply* r = reply.getRedisReply();
     if (!r)
-        throw ReplyNullException("ZREVRANGE reply null");
+        throw ConnectionException("ZREVRANGE reply null");
     if (r->type == REDIS_REPLY_NIL)
         return {};
     if (r->type == REDIS_REPLY_ERROR)
@@ -84,11 +84,11 @@ std::vector<std::pair<Buffer, Buffer>>
 Zset::ZREVRANGE_WITHSCORES(Buffer key, int start, int end)
 {
     Reply reply{ reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.getRedisContext(), "ZREVRANGE %b %d %d WITHSCORES", key.getData(), key.getLen(), start, end))
+        ::redisCommand(m_conn.getRedisContext(), "ZREVRANGE %b %d %d WITHSCORES", key.getData(), key.getLen(), start, end))
     };
     redisReply* r = reply.getRedisReply();
     if (!r)
-        throw ReplyNullException("ZREVRANGE_WITHSCORES reply null");
+        throw ConnectionException("ZREVRANGE_WITHSCORES reply null");
     if (r->type == REDIS_REPLY_NIL)
         return{};
     if (r->type == REDIS_REPLY_ERROR)
@@ -102,12 +102,12 @@ Zset::ZREVRANGE_WITHSCORES(Buffer key, int start, int end)
 long long Zset::ZINCRBY(Buffer key, long long increment, Buffer value)
 {
     Reply reply{ reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.getRedisContext(), "ZINCRBY %b %lld %b", key.getData(), key.getLen(),
+        ::redisCommand(m_conn.getRedisContext(), "ZINCRBY %b %lld %b", key.getData(), key.getLen(),
             increment, value.getData(), value.getLen()))
     };
     redisReply* r = reply.getRedisReply();
     if (!r)
-        throw ReplyNullException("ZINCRBY reply null");
+        throw ConnectionException("ZINCRBY reply null");
     if (r->type == REDIS_REPLY_ERROR)
         throw ReplyErrorException(r->str);
     if (r->type != REDIS_REPLY_STRING)

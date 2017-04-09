@@ -12,35 +12,43 @@ Exception::Exception(const char* s)
 {
 }
 
-
-ReplyNullException::ReplyNullException(const std::string& s)
+ReplyException::ReplyException(const std::string& s)
     : Exception(s)
 {
 }
 
-ReplyNullException::ReplyNullException(const char* s)
+ReplyException::ReplyException(const char* s)
     : Exception(s)
 {
 }
 
+ConnectionException::ConnectionException(const std::string& s)
+    : Exception(s)
+{
+}
+
+ConnectionException::ConnectionException(const char* s)
+    : Exception(s)
+{
+}
 
 ReplyErrorException::ReplyErrorException(const std::string& s)
-    : Exception(s)
+    : ReplyException(s)
 {
 }
 
 ReplyErrorException::ReplyErrorException(const char* str)
-    : Exception(str)
+    : ReplyException(str)
 {
 }
 
 ReplyTypeException::ReplyTypeException(const char* str)
-    : Exception(str)
+    : ReplyException(str)
 {
 }
 
 ReplyTypeException::ReplyTypeException(const std::string& str)
-    : Exception(str)
+    : ReplyException(str)
 {
 }
 
