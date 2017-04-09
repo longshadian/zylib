@@ -11,6 +11,12 @@
     <Filter Include="mysqlcpp\test">
       <UniqueIdentifier>{60d6dc14-aa97-40d5-bbf4-9eed4d2e95e0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="rediscpp_ex">
+      <UniqueIdentifier>{3ebc11a4-1c6b-4b12-af70-332c442dc194}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rediscpp_ex\test">
+      <UniqueIdentifier>{87fbd9cd-f87f-4bfd-9f91-922a24af8b61}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\mysqlcpp\Assert.h">
@@ -55,6 +61,42 @@
     <ClInclude Include="..\..\mysqlcpp\test\AsyncTask.h">
       <Filter>mysqlcpp\test</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\rediscpp_ex\test\TestTool.h">
+      <Filter>rediscpp_ex\test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\rediscpp_ex\Connection.h">
+      <Filter>rediscpp_ex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\rediscpp_ex\Exception.h">
+      <Filter>rediscpp_ex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\rediscpp_ex\RedisCpp.h">
+      <Filter>rediscpp_ex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\rediscpp_ex\Script.h">
+      <Filter>rediscpp_ex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\rediscpp_ex\Set.h">
+      <Filter>rediscpp_ex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\rediscpp_ex\String.h">
+      <Filter>rediscpp_ex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\rediscpp_ex\Utile.h">
+      <Filter>rediscpp_ex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\rediscpp_ex\Zset.h">
+      <Filter>rediscpp_ex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\rediscpp_ex\Buffer.h">
+      <Filter>rediscpp_ex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\rediscpp_ex\Hash.h">
+      <Filter>rediscpp_ex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\rediscpp_ex\List.h">
+      <Filter>rediscpp_ex</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\mysqlcpp\Connection.cpp">
@@ -95,6 +137,57 @@
     </ClCompile>
     <ClCompile Include="..\..\mysqlcpp\test\TestDBService.cpp">
       <Filter>mysqlcpp\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\test\TestList.cpp">
+      <Filter>rediscpp_ex\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\test\TestScript.cpp">
+      <Filter>rediscpp_ex\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\test\TestSet.cpp">
+      <Filter>rediscpp_ex\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\test\TestString.cpp">
+      <Filter>rediscpp_ex\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\test\TestTool.cpp">
+      <Filter>rediscpp_ex\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\test\TestZset.cpp">
+      <Filter>rediscpp_ex\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\test\TestConn.cpp">
+      <Filter>rediscpp_ex\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\Connection.cpp">
+      <Filter>rediscpp_ex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\Exception.cpp">
+      <Filter>rediscpp_ex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\Script.cpp">
+      <Filter>rediscpp_ex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\Set.cpp">
+      <Filter>rediscpp_ex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\String.cpp">
+      <Filter>rediscpp_ex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\Utile.cpp">
+      <Filter>rediscpp_ex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\Zset.cpp">
+      <Filter>rediscpp_ex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\Buffer.cpp">
+      <Filter>rediscpp_ex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\Hash.cpp">
+      <Filter>rediscpp_ex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\List.cpp">
+      <Filter>rediscpp_ex</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
