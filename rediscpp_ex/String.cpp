@@ -1,202 +1,216 @@
-#include "RedisString.h"
+#include "String.h"
 
-#include "RedisException.h"
+#include "Exception.h"
 #include "Utile.h"
+#include "Buffer.h"
+#include "Connection.h"
 
 namespace rediscpp {
 
-RedisString::RedisString(ContextGuard& context)
+RedisString::RedisString(Connection& context)
     : m_context(context)
 {}
 
 void RedisString::SET(Buffer key, Buffer value)
 {
-    ReplyGuard reply{ reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.get(),"SET %b %b", key.getData(), key.getLen(), value.getData(), value.getLen())
+    Reply reply{ reinterpret_cast<redisReply*>(
+        ::redisCommand(m_context.getRedisContext(),"SET %b %b", key.getData(), key.getLen(), value.getData(), value.getLen())
         )
     };
-    if (!reply)
+    redisReply* r = reply.getRedisReply();
+    if (!r)
         throw ReplyNullException("SET reply null");
-    if (reply->type == REDIS_REPLY_ERROR)
-        throw ReplyErrorException(reply->str);
-    if (reply->type != REDIS_REPLY_STATUS)
+    if (r->type == REDIS_REPLY_ERROR)
+        throw ReplyErrorException(r->str);
+    if (r->type != REDIS_REPLY_STATUS)
         throw ReplyTypeException("SET type REDIS_REPLY_STATUS");
-    if (reply->str != std::string("OK"))
+    if (r->str != std::string("OK"))
         throw ReplyTypeException("SET type REDIS_REPLY_STATUS != OK");
 }
 
 Buffer RedisString::GET(Buffer key)
 {
-    ReplyGuard reply{ reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.get(),"GET %b", key.getData(), key.getLen())
+    Reply reply{ reinterpret_cast<redisReply*>(
+        ::redisCommand(m_context.getRedisContext(),"GET %b", key.getData(), key.getLen())
         )
     };
-    if (!reply)
+    redisReply* r = reply.getRedisReply();
+    if (!r)
         throw ReplyNullException("GET reply null");
-    if (reply->type == REDIS_REPLY_NIL)
+    if (r->type == REDIS_REPLY_NIL)
         return {};
-    if (reply->type == REDIS_REPLY_ERROR)
-        throw ReplyErrorException(reply->str);
-    if (reply->type != REDIS_REPLY_STRING)
+    if (r->type == REDIS_REPLY_ERROR)
+        throw ReplyErrorException(r->str);
+    if (r->type != REDIS_REPLY_STRING)
         throw ReplyTypeException("GET type REDIS_REPLY_STRING");
-    return replyToRedisBuffer(reply.get());
+    return replyToRedisBuffer(r);
 }
 
 void RedisString::GETRANGE(Buffer key, long long start, long long end)
 {
-    ReplyGuard reply{ reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.get(),"GETRANGE %b %lld %lld", key.getData(), key.getLen(), start, end)
+    Reply reply{ reinterpret_cast<redisReply*>(
+        ::redisCommand(m_context.getRedisContext(),"GETRANGE %b %lld %lld", key.getData(), key.getLen(), start, end)
         )
     };
-    if (!reply)
+    redisReply* r = reply.getRedisReply();
+    if (!r)
         throw ReplyNullException("GETRANGE reply null");
-    if (reply->type == REDIS_REPLY_ERROR)
-        throw ReplyErrorException(reply->str);
-    if (reply->type != REDIS_REPLY_STATUS)
+    if (r->type == REDIS_REPLY_ERROR)
+        throw ReplyErrorException(r->str);
+    if (r->type != REDIS_REPLY_STATUS)
         throw ReplyTypeException("GETRANGE type REDIS_REPLY_STATUS");
-    if (reply->str != std::string("OK"))
+    if (r->str != std::string("OK"))
         throw ReplyTypeException("GETRANGE type REDIS_REPLY_STATUS != OK");
 }
 
 Buffer RedisString::GETSET(Buffer key, Buffer value)
 {
-    ReplyGuard reply{ reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.get(),"GETSET %b %b", key.getData(), key.getLen(), value.getData(), value.getLen())
+    Reply reply{ reinterpret_cast<redisReply*>(
+        ::redisCommand(m_context.getRedisContext(),"GETSET %b %b", key.getData(), key.getLen(), value.getData(), value.getLen())
         )
     };
-    if (!reply)
+    redisReply* r = reply.getRedisReply();
+    if (!r)
         throw ReplyNullException("GETSET reply null");
-    if (reply->type == REDIS_REPLY_NIL)
+    if (r->type == REDIS_REPLY_NIL)
         return {};
-    if (reply->type == REDIS_REPLY_ERROR)
-        throw ReplyErrorException(reply->str);
-    if (reply->type != REDIS_REPLY_STRING)
+    if (r->type == REDIS_REPLY_ERROR)
+        throw ReplyErrorException(r->str);
+    if (r->type != REDIS_REPLY_STRING)
         throw ReplyTypeException("GETSET type REDIS_REPLY_STRING");
-    return replyToRedisBuffer(reply.get());
+    return replyToRedisBuffer(r);
 } 
 
 Buffer RedisString::SETEX(Buffer key, long long timeout, Buffer value)
 {
-    ReplyGuard reply{ reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.get(),"SETEX %b %lld %b", key.getData(), key.getLen(),
+    Reply reply{ reinterpret_cast<redisReply*>(
+        ::redisCommand(m_context.getRedisContext(),"SETEX %b %lld %b", key.getData(), key.getLen(),
             timeout, value.getData(), value.getLen())
         )
     };
-    if (!reply)
+    redisReply* r = reply.getRedisReply();
+    if (!r)
         throw ReplyNullException("SETEX reply null");
-    if (reply->type == REDIS_REPLY_NIL)
+    if (r->type == REDIS_REPLY_NIL)
         return {};
-    if (reply->type == REDIS_REPLY_ERROR)
-        throw ReplyErrorException(reply->str);
-    if (reply->type != REDIS_REPLY_STRING)
+    if (r->type == REDIS_REPLY_ERROR)
+        throw ReplyErrorException(r->str);
+    if (r->type != REDIS_REPLY_STRING)
         throw ReplyTypeException("SETEX type REDIS_REPLY_STRING");
-    return replyToRedisBuffer(reply.get());
+    return replyToRedisBuffer(r);
 }
 
 bool RedisString::SETNX(Buffer key, Buffer value)
 {
-    ReplyGuard reply{ reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.get(),"SETNX %b %b", key.getData(), key.getLen(), value.getData(), value.getLen())
+    Reply reply{ reinterpret_cast<redisReply*>(
+        ::redisCommand(m_context.getRedisContext(),"SETNX %b %b", key.getData(), key.getLen(), value.getData(), value.getLen())
         )
     };
-    if (!reply)
+    redisReply* r = reply.getRedisReply();
+    if (!r)
         throw ReplyNullException("SETNX reply null");
-    if (reply->type == REDIS_REPLY_ERROR)
-        throw ReplyErrorException(reply->str);
-    if (reply->type != REDIS_REPLY_INTEGER)
+    if (r->type == REDIS_REPLY_ERROR)
+        throw ReplyErrorException(r->str);
+    if (r->type != REDIS_REPLY_INTEGER)
         throw ReplyTypeException("SETNX type REDIS_REPLY_INTEGER");
-    return reply->integer == 1;
+    return r->integer == 1;
 }
 
 Buffer RedisString::SETRANGE(Buffer key, long long offset, Buffer value)
 {
-    ReplyGuard reply{ reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.get(),"SETRANGE %b %lld %b", key.getData(), key.getLen(), offset, value.getData(), value.getLen())
+    Reply reply{ reinterpret_cast<redisReply*>(
+        ::redisCommand(m_context.getRedisContext(),"SETRANGE %b %lld %b", key.getData(), key.getLen(), offset, value.getData(), value.getLen())
         )
     };
-    if (!reply)
+    redisReply* r = reply.getRedisReply();
+    if (!r)
         throw ReplyNullException("SETRANGE reply null");
-    if (reply->type == REDIS_REPLY_ERROR)
-        throw ReplyErrorException(reply->str);
-    if (reply->type != REDIS_REPLY_STRING)
+    if (r->type == REDIS_REPLY_ERROR)
+        throw ReplyErrorException(r->str);
+    if (r->type != REDIS_REPLY_STRING)
         throw ReplyTypeException("SETRANGE type REDIS_REPLY_STRING");
-    return replyToRedisBuffer(reply.get());
+    return replyToRedisBuffer(r);
 }
 
 long long RedisString::STRLEN(Buffer key)
 {
-    ReplyGuard reply{ reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.get(),"STRLEN %b", key.getData(), key.getLen())
+    Reply reply{ reinterpret_cast<redisReply*>(
+        ::redisCommand(m_context.getRedisContext(),"STRLEN %b", key.getData(), key.getLen())
         )
     };
-    if (!reply)
+    redisReply* r = reply.getRedisReply();
+    if (!r)
         throw ReplyNullException("STRLEN reply null");
-    if (reply->type == REDIS_REPLY_ERROR)
-        throw ReplyErrorException(reply->str);
-    if (reply->type != REDIS_REPLY_INTEGER)
+    if (r->type == REDIS_REPLY_ERROR)
+        throw ReplyErrorException(r->str);
+    if (r->type != REDIS_REPLY_INTEGER)
         throw ReplyTypeException("STRLEN type REDIS_REPLY_INTEGER");
-    return reply->integer;
+    return r->integer;
 }
 
 void RedisString::PSETEX(Buffer key, long long timeout, Buffer value)
 {
-    ReplyGuard reply{ reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.get(),"PSETEX %b %lld %b", key.getData(), key.getLen(), timeout, value.getData(), value.getLen())
+    Reply reply{ reinterpret_cast<redisReply*>(
+        ::redisCommand(m_context.getRedisContext(),"PSETEX %b %lld %b", key.getData(), key.getLen(), timeout, value.getData(), value.getLen())
         )
     };
-    if (!reply)
+    redisReply* r = reply.getRedisReply();
+    if (!r)
         throw ReplyNullException("PSETEX reply null");
-    if (reply->type == REDIS_REPLY_ERROR)
-        throw ReplyErrorException(reply->str);
-    if (reply->type != REDIS_REPLY_STATUS)
+    if (r->type == REDIS_REPLY_ERROR)
+        throw ReplyErrorException(r->str);
+    if (r->type != REDIS_REPLY_STATUS)
         throw ReplyTypeException("PSETEX type REDIS_REPLY_STATUS");
-    if (reply->str != std::string("OK"))
+    if (r->str != std::string("OK"))
         throw ReplyTypeException("PSETEX type REDIS_REPLY_STATUS != OK");
 }
 
 long long RedisString::INCR(Buffer key)
 {
-    ReplyGuard reply{ reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.get(),"INCR %b", key.getData(), key.getLen())
+    Reply reply{ reinterpret_cast<redisReply*>(
+        ::redisCommand(m_context.getRedisContext(),"INCR %b", key.getData(), key.getLen())
         )
     };
-    if (!reply)
+    redisReply* r = reply.getRedisReply();
+    if (!r)
         throw ReplyNullException("INCR reply null");
-    if (reply->type == REDIS_REPLY_ERROR)
-        throw ReplyErrorException(reply->str);
-    if (reply->type != REDIS_REPLY_INTEGER)
+    if (r->type == REDIS_REPLY_ERROR)
+        throw ReplyErrorException(r->str);
+    if (r->type != REDIS_REPLY_INTEGER)
         throw ReplyTypeException("INCR type REDIS_REPLY_INTEGER");
-    return reply->integer;
+    return r->integer;
 }
 
 long long RedisString::INCRBY(Buffer key, long long increment)
 {
-    ReplyGuard reply{ reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.get(),"INCRBY %b %lld", key.getData(), key.getLen(), increment)
+    Reply reply{ reinterpret_cast<redisReply*>(
+        ::redisCommand(m_context.getRedisContext(),"INCRBY %b %lld", key.getData(), key.getLen(), increment)
         )
     };
-    if (!reply)
+    redisReply* r = reply.getRedisReply();
+    if (!r)
         throw ReplyNullException("INCRBY reply null");
-    if (reply->type == REDIS_REPLY_ERROR)
-        throw ReplyErrorException(reply->str);
-    if (reply->type != REDIS_REPLY_INTEGER)
+    if (r->type == REDIS_REPLY_ERROR)
+        throw ReplyErrorException(r->str);
+    if (r->type != REDIS_REPLY_INTEGER)
         throw ReplyTypeException("INCRBY type REDIS_REPLY_INTEGER");
-    return reply->integer;
+    return r->integer;
 }
 
 Buffer RedisString::INCRBYFLOAT(Buffer key, Buffer value)
 {
-    ReplyGuard reply{ reinterpret_cast<redisReply*>(
-    ::redisCommand(m_context.get(),"INCRBYFLOAT %b %b", key.getData(), key.getLen(), value.getData(), value.getLen())
-    )
+    Reply reply{ reinterpret_cast<redisReply*>(
+        ::redisCommand(m_context.getRedisContext(),"INCRBYFLOAT %b %b", key.getData(), key.getLen(), value.getData(), value.getLen())
+        )
     };
-    if (!reply)
+    redisReply* r = reply.getRedisReply();
+    if (!r)
         throw ReplyNullException("INCRBYFLOAT reply null");
-    if (reply->type == REDIS_REPLY_ERROR)
-        throw ReplyErrorException(reply->str);
-    if (reply->type != REDIS_REPLY_STRING)
+    if (r->type == REDIS_REPLY_ERROR)
+        throw ReplyErrorException(r->str);
+    if (r->type != REDIS_REPLY_STRING)
         throw ReplyTypeException("INCRBYFLOAT type REDIS_REPLY_STRING");
-    return replyToRedisBuffer(reply.get());
+    return replyToRedisBuffer(r);
 }
 
 }

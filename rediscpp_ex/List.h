@@ -1,14 +1,19 @@
 #pragma once
 
-#include "RedisType.h"
+#include <vector>
+
 
 namespace rediscpp {
+
+class Connection;
+class Buffer;
 
 class RedisList 
 {
 public:
-    RedisList(ContextGuard& context);
+    RedisList(Connection& context);
     ~RedisList() = default;
+public:
 
     //获取列表的长度
     long long LLEN(Buffer key);
@@ -24,7 +29,7 @@ public:
     long long LPUSH(Buffer key, Buffer val);
     long long RPUSH(Buffer key, Buffer val);
 private:
-    ContextGuard& m_context;
+    Connection& m_context;
 };
 
 }

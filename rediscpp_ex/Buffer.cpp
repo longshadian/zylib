@@ -1,5 +1,6 @@
-#include "RedisType.h"
-#include "RedisException.h"
+#include "Buffer.h"
+
+#include "Exception.h"
 
 #include <cstring>
 

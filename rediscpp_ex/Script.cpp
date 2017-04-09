@@ -1,29 +1,35 @@
 #include "Script.h"
+
+#include <hiredis.h>
+
 #include <iostream>
 #include <cstring>
 
-#include "RedisException.h"
+#include "Exception.h"
 #include "Utile.h"
+#include "Connection.h"
+#include "Buffer.h"
 
 namespace rediscpp {
 
-Script::Script(ContextGuard& context)
+Script::Script(Connection& context)
     : m_context(context)
 {}
 
 Buffer Script::LOAD(Buffer cmd)
 {
-    ReplyGuard reply{ reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.get(),"SCRIPT LOAD %b", cmd.getData(), cmd.getLen())
+    Reply reply{ reinterpret_cast<redisReply*>(
+        ::redisCommand(m_context.getRedisContext(),"SCRIPT LOAD %b", cmd.getData(), cmd.getLen())
         )
     };
-    if (!reply)
+    redisReply* r = reply.getRedisReply();
+    if (!r)
         throw ReplyNullException("SCRIPT LOAD reply null");
-    if (reply->type == REDIS_REPLY_ERROR) 
-        throw ReplyErrorException(reply->str);
-    if (reply->type != REDIS_REPLY_STRING)
+    if (r->type == REDIS_REPLY_ERROR) 
+        throw ReplyErrorException(r->str);
+    if (r->type != REDIS_REPLY_STRING)
         throw ReplyTypeException("SCRIPT LOAD type REDIS_REPLY_STRING");
-    return replyToRedisBuffer(reply.get());
+    return replyToRedisBuffer(r);
 }
 
 BufferArray Script::EVAL(Buffer cmd, std::vector<Buffer> keys, std::vector<Buffer> values)
@@ -79,15 +85,16 @@ BufferArray Script::evalInternal(std::string eval_cmd, Buffer cmd,
         arglen.push_back(final_buffer[i].size());
     }
 
-    ReplyGuard reply{ 
+    Reply reply{ 
         reinterpret_cast<redisReply*>(
-            ::redisCommandArgv(m_context.get(), static_cast<int>(argv.size()), argv.data(), arglen.data()))
+            ::redisCommandArgv(m_context.getRedisContext(), static_cast<int>(argv.size()), argv.data(), arglen.data()))
     };
-    if (!reply)
+    redisReply* r = reply.getRedisReply();
+    if (!r)
         throw ReplyNullException("EVALSHA reply null");
-    if (reply->type == REDIS_REPLY_ERROR)
-        throw ReplyErrorException(reply->str);
-    return luaToRedis(reply.get());
+    if (r->type == REDIS_REPLY_ERROR)
+        throw ReplyErrorException(r->str);
+    return luaToRedis(r);
 }
 
 BufferArray Script::luaToRedis(const redisReply* reply)

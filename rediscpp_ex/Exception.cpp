@@ -1,4 +1,4 @@
-#include "RedisException.h"
+#include "Exception.h"
 
 namespace rediscpp {
 

@@ -2,30 +2,33 @@
 
 #include <sstream>
 #include <fstream>
-#include "RedisException.h"
+
+#include "Connection.h"
+#include "Buffer.h"
+#include "Exception.h"
 
 namespace rediscpp {
 
-ContextGuard redisConnect(std::string ip, int port)
+Connection redisConnect(std::string ip, int port)
 {
-    return ContextGuard(::redisConnect(ip.c_str(), port));
+    return Connection{::redisConnect(ip.c_str(), port)};
 }
 
-ContextGuard redisConnectWithTimeout(std::string ip, int port, int seconds, int microseconds)
+Connection redisConnectWithTimeout(std::string ip, int port, int seconds, int microseconds)
 {
     struct timeval tv;
     tv.tv_sec = seconds;
     tv.tv_usec = microseconds;
-    return ContextGuard(::redisConnectWithTimeout(ip.c_str(), port, tv));
+    return Connection{::redisConnectWithTimeout(ip.c_str(), port, tv)};
 }
 
-int redisGetReply(redisContext* context, ReplyGuard* guard)
+int redisGetReply(redisContext* context, Reply* guard)
 {
     redisReply* reply = nullptr;
     int ret = ::redisGetReply(context, (void**)&reply);
     if (ret != REDIS_OK)
         return ret;
-    *guard = ReplyGuard(reply);
+    *guard = std::move(Reply{reply});
     return ret;
 }
 
@@ -86,14 +89,14 @@ std::vector<Buffer> replyArrayToBuffer(const redisReply* reply, size_t count)
     return ret;
 }
 
-long long DEL(ContextGuard& context, std::string key)
+long long DEL(Connection& context, std::string key)
 {
     std::vector<std::string> temp;
     temp.emplace_back(std::move(key));
     return DEL(context, temp);
 }
 
-long long DEL(ContextGuard& context, std::vector<std::string> keys)
+long long DEL(Connection& context, std::vector<std::string> keys)
 {
     std::vector<Buffer> temp;
     for (const auto& it : keys) {
@@ -102,14 +105,14 @@ long long DEL(ContextGuard& context, std::vector<std::string> keys)
     return DEL(context, temp);
 }
 
-long long DEL(ContextGuard& context, Buffer key)
+long long DEL(Connection& context, Buffer key)
 {
     std::vector<Buffer> temp;
     temp.emplace_back(std::move(key));
     return DEL(context, std::move(temp));
 }
 
-long long DEL(ContextGuard& context, std::vector<Buffer> keys)
+long long DEL(Connection& context, std::vector<Buffer> keys)
 {
     if (keys.empty()) {
         return 0;
@@ -122,14 +125,15 @@ long long DEL(ContextGuard& context, std::vector<Buffer> keys)
     }
 
     std::string cmd = ostm.str();
-    ReplyGuard reply{ reinterpret_cast<redisReply*>(::redisCommand(context.get(), cmd.c_str()))};
-    if (!reply)
+    Reply reply{ reinterpret_cast<redisReply*>(::redisCommand(context.getRedisContext(), cmd.c_str()))};
+    redisReply* r = reply.getRedisReply();
+    if (!r)
         throw ReplyNullException("DEL reply null");
-    if (reply->type == REDIS_REPLY_ERROR)
-        throw ReplyErrorException(reply->str);
-    if (reply->type != REDIS_REPLY_INTEGER)
+    if (r->type == REDIS_REPLY_ERROR)
+        throw ReplyErrorException(r->str);
+    if (r->type != REDIS_REPLY_INTEGER)
         throw ReplyTypeException("DEL type REDIS_REPLY_INTEGER");
-    return reply->integer;
+    return r->integer;
 }
 
 std::string catFile(std::string path)

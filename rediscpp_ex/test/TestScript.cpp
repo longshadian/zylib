@@ -13,7 +13,7 @@ int port = 6379;
 
 using namespace rediscpp;
 
-ContextGuard g_context;
+Connection g_context;
 
 bool test_LOAD()
 {
@@ -24,17 +24,18 @@ bool test_LOAD()
         auto id_str = id.asString();
         std::cout << "id:" << id_str << "\n";
 
-        ReplyGuard reply{reinterpret_cast<redisReply*>(::redisCommand(g_context.get(), "evalsha %s %d", id_str.c_str(), 0))};
-        std::cout << "type:   " << reply->type << "\n";
-        std::cout << "integer:" << reply->integer << "\n";
-        std::cout << "len:    " << reply->len << "\n";
-        std::cout << "elements:" << reply->elements << "\n";
+        Reply reply{reinterpret_cast<redisReply*>(::redisCommand(g_context.getRedisContext(), "evalsha %s %d", id_str.c_str(), 0))};
+        redisReply* r = reply.getRedisReply();
+        std::cout << "type:   " << r->type << "\n";
+        std::cout << "integer:" << r->integer << "\n";
+        std::cout << "len:    " << r->len << "\n";
+        std::cout << "elements:" << r->elements << "\n";
 
-        if (reply->elements == 3) {
+        if (r->elements == 3) {
             std::cout << "----------\n"; 
-            std::cout << reply->element[0]->str << "\n";
-            std::cout << reply->element[1]->integer << "\n";
-            std::cout << reply->element[2]->type << "\n";
+            std::cout << r->element[0]->str << "\n";
+            std::cout << r->element[1]->integer << "\n";
+            std::cout << r->element[2]->type << "\n";
         }
 
         std::cout << "----------\n"; 

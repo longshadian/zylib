@@ -28,7 +28,6 @@ private:
     redisReply* m_redis_reply;
 };
 
-
 class Connection
 {
 public:
@@ -48,6 +47,6 @@ public:
 
 private:
     redisContext* m_redis_context;
-}
+};
 
 }

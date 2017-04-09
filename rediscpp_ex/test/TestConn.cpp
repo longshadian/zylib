@@ -13,7 +13,7 @@ int port = 6379;
 
 using namespace rediscpp;
 
-ContextGuard g_context;
+Connection g_context;
 
 bool test()
 {
@@ -21,7 +21,7 @@ bool test()
         Buffer key{ "a" };
         DEL(g_context, key);
 
-        RedisZset redis{ g_context };
+        Zset redis{ g_context };
         TEST(redis.ZADD(key, 100, Buffer("b")) == 100);
         TEST(redis.ZADD(key, 100, Buffer("c")) == 100);
         TEST(redis.ZADD(key, 101, Buffer("c")) == 101);

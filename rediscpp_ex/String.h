@@ -1,13 +1,15 @@
 #pragma once
 
-#include "RedisType.h"
 
 namespace rediscpp {
+
+class Buffer;
+class Connection;
 
 class RedisString
 {
 public:
-    RedisString(ContextGuard& context);
+    RedisString(Connection& context);
     ~RedisString() = default;
 
     void SET(Buffer key, Buffer value);
@@ -23,7 +25,7 @@ public:
     long long INCRBY(Buffer key, long long increment);
     Buffer INCRBYFLOAT(Buffer key, Buffer value);
 private:
-    ContextGuard& m_context;
+    Connection& m_context;
 };
 
 }

@@ -132,27 +132,4 @@ private:
     std::vector<BufferArray> m_array;
 };
 
-
-struct FreeReplyObject
-{
-    void operator()(redisReply* x)
-    {
-        if (x)
-            freeReplyObject(x);
-    }
-};
-
-struct RedisFree
-{
-    void operator()(redisContext* x)
-    {
-        if (x)
-            redisFree(x);
-    }
-};
-
-typedef std::unique_ptr<redisContext, RedisFree> ContextGuard;
-
-typedef std::unique_ptr<redisReply, FreeReplyObject> ReplyGuard;
-
 }

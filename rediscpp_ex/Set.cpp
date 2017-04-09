@@ -1,44 +1,48 @@
-#include "RedisSet.h"
+#include "Set.h"
 
-#include "RedisException.h"
+#include "Exception.h"
 #include "Utile.h"
+#include "Connection.h"
+#include "Buffer.h"
 
 namespace rediscpp {
 
-Set::Set(ContextGuard& context)
+Set::Set(Connection& context)
     : m_context(context)
 {}
 
 long long Set::SADD(Buffer key, Buffer value)
 {
-    ReplyGuard reply{ reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.get(),"SADD %b %b", key.getData(), key.getLen(),
+    Reply reply{ reinterpret_cast<redisReply*>(
+        ::redisCommand(m_context.getRedisContext(),"SADD %b %b", key.getData(), key.getLen(),
             value.getData(), value.getLen())
         )
     };
-    if (!reply)
+    redisReply* r = reply.getRedisReply();
+    if (!r)
         throw ReplyNullException("SADD reply null");
-    if (reply->type == REDIS_REPLY_ERROR) 
-        throw ReplyErrorException(reply->str);
-    if (reply->type != REDIS_REPLY_INTEGER)
+    if (r->type == REDIS_REPLY_ERROR) 
+        throw ReplyErrorException(r->str);
+    if (r->type != REDIS_REPLY_INTEGER)
         throw ReplyTypeException("SADD type REDIS_REPLY_INTEGER");
-    return reply->integer;
+    return r->integer;
 }
 
 bool Set::SISMEMBER(Buffer key, Buffer value)
 {
-    ReplyGuard reply{ reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.get(),"SISMEMBER %b %b", key.getData(), key.getLen(),
+    Reply reply{ reinterpret_cast<redisReply*>(
+        ::redisCommand(m_context.getRedisContext(),"SISMEMBER %b %b", key.getData(), key.getLen(),
             value.getData(), value.getLen())
         )
     };
-    if (!reply)
+    redisReply* r = reply.getRedisReply();
+    if (!r)
         throw ReplyNullException("SISMEMBER reply null");
-    if (reply->type == REDIS_REPLY_ERROR) 
-        throw ReplyErrorException(reply->str);
-    if (reply->type != REDIS_REPLY_INTEGER)
+    if (r->type == REDIS_REPLY_ERROR) 
+        throw ReplyErrorException(r->str);
+    if (r->type != REDIS_REPLY_INTEGER)
         throw ReplyTypeException("SISMEMBER type REDIS_REPLY_INTEGER");
-    return reply->integer == 1;
+    return r->integer == 1;
 }
 
 }

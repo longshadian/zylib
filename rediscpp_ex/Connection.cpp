@@ -58,7 +58,7 @@ Connection::Connection(Connection&& rhs)
     rhs.m_redis_context = nullptr;
 }
 
-Connection::Connection& Connection::operator=(Connection&& rhs)
+Connection& Connection::operator=(Connection&& rhs)
 {
     if (this != &rhs) {
         std::swap(m_redis_context, rhs.m_redis_context);

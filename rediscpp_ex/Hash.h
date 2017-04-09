@@ -1,14 +1,17 @@
 #pragma once
 
-#include "Type.h"
+#include <vector>
 
 namespace rediscpp {
 
-class RedisHash
+class Connection;
+class Buffer;
+
+class Hash
 {
 public:
-    RedisHash(ContextGuard& context);
-    ~RedisHash() = default;
+    Hash(Connection& context);
+    ~Hash() = default;
 
     //让所有的字段和值在指定的键存储在一个哈希
     std::vector<std::pair<Buffer, Buffer>> HGETALL(Buffer key);
@@ -24,7 +27,7 @@ public:
     //删除一个或多个哈希字段
     long long HDEL(Buffer key, Buffer mkey);
 private:
-    ContextGuard& m_context;
+    Connection& m_conn;
 };
 
 }

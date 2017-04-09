@@ -13,7 +13,7 @@ int port = 6379;
 
 using namespace rediscpp;
 
-ContextGuard g_context;
+Connection g_context;
 
 bool test_Set()
 {

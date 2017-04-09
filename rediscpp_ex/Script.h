@@ -1,13 +1,20 @@
 #pragma once
 
-#include "RedisType.h"
+#include <vector>
+#include <string>
+
+class redisReply;
 
 namespace rediscpp {
+
+class Connection;
+class Buffer;
+class BufferArray;
 
 class Script
 {
 public:
-    Script(ContextGuard& context);
+    Script(Connection& context);
     ~Script() = default;
 
     Buffer LOAD(Buffer cmd);
@@ -18,7 +25,7 @@ private:
     BufferArray evalInternal(std::string eval_cmd, Buffer cmd, std::vector<Buffer> keys, std::vector<Buffer> values);
     static BufferArray luaToRedis(const redisReply* reply);
 private:
-    ContextGuard& m_context;
+    Connection& m_context;
 };
 
 }

@@ -1,19 +1,21 @@
 #pragma once
 
-#include "RedisType.h"
 
 namespace rediscpp {
+
+class Buffer;
+class Connection;
 
 class Set
 {
 public:
-    Set(ContextGuard& context);
+    Set(Connection& context);
     ~Set() = default;
 
     long long SADD(Buffer key, Buffer value);
     bool SISMEMBER(Buffer key, Buffer value);
 private:
-    ContextGuard& m_context;
+    Connection& m_context;
 };
 
 }

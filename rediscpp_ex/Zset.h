@@ -1,14 +1,17 @@
 #pragma once
 
-#include "RedisType.h"
+#include <vector>
 
 namespace rediscpp {
 
-class RedisZset
+class Buffer;
+class Connection;
+
+class Zset
 {
 public:
-    RedisZset(ContextGuard& context);
-    ~RedisZset() = default;
+    Zset(Connection& context);
+    ~Zset() = default;
 
     long long ZADD(Buffer key, long long score, Buffer value);
 
@@ -25,7 +28,7 @@ public:
     //在有序集合增加成员的分数
     long long ZINCRBY(Buffer key, long long increment, Buffer value);
 private:
-    ContextGuard& m_context;
+    Connection& m_context;
 };
 
 }

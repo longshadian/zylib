@@ -1,100 +1,107 @@
-#include "RedisHash.h"
+#include "Hash.h"
 
-#include "RedisException.h"
+#include "Exception.h"
 #include "Utile.h"
+#include "Buffer.h"
+#include "Connection.h"
 
 namespace rediscpp {
 
-RedisHash::RedisHash(ContextGuard& context)
-    : m_context(context)
+Hash::Hash(Connection& context)
+    : m_conn(context)
 {
-
 }
 
-std::vector<std::pair<Buffer, Buffer>> RedisHash::HGETALL(Buffer key)
+
+std::vector<std::pair<Buffer, Buffer>> Hash::HGETALL(Buffer key)
 {
-    ReplyGuard reply{ reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.get(),"HGETALL %b", key.getData(), key.getLen())
+    Reply reply{ reinterpret_cast<redisReply*>(
+        ::redisCommand(m_conn.getRedisContext(),"HGETALL %b", key.getData(), key.getLen())
         )
     };
-    if (!reply)
+    redisReply* r = reply.getRedisReply();
+    if (!r)
         throw ReplyNullException("HGETALL reply null");
-    if (reply->type == REDIS_REPLY_NIL)
+    if (r->type == REDIS_REPLY_NIL)
         return {};
-    if (reply->type == REDIS_REPLY_ERROR)
-        throw ReplyErrorException(reply->str);
-    if (reply->type != REDIS_REPLY_ARRAY)
+    if (r->type == REDIS_REPLY_ERROR)
+        throw ReplyErrorException(r->str);
+    if (r->type != REDIS_REPLY_ARRAY)
         throw ReplyTypeException("HGETALL type REDIS_REPLY_ARRAY");
-    return replyArrayToPair(reply.get(), reply->elements);
+    return replyArrayToPair(r, r->elements);
 }
 
 //由给定数量增加的哈希字段的整数值
-long long RedisHash::HINCRBY(Buffer key, Buffer mkey, long long increment)
+long long Hash::HINCRBY(Buffer key, Buffer mkey, long long increment)
 {
-    ReplyGuard reply{ reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.get(),"HINCRBY %b %b %lld", key.getData(), key.getLen(),
+    Reply reply{ reinterpret_cast<redisReply*>(
+        ::redisCommand(m_conn.getRedisContext(),"HINCRBY %b %b %lld", key.getData(), key.getLen(),
             mkey.getData(), mkey.getLen(), increment)
         )
     };
-    if (!reply)
+    redisReply* r = reply.getRedisReply();
+    if (!r)
         throw ReplyNullException("HINCRBY reply null");
-    if (reply->type == REDIS_REPLY_ERROR)
-        throw ReplyErrorException(reply->str);
-    if (reply->type != REDIS_REPLY_INTEGER)
+    if (r->type == REDIS_REPLY_ERROR)
+        throw ReplyErrorException(r->str);
+    if (r->type != REDIS_REPLY_INTEGER)
         throw ReplyTypeException("HINCRBY type REDIS_REPLY_INTEGER");
-    return reply->integer;
+    return r->integer;
 }
 
 //设置哈希字段的字符串值, return 0 1
-long long RedisHash::HSET(Buffer key, Buffer mkey, Buffer value)
+long long Hash::HSET(Buffer key, Buffer mkey, Buffer value)
 {
-    ReplyGuard reply{ reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.get(),"HSET %b %b %b", key.getData(), key.getLen(),
+    Reply reply{ reinterpret_cast<redisReply*>(
+        ::redisCommand(m_conn.getRedisContext(),"HSET %b %b %b", key.getData(), key.getLen(),
             mkey.getData(), mkey.getLen(), value.getData(), value.getLen())
         )
     };
-    if (!reply)
+    redisReply* r = reply.getRedisReply();
+    if (!r)
         throw ReplyNullException("HSET reply null");
-    if (reply->type == REDIS_REPLY_ERROR)
-        throw ReplyErrorException(reply->str);
-    if (reply->type != REDIS_REPLY_INTEGER)
+    if (r->type == REDIS_REPLY_ERROR)
+        throw ReplyErrorException(r->str);
+    if (r->type != REDIS_REPLY_INTEGER)
         throw ReplyTypeException("HSET type REDIS_REPLY_INTEGER");
-    return reply->integer;
+    return r->integer;
 }
 
-Buffer RedisHash::HGET(Buffer key, Buffer mkey)
+Buffer Hash::HGET(Buffer key, Buffer mkey)
 {
-    ReplyGuard reply{ reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.get(), "HGET %b %b",
+    Reply reply{ reinterpret_cast<redisReply*>(
+        ::redisCommand(m_conn.getRedisContext(), "HGET %b %b",
             key.getData(), key.getLen(),
             mkey.getData(), mkey.getLen())
         )
     };
-    if (!reply)
+    redisReply* r = reply.getRedisReply();
+    if (!r)
         throw ReplyNullException("HGET reply null");
-    if (reply->type == REDIS_REPLY_NIL)
+    if (r->type == REDIS_REPLY_NIL)
         return {};
-    if (reply->type == REDIS_REPLY_ERROR)
-        throw ReplyErrorException(reply->str);
-    if (reply->type != REDIS_REPLY_STRING)
+    if (r->type == REDIS_REPLY_ERROR)
+        throw ReplyErrorException(r->str);
+    if (r->type != REDIS_REPLY_STRING)
         throw ReplyTypeException("HGET type REDIS_REPLY_STRING");
-    return replyToRedisBuffer(reply.get());
+    return replyToRedisBuffer(r);
 }
 
-long long RedisHash::HDEL(Buffer key, Buffer mkey)
+long long Hash::HDEL(Buffer key, Buffer mkey)
 {
-    ReplyGuard reply{ reinterpret_cast<redisReply*>(
-        ::redisCommand(m_context.get(),"HDEL %b %b", key.getData(), key.getLen(),
+    Reply reply{ reinterpret_cast<redisReply*>(
+        ::redisCommand(m_conn.getRedisContext(),"HDEL %b %b", key.getData(), key.getLen(),
             mkey.getData(), mkey.getLen())
         )
     };
-    if (!reply)
+    redisReply* r = reply.getRedisReply();
+    if (!r)
         throw ReplyNullException("HDEL reply null");
-    if (reply->type == REDIS_REPLY_ERROR)
-        throw ReplyErrorException(reply->str);
-    if (reply->type != REDIS_REPLY_INTEGER)
+    if (r->type == REDIS_REPLY_ERROR)
+        throw ReplyErrorException(r->str);
+    if (r->type != REDIS_REPLY_INTEGER)
         throw ReplyTypeException("HDEL type REDIS_REPLY_INTEGER");
-    return reply->integer;
+    return r->integer;
 }
 
 }
