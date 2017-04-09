@@ -1,6 +1,6 @@
 #pragma once
 
-#include <hiredis.h>
+#include "Connection.h"
 #include "RedisException.h"
 #include "RedisHash.h"
 #include "RedisList.h"
