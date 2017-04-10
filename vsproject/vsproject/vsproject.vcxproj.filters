@@ -17,6 +17,15 @@
     <Filter Include="rediscpp_ex\test">
       <UniqueIdentifier>{87fbd9cd-f87f-4bfd-9f91-922a24af8b61}</UniqueIdentifier>
     </Filter>
+    <Filter Include="test">
+      <UniqueIdentifier>{9a7a55bc-fd80-41d2-a431-cb5539c6328b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test\boost">
+      <UniqueIdentifier>{16abbf01-0801-4e5a-bdb6-07d303973a45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test\boost\log">
+      <UniqueIdentifier>{e7dc0a3d-5849-48d0-a073-0b8e71a9bd28}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\mysqlcpp\Assert.h">
@@ -96,6 +105,9 @@
     </ClInclude>
     <ClInclude Include="..\..\rediscpp_ex\List.h">
       <Filter>rediscpp_ex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\test\boost\log\Logger.h">
+      <Filter>test\boost\log</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -189,10 +201,40 @@
     <ClCompile Include="..\..\rediscpp_ex\List.cpp">
       <Filter>rediscpp_ex</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\test\boost\convert.cpp">
+      <Filter>test\boost</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\test\boost\format.cpp">
+      <Filter>test\boost</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\test\boost\md5.cpp">
+      <Filter>test\boost</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\test\boost\signal.cpp">
+      <Filter>test\boost</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\test\boost\stream_buff.cpp">
+      <Filter>test\boost</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\test\boost\uuid.cpp">
+      <Filter>test\boost</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\test\boost\log\Logger.cpp">
+      <Filter>test\boost\log</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\test\boost\log\main.cpp">
+      <Filter>test\boost\log</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\test\boost\log\mainEx.cc">
+      <Filter>test\boost\log</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\mysqlcpp\Makefile">
       <Filter>mysqlcpp</Filter>
+    </None>
+    <None Include="..\..\test\boost\log\Makefile">
+      <Filter>test\boost\log</Filter>
     </None>
   </ItemGroup>
 </Project>

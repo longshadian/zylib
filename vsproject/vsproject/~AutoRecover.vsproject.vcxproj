@@ -74,7 +74,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>Z:\git\zylib\mysqlcpp;Z:\git\zylib\rediscpp_ex;Z:\redis\hiredis-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\mysqlcpp;..\..\rediscpp_ex;..\..\..\vsinclude\hiredis-master;..\..\..\vsinclude\boost_1_63_0;..\..\..\vsinclude\mysql-connector-c-6.1.9-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -137,6 +137,7 @@
     <ClInclude Include="..\..\rediscpp_ex\test\TestTool.h" />
     <ClInclude Include="..\..\rediscpp_ex\Utile.h" />
     <ClInclude Include="..\..\rediscpp_ex\Zset.h" />
+    <ClInclude Include="..\..\test\boost\log\Logger.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\mysqlcpp\Connection.cpp" />
@@ -169,9 +170,19 @@
     <ClCompile Include="..\..\rediscpp_ex\test\TestZset.cpp" />
     <ClCompile Include="..\..\rediscpp_ex\Utile.cpp" />
     <ClCompile Include="..\..\rediscpp_ex\Zset.cpp" />
+    <ClCompile Include="..\..\test\boost\convert.cpp" />
+    <ClCompile Include="..\..\test\boost\format.cpp" />
+    <ClCompile Include="..\..\test\boost\log\Logger.cpp" />
+    <ClCompile Include="..\..\test\boost\log\main.cpp" />
+    <ClCompile Include="..\..\test\boost\log\mainEx.cc" />
+    <ClCompile Include="..\..\test\boost\md5.cpp" />
+    <ClCompile Include="..\..\test\boost\signal.cpp" />
+    <ClCompile Include="..\..\test\boost\stream_buff.cpp" />
+    <ClCompile Include="..\..\test\boost\uuid.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\mysqlcpp\Makefile" />
+    <None Include="..\..\test\boost\log\Makefile" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
