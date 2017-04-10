@@ -1,0 +1,5 @@
+Log file created at: 2016/10/14 15:24:38
+Running on machine: ubuntu
+Log line format: [IWEF]mmdd hh:mm:ss.uuuuuu threadid file:line] msg
+I1014 15:24:38.515207 50564 main.cpp:11] hello world
+W1014 15:24:38.515820 50564 main.cpp:12] fsn 123312.4
