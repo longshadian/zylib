@@ -327,30 +327,4 @@ size_t stringReplace(std::string* str, char src, char dest)
     return t;
 }
 
-/*
-int getUtf8Count(const char* szUtf8 )
-{
-	if(szUtf8== NULL || strlen( szUtf8) == 0 )
-		return 0;
-
-	int i =0;
-	int count = 0;
-	int len = strlen (szUtf8);
-	while (i < len) {
-		char chr = szUtf8[i];
-		count++;
-		i++;
-		if(i >= len) break;
-		if(chr & 0x80) {
-			chr <<= 1;
-			while (chr & 0x80) {
-				i++;
-				chr <<= 1;
-			}
-		}
-	}
-	return count;
-}
-*/
-
 }

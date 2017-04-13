@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<conf>
+    <redis>
+        <node id="game">
+            <file id="user_del_user">/conf/script/redis/game/user/del_user.lua</file>
+            <file id="user_get_tm">/conf/script/redis/game/user/get_tm.lua</file>
+            <file id="user_save_user">/conf/script/redis/game/user/save_user.lua</file>
+            <file id="user_try_remove">/conf/script/redis/game/user/try_remove.lua</file>
+            
+            <file id="account_bind_account">/conf/script/redis/game/account/bind_account.lua</file>
+            <file id="account_get_password_userid">/conf/script/redis/game/account/get_password_userid.lua</file>
+
+        </node>
+    </redis>
+    
+    <lua>
+        <!--
+        <file>/conf/script/lua/event_car.lua</file>
+        -->
+    </lua>
+</conf>
+
+
+

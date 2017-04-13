@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+    <server>
+        <path>/home/cgy/zjh/zjhgame</path>
+        <ip>127.0.0.1</ip>
+        <port>21010</port>
+        <client_timeout>60</client_timeout>
+        <max_connect>100000</max_connect>
+        <script>/script/server.xml</script>
+        <http_port>21019</http_port>
+    </server>
+    
+    <database>
+        <pool id="game" init_size="3" max_size="5">
+            <name>zjh_game</name>
+            <ip>127.0.0.1</ip>
+            <user>root</user>
+            <password>123456</password>
+            <port>3306</port>
+            <charset>utf8</charset>
+        </pool>
+        
+        <pool id="statis" init_size="2" max_size="5">
+            <name>zjh_statis</name>
+            <ip>127.0.0.1</ip>
+            <user>root</user>
+            <password>123456</password>
+            <port>3306</port>
+            <charset>utf8</charset>
+        </pool>
+    </database>
+    
+    <redis>
+        <node id="game">
+            <ip>127.0.0.1</ip>
+            <port>6710</port>
+        </node>
+    </redis>
+</xml>
+

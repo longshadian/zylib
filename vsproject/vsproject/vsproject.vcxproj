@@ -74,7 +74,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\mysqlcpp;..\..\rediscpp_ex;..\..\..\vsinclude\hiredis-master;..\..\..\vsinclude\boost_1_63_0;..\..\..\vsinclude\mysql-connector-c-6.1.9-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\mysqlcpp;..\..\rediscpp_ex;..\..\..\vsinclude\hiredis-master;..\..\..\vsinclude\boost_1_63_0;..\..\..\vsinclude\mysql-connector-c-6.1.9-src\include;..\..\game_server\database;..\..\game_server\world;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -111,6 +111,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\game_server\BoostDefine.h" />
+    <ClInclude Include="..\..\game_server\Config.h" />
+    <ClInclude Include="..\..\game_server\database\DataBaseService.h" />
+    <ClInclude Include="..\..\game_server\database\QueryResult.h" />
+    <ClInclude Include="..\..\game_server\GameAssert.h" />
+    <ClInclude Include="..\..\game_server\GameDefine.h" />
+    <ClInclude Include="..\..\game_server\GameTools.h" />
+    <ClInclude Include="..\..\game_server\GameType.h" />
+    <ClInclude Include="..\..\game_server\GlobalService.h" />
+    <ClInclude Include="..\..\game_server\Log.h" />
+    <ClInclude Include="..\..\game_server\ServerApp.h" />
+    <ClInclude Include="..\..\game_server\tinyxml2.h" />
+    <ClInclude Include="..\..\game_server\world\GameConnection.h" />
+    <ClInclude Include="..\..\game_server\world\GameMessage.h" />
+    <ClInclude Include="..\..\game_server\world\GameMessageDispatcher.h" />
+    <ClInclude Include="..\..\game_server\world\TimerService.h" />
+    <ClInclude Include="..\..\game_server\world\UseridService.h" />
+    <ClInclude Include="..\..\game_server\world\UUIDService.h" />
+    <ClInclude Include="..\..\game_server\world\World.h" />
+    <ClInclude Include="..\..\game_server\world\WorldDefine.h" />
+    <ClInclude Include="..\..\game_server\world\WorldSession.h" />
     <ClInclude Include="..\..\mysqlcpp\Assert.h" />
     <ClInclude Include="..\..\mysqlcpp\Connection.h" />
     <ClInclude Include="..\..\mysqlcpp\ConnectionPool.h" />
@@ -138,8 +159,37 @@
     <ClInclude Include="..\..\rediscpp_ex\Utile.h" />
     <ClInclude Include="..\..\rediscpp_ex\Zset.h" />
     <ClInclude Include="..\..\test\boost\log\Logger.h" />
+    <ClInclude Include="..\..\zylib\Algorithm.h" />
+    <ClInclude Include="..\..\zylib\AsyncTask.h" />
+    <ClInclude Include="..\..\zylib\Code.h" />
+    <ClInclude Include="..\..\zylib\Future.h" />
+    <ClInclude Include="..\..\zylib\Logger.h" />
+    <ClInclude Include="..\..\zylib\Queue.h" />
+    <ClInclude Include="..\..\zylib\Random.h" />
+    <ClInclude Include="..\..\zylib\RateGenerator.h" />
+    <ClInclude Include="..\..\zylib\Stack.h" />
+    <ClInclude Include="..\..\zylib\String.h" />
+    <ClInclude Include="..\..\zylib\ThreadPool.h" />
+    <ClInclude Include="..\..\zylib\Timer.h" />
+    <ClInclude Include="..\..\zylib\Tools.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\game_server\Config.cpp" />
+    <ClCompile Include="..\..\game_server\database\DataBaseService.cpp" />
+    <ClCompile Include="..\..\game_server\GameDefine.cpp" />
+    <ClCompile Include="..\..\game_server\GameTools.cpp" />
+    <ClCompile Include="..\..\game_server\GlobalService.cpp" />
+    <ClCompile Include="..\..\game_server\main.cpp" />
+    <ClCompile Include="..\..\game_server\ServerApp.cpp" />
+    <ClCompile Include="..\..\game_server\tinyxml2.cpp" />
+    <ClCompile Include="..\..\game_server\world\GameConnection.cpp" />
+    <ClCompile Include="..\..\game_server\world\GameMessage.cpp" />
+    <ClCompile Include="..\..\game_server\world\GameMessageDispatcher.cpp" />
+    <ClCompile Include="..\..\game_server\world\TimerService.cpp" />
+    <ClCompile Include="..\..\game_server\world\UseridService.cpp" />
+    <ClCompile Include="..\..\game_server\world\UUIDService.cpp" />
+    <ClCompile Include="..\..\game_server\world\World.cpp" />
+    <ClCompile Include="..\..\game_server\world\WorldSession.cpp" />
     <ClCompile Include="..\..\mysqlcpp\Connection.cpp" />
     <ClCompile Include="..\..\mysqlcpp\ConnectionPool.cpp" />
     <ClCompile Include="..\..\mysqlcpp\DateTime.cpp" />
@@ -179,6 +229,11 @@
     <ClCompile Include="..\..\test\boost\signal.cpp" />
     <ClCompile Include="..\..\test\boost\stream_buff.cpp" />
     <ClCompile Include="..\..\test\boost\uuid.cpp" />
+    <ClCompile Include="..\..\zylib\Code.cpp" />
+    <ClCompile Include="..\..\zylib\Logger.cpp" />
+    <ClCompile Include="..\..\zylib\Random.cpp" />
+    <ClCompile Include="..\..\zylib\String.cpp" />
+    <ClCompile Include="..\..\zylib\Tools.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\mysqlcpp\Makefile" />

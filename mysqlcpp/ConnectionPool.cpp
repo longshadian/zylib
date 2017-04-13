@@ -53,7 +53,7 @@ std::shared_ptr<Connection> ConnectionPool::getConn()
 			return slot->m_conn;
 		}
 
-		if (m_pool.size() >= m_pool_opt.m_thread_pool_max_threads) {
+		if (m_pool.size() >= m_pool_opt.m_thread_pool_max_size) {
 			FAKE_LOG_WARNING() << "too much connection! count:" << m_pool.size();
 			return nullptr;
 		}

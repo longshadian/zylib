@@ -17,8 +17,8 @@ bool isUtf8(const char* str);
 std::basic_string<char32_t> utfToWstring(const std::string& str);
 std::string wstringToUtf(const std::basic_string<char32_t>& str);
 
-//把utf8编码字符串截取最长max_byte字节。截取返回的字符串确保是合法utf8字符串
-//如果content不是utf8编码，结果未定义
+/// 截取返回的字符串确保是合法utf8字符串
+/// 如果content不是utf8编码，结果未定义
 std::string utf8SplitByte(const std::string& content, size_t max_byte);
 
 namespace detail {

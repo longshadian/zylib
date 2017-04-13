@@ -39,7 +39,7 @@ struct ConnectionPoolOpt
 	ConnectionPoolOpt& operator=(ConnectionPoolOpt&& rhs) = default;
 
 	size_t m_thread_pool_size{3};          //线程池初始线程个数
-	size_t m_thread_pool_max_threads{5};   //线程池最大线程个数
+	size_t m_thread_pool_max_size{5};   //线程池最大线程个数
 	size_t m_thread_pool_stall_limit{0};   //无线程可用时等待多久创建线程
 	size_t m_thread_pool_idle_timeout{0};  //多余空闲线程等待多久销毁(毫秒)
 };

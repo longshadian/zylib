@@ -26,6 +26,18 @@
     <Filter Include="test\boost\log">
       <UniqueIdentifier>{e7dc0a3d-5849-48d0-a073-0b8e71a9bd28}</UniqueIdentifier>
     </Filter>
+    <Filter Include="game_server">
+      <UniqueIdentifier>{4d291235-0df3-4474-a281-3eaafa848030}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zylib">
+      <UniqueIdentifier>{65477ba9-098d-4b8e-a46a-252c90456719}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game_server\database">
+      <UniqueIdentifier>{3601936a-d55e-4166-a641-78e70f75d5ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game_server\world">
+      <UniqueIdentifier>{060bc611-a509-4c58-92a5-99d9365206ec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\mysqlcpp\Assert.h">
@@ -108,6 +120,108 @@
     </ClInclude>
     <ClInclude Include="..\..\test\boost\log\Logger.h">
       <Filter>test\boost\log</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game_server\Config.h">
+      <Filter>game_server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game_server\GameAssert.h">
+      <Filter>game_server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game_server\GameDefine.h">
+      <Filter>game_server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game_server\GlobalService.h">
+      <Filter>game_server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game_server\ServerApp.h">
+      <Filter>game_server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\zylib\Algorithm.h">
+      <Filter>zylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\zylib\AsyncTask.h">
+      <Filter>zylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\zylib\Code.h">
+      <Filter>zylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\zylib\Future.h">
+      <Filter>zylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\zylib\Queue.h">
+      <Filter>zylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\zylib\Random.h">
+      <Filter>zylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\zylib\RateGenerator.h">
+      <Filter>zylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\zylib\Stack.h">
+      <Filter>zylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\zylib\ThreadPool.h">
+      <Filter>zylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\zylib\Timer.h">
+      <Filter>zylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\zylib\Tools.h">
+      <Filter>zylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game_server\Log.h">
+      <Filter>game_server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\zylib\Logger.h">
+      <Filter>zylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game_server\tinyxml2.h">
+      <Filter>zylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\zylib\String.h">
+      <Filter>zylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game_server\GameTools.h">
+      <Filter>game_server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game_server\BoostDefine.h">
+      <Filter>game_server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game_server\database\DataBaseService.h">
+      <Filter>game_server\database</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game_server\database\QueryResult.h">
+      <Filter>game_server\database</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game_server\world\GameConnection.h">
+      <Filter>game_server\world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game_server\world\GameMessage.h">
+      <Filter>game_server\world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game_server\world\GameMessageDispatcher.h">
+      <Filter>game_server\world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game_server\world\TimerService.h">
+      <Filter>game_server\world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game_server\world\UseridService.h">
+      <Filter>game_server\world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game_server\world\UUIDService.h">
+      <Filter>game_server\world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game_server\world\World.h">
+      <Filter>game_server\world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game_server\world\WorldDefine.h">
+      <Filter>game_server\world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game_server\world\WorldSession.h">
+      <Filter>game_server\world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game_server\GameType.h">
+      <Filter>game_server</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -227,6 +341,69 @@
     </ClCompile>
     <ClCompile Include="..\..\test\boost\log\mainEx.cc">
       <Filter>test\boost\log</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game_server\Config.cpp">
+      <Filter>game_server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game_server\GameDefine.cpp">
+      <Filter>game_server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game_server\GlobalService.cpp">
+      <Filter>game_server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game_server\main.cpp">
+      <Filter>game_server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game_server\ServerApp.cpp">
+      <Filter>game_server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\zylib\Code.cpp">
+      <Filter>zylib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\zylib\Random.cpp">
+      <Filter>zylib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\zylib\Tools.cpp">
+      <Filter>zylib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\zylib\Logger.cpp">
+      <Filter>zylib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game_server\tinyxml2.cpp">
+      <Filter>zylib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\zylib\String.cpp">
+      <Filter>zylib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game_server\GameTools.cpp">
+      <Filter>game_server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game_server\database\DataBaseService.cpp">
+      <Filter>game_server\database</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game_server\world\GameConnection.cpp">
+      <Filter>game_server\world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game_server\world\GameMessage.cpp">
+      <Filter>game_server\world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game_server\world\GameMessageDispatcher.cpp">
+      <Filter>game_server\world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game_server\world\TimerService.cpp">
+      <Filter>game_server\world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game_server\world\UseridService.cpp">
+      <Filter>game_server\world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game_server\world\UUIDService.cpp">
+      <Filter>game_server\world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game_server\world\World.cpp">
+      <Filter>game_server\world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game_server\world\WorldSession.cpp">
+      <Filter>game_server\world</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

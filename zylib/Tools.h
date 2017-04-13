@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <memory>
 #include <algorithm>
 #include <iterator>
 #include <sstream>
@@ -22,7 +23,6 @@ struct DateTime
 };
 
 template< typename T> struct TypeNull;
-
 
 bool isSameDay(time_t tTime1, time_t tTime2);
 bool isSameWeek(time_t tTime1,time_t tTime2);
@@ -68,11 +68,6 @@ void stringPrintfImpl(std::string& output, const char* format, va_list args);
 //×Ö·û´®Ìæ»»,×Ö·û´®strÖÐµÄsrc×Ö·ûÌæ»»³Édest,·µ»ØÌæ»»¸öÊý
 size_t stringReplace(std::string* str, char src, char dest);
 
-/*
-** ÅÐ¶ÏUTF8µÄ×Ö·û¸öÊý
-*/
-//int getUtf8Count(const char* szUtf8 );
-
 template <class RandomAccessIterator>
 void linear_random_shuffle(RandomAccessIterator first, RandomAccessIterator last)
 {
@@ -82,6 +77,13 @@ void linear_random_shuffle(RandomAccessIterator first, RandomAccessIterator last
     while (--n) {
         std::swap(first[n], first[rand() % (n + 1)]);
     }
+}
+
+template <typename T>
+inline
+std::unique_ptr<T> make_unique()
+{
+    return std::unique_ptr<T>{ new T() };
 }
 
 //////////////////////////////////////////////////////////////////////////
