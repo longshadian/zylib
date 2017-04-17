@@ -7,17 +7,17 @@ namespace mysqlcpp {
 
 enum LOG_LEVEL
 {
-	LOG_DEBUG	= 0,
-	LOG_INFO	= 1,
-	LOG_WARNING = 2,
-	LOG_ERROR	= 3,
+	DEBUG	= 0,
+	INFO	= 1,
+	WARNING = 2,
+	ERROR	= 3,
 	NUM_SEVERITY = 4,
 };
 
 extern const char* LOG_SEVERITY_NAMES[NUM_SEVERITY];
 
 
-void initLog(std::ostream* ostm, LOG_LEVEL lv = LOG_DEBUG);
+void initLog(std::ostream* ostm, LOG_LEVEL lv = DEBUG);
 
 struct FakeLogStream
 {
@@ -47,10 +47,7 @@ private:
     FakeLogStream   m_stream;
 };
 
-#define FAKE_LOG_DEBUG()	FakeLog(LOG_DEBUG,		__FILE__, __LINE__).stream()
-#define FAKE_LOG_INFO()		FakeLog(LOG_INFO,		__FILE__, __LINE__).stream()
-#define FAKE_LOG_WARNING()	FakeLog(LOG_WARNING,	__FILE__, __LINE__).stream()
-#define FAKE_LOG_ERROR()	FakeLog(LOG_ERROR,		__FILE__, __LINE__).stream()
+#define FAKE_LOG(type)	FakeLog(type,		__FILE__, __LINE__).stream()
 
 }
 

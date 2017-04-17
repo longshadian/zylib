@@ -2,13 +2,28 @@
 
 #include <iostream>
 
-#define FAKE_LOG_APPLOG
+namespace network {
 
-#ifdef FAKE_LOG_APPLOG
-#include "AppLog.h"
-#endif
+const char* LOG_SEVERITY_NAMES[NUM_SEVERITY] =
+{
+	"NETWORK_DEBUG  ",
+	"NETWORK_INFO   ",
+	"NETWORK_WARNING",
+	"NETWORK_ERROR  ",
+};
 
-FakeLog::FakeLog(int32_t lv, int line, const char* file, const char* function)
+
+std::ostream* g_ostm = nullptr;
+LOG_LEVEL g_level = NUM_SEVERITY;
+
+void initLog(std::ostream* ostm, LOG_LEVEL lv)
+{
+    if (!g_ostm)
+        g_ostm = ostm;
+    g_level = lv;
+}
+
+FakeLog::FakeLog(int lv, int line, const char* file, const char* function)
     : m_line(line)
     , m_file(file)
     , m_function(function)
@@ -17,12 +32,25 @@ FakeLog::FakeLog(int32_t lv, int line, const char* file, const char* function)
 {
 }
 
+FakeLog::FakeLog(int lv, const char* file, int line)
+	: m_line(line)
+	, m_file(file)
+	, m_function(nullptr)
+	, m_level(lv)
+	, m_stream()
+{
+}
+
 FakeLog::~FakeLog()
 {
-    auto s = m_stream.m_ostm.str();
-    if (s.empty())
+    if (!g_ostm || m_level < g_level)
         return;
-#ifdef FAKE_LOG_APPLOG
-    basicLog(LOG_DEBUG, "%d:%s:%s %s", m_line, m_file, m_function, s.c_str());
-#endif
+    auto content = m_stream.m_ostm.str();
+    if (!content.empty()) {
+        if (content[content.size() - 1] == '\n')
+            content.pop_back();
+    }
+	(*g_ostm) << '[' << LOG_SEVERITY_NAMES[m_level] << "] [" << m_file << ":" << m_line << "] " << content << "\n";
+}
+
 }

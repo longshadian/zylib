@@ -74,7 +74,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\mysqlcpp;..\..\rediscpp_ex;..\..\..\vsinclude\hiredis-master;..\..\..\vsinclude\boost_1_63_0;..\..\..\vsinclude\mysql-connector-c-6.1.9-src\include;..\..\game_server\database;..\..\game_server\world;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\;..\..\mysqlcpp;..\..\rediscpp_ex;..\..\..\vsinclude\hiredis-master;..\..\..\vsinclude\boost_1_63_0;..\..\..\vsinclude\mysql-connector-c-6.1.9-src\include;..\..\game_server\database;..\..\game_server\world;..\..\game_server\net;..\..\game_server;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -121,6 +121,8 @@
     <ClInclude Include="..\..\game_server\GameType.h" />
     <ClInclude Include="..\..\game_server\GlobalService.h" />
     <ClInclude Include="..\..\game_server\Log.h" />
+    <ClInclude Include="..\..\game_server\net\NetworkService.h" />
+    <ClInclude Include="..\..\game_server\net\ServerHandler.h" />
     <ClInclude Include="..\..\game_server\ServerApp.h" />
     <ClInclude Include="..\..\game_server\tinyxml2.h" />
     <ClInclude Include="..\..\game_server\world\GameConnection.h" />
@@ -146,6 +148,10 @@
     <ClInclude Include="..\..\mysqlcpp\Transaction.h" />
     <ClInclude Include="..\..\mysqlcpp\Types.h" />
     <ClInclude Include="..\..\mysqlcpp\Utils.h" />
+    <ClInclude Include="..\..\network\AsyncServer.h" />
+    <ClInclude Include="..\..\network\FakeLog.h" />
+    <ClInclude Include="..\..\network\NetworkType.h" />
+    <ClInclude Include="..\..\network\RWHandler.h" />
     <ClInclude Include="..\..\rediscpp_ex\Buffer.h" />
     <ClInclude Include="..\..\rediscpp_ex\Connection.h" />
     <ClInclude Include="..\..\rediscpp_ex\Exception.h" />
@@ -180,6 +186,8 @@
     <ClCompile Include="..\..\game_server\GameTools.cpp" />
     <ClCompile Include="..\..\game_server\GlobalService.cpp" />
     <ClCompile Include="..\..\game_server\main.cpp" />
+    <ClCompile Include="..\..\game_server\net\NetworkService.cpp" />
+    <ClCompile Include="..\..\game_server\net\ServerHandler.cpp" />
     <ClCompile Include="..\..\game_server\ServerApp.cpp" />
     <ClCompile Include="..\..\game_server\tinyxml2.cpp" />
     <ClCompile Include="..\..\game_server\world\GameConnection.cpp" />
@@ -203,6 +211,9 @@
     <ClCompile Include="..\..\mysqlcpp\test\TestSelect.cpp" />
     <ClCompile Include="..\..\mysqlcpp\Transaction.cpp" />
     <ClCompile Include="..\..\mysqlcpp\Utils.cpp" />
+    <ClCompile Include="..\..\network\AsyncServer.cpp" />
+    <ClCompile Include="..\..\network\FakeLog.cpp" />
+    <ClCompile Include="..\..\network\RWHandler.cpp" />
     <ClCompile Include="..\..\rediscpp_ex\Buffer.cpp" />
     <ClCompile Include="..\..\rediscpp_ex\Connection.cpp" />
     <ClCompile Include="..\..\rediscpp_ex\Exception.cpp" />
@@ -220,6 +231,7 @@
     <ClCompile Include="..\..\rediscpp_ex\test\TestZset.cpp" />
     <ClCompile Include="..\..\rediscpp_ex\Utile.cpp" />
     <ClCompile Include="..\..\rediscpp_ex\Zset.cpp" />
+    <ClCompile Include="..\..\test\boost\asio\blocking_tcp_echo_client.cpp" />
     <ClCompile Include="..\..\test\boost\convert.cpp" />
     <ClCompile Include="..\..\test\boost\format.cpp" />
     <ClCompile Include="..\..\test\boost\log\Logger.cpp" />

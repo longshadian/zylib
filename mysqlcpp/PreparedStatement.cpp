@@ -63,7 +63,7 @@ bool PreparedStatement::checkValidIndex(uint8 index)
 {
     ASSERT(index < m_param_count);
     if (m_param_set[index])
-		FAKE_LOG_WARNING() << "Prepared Statement trying to bind value on already bound index " << index;
+		FAKE_LOG(WARNING) << "Prepared Statement trying to bind value on already bound index " << index;
     return true;
 }
 

@@ -5,57 +5,75 @@
 #include <iostream>
 #include <list>
 
-#include <google/protobuf/message.h>
 #include <boost/asio.hpp>
 
 #include "NetworkType.h"
 
+namespace network {
+
+class RWHandler;
+class AsyncServer;
+
+class RWHandlerFactory
+{
+public:
+    RWHandlerFactory();
+    virtual ~RWHandlerFactory();
+
+    virtual std::shared_ptr<RWHandler> create(AsyncServer& server, boost::asio::ip::tcp::socket socket) = 0;
+};
+
+struct ConnectionInfo
+{
+    size_t m_timeout_seconds;
+    std::string m_ip;
+    std::string m_port;
+};
+
+using ConnectionHdl = std::weak_ptr<RWHandler>;
+
 class RWHandler : public std::enable_shared_from_this<RWHandler>
 {
+public:
+    using ConnectionAccept = std::function<void(ConnectionHdl, const ConnectionInfo)>;
+    using ConnectionClosed = std::function<void(ConnectionHdl)>;
+    using ConnectionTimeout = std::function<void(ConnectionHdl)>;
+
     enum class CLOSED_TYPE : int
     {
-        NORMAL_CLOSED   = 0,    //正常关闭
-        TIMEOUT_CLOSED  = 1,    //超时关闭
-        ACTIVITY_CLOSED = 2,    //主动关闭
+        NORMAL   = 0,    //正常关闭
+        TIMEOUT  = 1,    //超时关闭
+        ACTIVITY = 2,    //主动关闭
     };
 
-    static const int TIMEOUT_SECONDS = 0;   //never timeout
 public:
-    RWHandler(boost::asio::io_service& io_service, boost::asio::ip::tcp::socket socket, int timeout = TIMEOUT_SECONDS);
-    ~RWHandler() = default;
+    RWHandler(AsyncServer& async_server, boost::asio::ip::tcp::socket socket);
+    virtual ~RWHandler();
 
-    void start();
-    void sendMsg(int32_t msg_id, const ::google::protobuf::Message* msg);
+    virtual void start();
+    virtual void handlerAccept(ConnectionHdl hdl);
+    virtual void handlerClosed(ConnectionHdl hdl);
+    virtual void handlerTimeout(ConnectionHdl hdl);
+
+    void sendMsg(std::vector<uint8_t> msg);
     boost::asio::ip::tcp::socket& getSocket();
-    void shutdownSocket();
-
-    void setCallbackOnClosed(std::function<void(const RWHandlerPtr& conn)> f);
-private:
-    void onAccept();
-    void onReceivedMsg(MessagePtr msg);
-    void onClosed(CLOSED_TYPE type = CLOSED_TYPE::NORMAL_CLOSED);
+    boost::asio::io_service& getIoService();
+    void shutdown();
+    void onClosed(CLOSED_TYPE type = CLOSED_TYPE::NORMAL);
+protected:
+    ConnectionHdl getConnectionHdl();
     void closeSocket();
-
-    void appendMsg(std::vector<uint8_t> msg);
-
     void doWrite();
-
-    void doReadHead();
-    void doReadBody();
-
+    void doRead();
     std::shared_ptr<boost::asio::deadline_timer> setTimeoutTimer(int seconds);
     void timeoutCancel(std::shared_ptr<boost::asio::deadline_timer> timer);
-private:
-    boost::asio::io_service&            m_io_service;
-    boost::asio::ip::tcp::socket        m_socket;
-    std::function<void(const RWHandlerPtr& conn)>         m_callback_on_closed;
-    std::list<std::vector<uint8_t>>     m_write_buffer;
-
-    std::array<uint8_t, 8>              m_read_head;
-    std::vector<uint8_t>                m_read_body;
-    int32_t                             m_head_length;
-    uint32_t                            m_head_key;
-
-    int                                 m_timeout;
-    std::atomic<bool>                   m_is_closed;
+protected:
+    AsyncServer&                    m_server;
+    boost::asio::io_service&        m_io_service;
+    boost::asio::ip::tcp::socket    m_socket;
+    std::list<std::vector<uint8_t>> m_write_buffer;
+    std::atomic<bool>               m_is_closed;
+    ConnectionInfo                  m_conn_info;                      
 };
+
+}

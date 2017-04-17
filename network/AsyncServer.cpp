@@ -3,8 +3,13 @@
 #include "RWHandler.h"
 #include "FakeLog.h"
 
-AsyncServer::AsyncServer(boost::asio::io_service& io_service, short port, const Option& option)
-    : m_io_service(io_service)
+namespace network {
+
+AsyncServer::AsyncServer(boost::asio::io_service& io_service,
+    std::unique_ptr<RWHandlerFactory> handler_factory,
+    short port, const ServerOption& option)
+    : m_handler_factory(std::move(handler_factory))
+    , m_io_service(io_service)
     , m_acceptor(io_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port))
     , m_socket(io_service)
     , m_handlers()
@@ -14,7 +19,8 @@ AsyncServer::AsyncServer(boost::asio::io_service& io_service, short port, const 
 
 void AsyncServer::accept()
 {
-    m_acceptor.async_accept(m_socket, [this](const boost::system::error_code& ec)
+    m_acceptor.async_accept(m_socket,
+        [this](const boost::system::error_code& ec)
         {
             if (!ec) {
                 auto handler = createHandler();
@@ -22,10 +28,11 @@ void AsyncServer::accept()
                     m_handlers.insert(handler);
                     handler->start();
                 } else {
-                    FAKE_LOG_ERROR() << "too much connection:" << m_handlers.size();
+                    FAKE_LOG(WARNING) << "refuse accept: too much connection " << m_handlers.size() << "/" << m_option.m_max_connection;
                     refuseAccept(std::move(m_socket));
                 }
             } else {
+                FAKE_LOG(ERROR) << "accept error reason:" << ec.value() << " "  << ec.message();
                 handleAcceptError(ec);
                 return;
             }
@@ -41,7 +48,6 @@ void AsyncServer::stop()
 
 void AsyncServer::handleAcceptError(const boost::system::error_code& ec)
 {
-    FAKE_LOG_ERROR() << "ERROR error reason:" << ec.value() << " "  << ec.message();
     stopAccept();
 }
 
@@ -64,14 +70,23 @@ std::shared_ptr<RWHandler> AsyncServer::createHandler()
     if (m_option.m_max_connection != 0 && (int)m_handlers.size() >= m_option.m_max_connection) {
         return nullptr;
     }
-
-    auto handler = std::make_shared<RWHandler>(m_io_service, std::move(m_socket), m_option.m_timeout_seconds);
-    handler->setCallbackOnClosed([this](const RWHandlerPtr& conn) { stopHandler(conn); });
-    return handler;
+    return m_handler_factory->create(*this, std::move(m_socket));
 }
 
 void AsyncServer::stopHandler(const RWHandlerPtr& conn)
 {
     m_handlers.erase(conn);
-    FAKE_LOG_DEBUG() << "current connect count:" << m_handlers.size();
+    FAKE_LOG(DEBUG) << "current connect count:" << m_handlers.size();
+}
+
+boost::asio::io_service& AsyncServer::getIoService()
+{
+    return m_io_service;
+}
+
+const ServerOption& AsyncServer::getOption() const
+{
+    return m_option;
+}
+
 }

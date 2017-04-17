@@ -35,7 +35,7 @@ bool ConnectionPool::init()
 	for (size_t i = 0; i != m_pool_opt.m_thread_pool_size; ++i) {
 		auto conn = std::make_shared<Connection>(m_conn_opt);
 		if (conn->open() != 0) {
-			FAKE_LOG_ERROR() << "create mysql conn error";
+			FAKE_LOG(ERROR) << "create mysql conn error";
 			return false;
 		}
 		m_pool.push_back({conn, std::time(nullptr), false});
@@ -54,7 +54,7 @@ std::shared_ptr<Connection> ConnectionPool::getConn()
 		}
 
 		if (m_pool.size() >= m_pool_opt.m_thread_pool_max_size) {
-			FAKE_LOG_WARNING() << "too much connection! count:" << m_pool.size();
+			FAKE_LOG(WARNING) << "too much connection! count:" << m_pool.size();
 			return nullptr;
 		}
     }
@@ -62,7 +62,7 @@ std::shared_ptr<Connection> ConnectionPool::getConn()
 	//创建新数据库链接
 	auto conn = create();
 	if (!conn) {
-		FAKE_LOG_ERROR() << "can't create new mysql connection error!";
+		FAKE_LOG(ERROR) << "can't create new mysql connection error!";
 		return nullptr;
 	}
 	Slot new_slot{conn, std::time(nullptr), true};

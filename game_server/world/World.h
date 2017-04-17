@@ -43,9 +43,6 @@ public:
     void            shutdownSession(WorldSession* session);
 public:
     void            postTask(std::function<void()> task);
-    void            httpServerInfo(http::ResponsePtr response);
-	void	        httpOnlineCount(http::ResponsePtr response);
-    void            httpAccountLock(http::ResponsePtr response);
 private:
     void            run();
     void            afterRun();
@@ -55,8 +52,6 @@ private:
     void            processTask();
     void            destroyession(WorldSessionPtr session);
     WorldSessionPtr findSession(const WorldConnection& conn);
-    void            onlineInfo();
-	GameModulePtr   getAllModuleInfo();
 private:
     mutable std::mutex                            m_mtx;
     std::deque<GameMessageCBPtr>                  m_msg_cbs;        //网络库收到的协议包

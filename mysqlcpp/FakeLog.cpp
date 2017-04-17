@@ -6,7 +6,7 @@ namespace mysqlcpp {
 
 const char* LOG_SEVERITY_NAMES[NUM_SEVERITY] =
 {
-	"MYSQLCPP_DEBU   ",
+	"MYSQLCPP_DEBUG  ",
 	"MYSQLCPP_INFO	 ",
 	"MYSQLCPP_WARNING",
 	"MYSQLCPP_ERROR  ",

@@ -2,8 +2,9 @@
 
 #include <memory>
 
-class RWHandler;
-class Message;
+namespace network {
 
+class RWHandler;
 typedef std::shared_ptr<RWHandler>  RWHandlerPtr;
-typedef std::shared_ptr<Message>    MessagePtr;
+
+}

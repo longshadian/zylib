@@ -38,6 +38,10 @@ MYSQLCPP=../mysqlcpp
 SRC_CPP += $(wildcard $(MYSQLCPP)/*.cpp)
 INC += -I$(MYSQLCPP)
 
+NETWORK=../network
+SRC_CPP += $(wildcard $(NETWORK)/*.cpp)
+INC += -I$(NETWORK)
+
 
 ############## common dir ##############
 COMMON_REDISCPP=./common/rediscpp
@@ -55,37 +59,17 @@ INC += -I$(COMMON_SIMPLEWEB)
 PROTO=./proto
 INC += -I$(PROTO)
 
-WORLD=./world
-SRC_CPP += $(wildcard $(WORLD)/*.cpp)
-INC += -I$(WORLD)
-
-OBJ=./obj
-SRC_CPP += $(wildcard $(OBJ)/*.cpp)
-INC += -I$(OBJ)
-
-DDZ_HTTP=./http
-SRC_CPP += $(wildcard $(DDZ_HTTP)/*.cpp)
-INC += -I$(DDZ_HTTP)
+#WORLD=./world
+#SRC_CPP += $(wildcard $(WORLD)/*.cpp)
+#INC += -I$(WORLD)
 
 DATABASE=./database
 SRC_CPP += $(wildcard $(DATABASE)/*.cpp)
 INC += -I$(DATABASE)
 
-REDIS=./redis
-SRC_CPP += $(wildcard $(REDIS)/*.cpp)
-INC += -I$(REDIS)
-
-NETWORK=./network
-SRC_CPP += $(wildcard $(NETWORK)/*.cpp)
-INC += -I$(NETWORK)
-
-GLOBAL_CONF=./global_conf
-SRC_CPP += $(wildcard $(GLOBAL_CONF)/*.cpp)
-INC += -I$(GLOBAL_CONF)
-
-COMMAND=./command
-SRC_CPP += $(wildcard $(COMMAND)/*.cpp)
-INC += -I$(COMMAND)
+NET=./net
+SRC_CPP += $(wildcard $(NET)/*.cpp)
+INC += -I$(NET)
 
 ###################################################
 

@@ -38,6 +38,15 @@
     <Filter Include="game_server\world">
       <UniqueIdentifier>{060bc611-a509-4c58-92a5-99d9365206ec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="network">
+      <UniqueIdentifier>{dac64343-fcdc-4d68-8107-919228d4d365}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game_server\net">
+      <UniqueIdentifier>{e01ffca5-821a-415b-ad93-60fcc0dc53be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test\boost\asio">
+      <UniqueIdentifier>{ce242439-4736-4768-9d8c-984c94fa09f6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\mysqlcpp\Assert.h">
@@ -223,6 +232,24 @@
     <ClInclude Include="..\..\game_server\GameType.h">
       <Filter>game_server</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\game_server\net\NetworkService.h">
+      <Filter>game_server\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game_server\net\ServerHandler.h">
+      <Filter>game_server\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\network\AsyncServer.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\network\FakeLog.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\network\NetworkType.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\network\RWHandler.h">
+      <Filter>network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\mysqlcpp\Connection.cpp">
@@ -404,6 +431,24 @@
     </ClCompile>
     <ClCompile Include="..\..\game_server\world\WorldSession.cpp">
       <Filter>game_server\world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game_server\net\NetworkService.cpp">
+      <Filter>game_server\net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game_server\net\ServerHandler.cpp">
+      <Filter>game_server\net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\network\AsyncServer.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\network\FakeLog.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\network\RWHandler.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\test\boost\asio\blocking_tcp_echo_client.cpp">
+      <Filter>test\boost\asio</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

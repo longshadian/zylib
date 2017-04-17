@@ -13,6 +13,7 @@
 
 #include "Log.h"
 #include "Config.h"
+#include "GlobalService.h"
 
 void serverAbort()
 {
@@ -64,11 +65,16 @@ bool ServerApp::start()
 
     //警告:以下顺序变更时请小心
     //1.先获取服务器配置
-    config::instance().init();
     if (!config::instance().init()) {
         LOG(ERROR) << "ServerApp initConf";
         return false;
     }
+
+    if (!Global::init()) {
+        LOG(ERROR) << "global init fail";
+        return false;
+    }
+
     m_is_running = true;
 	LOG(INFO) << "every thing init ok";
     return true;

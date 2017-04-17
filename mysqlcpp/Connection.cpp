@@ -70,7 +70,7 @@ uint32 Connection::open()
 
 	m_mysql = ::mysql_init(nullptr);
     if (!m_mysql) {
-        FAKE_LOG_ERROR() << "Could not initialize Mysql connection to database " << m_conn_info.database;
+        FAKE_LOG(ERROR) << "Could not initialize Mysql connection to database " << m_conn_info.database;
         storeError(CR_UNKNOWN_ERROR, nullptr);
         return m_err_no;
     }
@@ -89,9 +89,9 @@ uint32 Connection::open()
     m_mysql = ::mysql_real_connect(m_mysql, host, user, passwd, db, m_conn_info.port, nullptr, 0);
 
     if (m_mysql) {
-		FAKE_LOG_INFO() << "MySQL client library:" << ::mysql_get_client_info();
-		FAKE_LOG_INFO() << "MySQL server ver: " << ::mysql_get_server_info(m_mysql);
-        FAKE_LOG_INFO() << "Connected to MySQL database at " << m_conn_info.host;
+		FAKE_LOG(INFO) << "MySQL client library:" << ::mysql_get_client_info();
+		FAKE_LOG(INFO) << "MySQL server ver: " << ::mysql_get_server_info(m_mysql);
+        FAKE_LOG(INFO) << "Connected to MySQL database at " << m_conn_info.host;
         ::mysql_autocommit(m_mysql, 1);
 
         // set connection properties to UTF8 to properly handle locales for different
@@ -101,7 +101,7 @@ uint32 Connection::open()
     } else {
         uint32 err_no = ::mysql_errno(m_mysql);
         const char* err_str = ::mysql_error(m_mysql);
-        FAKE_LOG_ERROR() << "Could not connect to MySQL database at " << m_conn_info.host.c_str() << " " << err_no << " : " << err_str;
+        FAKE_LOG(ERROR) << "Could not connect to MySQL database at " << m_conn_info.host.c_str() << " " << err_no << " : " << err_str;
         storeError(err_no, err_str);
         return m_err_no;
     }
@@ -116,7 +116,7 @@ bool Connection::execute(const char* sql)
     if (::mysql_query(m_mysql, sql)) {
         uint32 err_no = ::mysql_errno(m_mysql);
         const char* err_str = ::mysql_error(m_mysql);
-        FAKE_LOG_ERROR() << "mysql_query " << err_no << ":" << err_str;
+        FAKE_LOG(ERROR) << "mysql_query " << err_no << ":" << err_str;
         storeError(err_no, err_str);
 
         if (handleMySQLErrno(err_no))  // If it returns true, an error was handled successfully (i.e. reconnection)
@@ -138,7 +138,7 @@ bool Connection::execute(PreparedStatementUPtr& stmt)
     if (::mysql_stmt_bind_param(mysql_stmt, mysql_bind)) {
         uint32 err_no = ::mysql_errno(m_mysql);
         const char* err_str = ::mysql_stmt_error(mysql_stmt);
-        FAKE_LOG_ERROR() << "mysql_stmt_bind_param " << err_no << ":" << err_str;
+        FAKE_LOG(ERROR) << "mysql_stmt_bind_param " << err_no << ":" << err_str;
         storeError(err_no, err_str);
 
         if (handleMySQLErrno(err_no))  // If it returns true, an error was handled successfully (i.e. reconnection)
@@ -149,7 +149,7 @@ bool Connection::execute(PreparedStatementUPtr& stmt)
     if (::mysql_stmt_execute(mysql_stmt)) {
         uint32 err_no = ::mysql_errno(m_mysql);
         const char* err_str = ::mysql_stmt_error(mysql_stmt);
-        FAKE_LOG_ERROR() << "mysql_stmt_execute " << err_no << ":" << err_str;
+        FAKE_LOG(ERROR) << "mysql_stmt_execute " << err_no << ":" << err_str;
         storeError(err_no, err_str);
 
         if (handleMySQLErrno(err_no))  // If it returns true, an error was handled successfully (i.e. reconnection)
@@ -171,7 +171,7 @@ bool Connection::queryDetail(PreparedStatement& stmt)
     if (::mysql_stmt_bind_param(msql_stmt, msql_bind)) {
         uint32 err_no = ::mysql_errno(m_mysql);
         const char* err_str = ::mysql_stmt_error(msql_stmt);
-        FAKE_LOG_ERROR() << "mysql_stmt_bind_param " << err_no << ":" << err_str;
+        FAKE_LOG(ERROR) << "mysql_stmt_bind_param " << err_no << ":" << err_str;
         storeError(err_no, err_str);
 
         if (handleMySQLErrno(err_no))  // If it returns true, an error was handled successfully (i.e. reconnection)
@@ -182,7 +182,7 @@ bool Connection::queryDetail(PreparedStatement& stmt)
     if (::mysql_stmt_execute(msql_stmt)) {
         uint32 err_no = ::mysql_errno(m_mysql);
         const char* err_str = ::mysql_stmt_error(msql_stmt);
-        FAKE_LOG_ERROR() << "mysql_stmt_execute " << err_no << ":" << err_str; 
+        FAKE_LOG(ERROR) << "mysql_stmt_execute " << err_no << ":" << err_str; 
         storeError(err_no, err_str);
 
         if (handleMySQLErrno(err_no))  // If it returns true, an error was handled successfully (i.e. reconnection)
@@ -202,7 +202,7 @@ bool Connection::queryDetail(const char *sql)
     if (::mysql_query(m_mysql, sql)) {
         uint32 err_no = ::mysql_errno(m_mysql);
         const char* err_str = ::mysql_error(m_mysql);
-        FAKE_LOG_ERROR() << "mysql_query " << err_no << ":" << err_str;
+        FAKE_LOG(ERROR) << "mysql_query " << err_no << ":" << err_str;
         storeError(err_no, err_str);
 
         if (handleMySQLErrno(err_no))      // If it returns true, an error was handled successfully (i.e. reconnection)
@@ -233,7 +233,7 @@ PreparedStatementUPtr Connection::prepareStmt(const char* sql)
     if (!stmt) {
         uint32 err_no = ::mysql_errno(m_mysql);
         const char* err_str = ::mysql_error(m_mysql);
-        FAKE_LOG_ERROR() << "mysql_stmt_init " << err_no << ":" << err_str;
+        FAKE_LOG(ERROR) << "mysql_stmt_init " << err_no << ":" << err_str;
         storeError(err_no, err_str);
         return nullptr;
     }
@@ -242,7 +242,7 @@ PreparedStatementUPtr Connection::prepareStmt(const char* sql)
     if (ret != 0) {
         uint32 err_no = (uint32)ret;
         const char* err_str = ::mysql_stmt_error(stmt);
-        FAKE_LOG_ERROR() << "mysql_stmt_prepare " << ret << ":" << err_str;
+        FAKE_LOG(ERROR) << "mysql_stmt_prepare " << ret << ":" << err_str;
         storeError(err_no, err_str);
         ::mysql_stmt_close(stmt);
         return nullptr;
@@ -257,7 +257,7 @@ bool Connection::handleMySQLErrno(uint32 err_no)
     case CR_SERVER_LOST:
     case CR_INVALID_CONN_HANDLE:
     case CR_SERVER_LOST_EXTENDED: {
-        //FAKE_LOG_ERROR() << "handle mysql error: lost the connection to the MySQL server!";
+        //FAKE_LOG(ERROR) << "handle mysql error: lost the connection to the MySQL server!";
         /*no break*/
     }
     case CR_CONN_HOST_ERROR: {
@@ -266,20 +266,20 @@ bool Connection::handleMySQLErrno(uint32 err_no)
                 ::mysql_close(m_mysql);
                 m_mysql = nullptr;
             }
-            FAKE_LOG_INFO() << "try to reconnect to the MySQL server...";
+            FAKE_LOG(INFO) << "try to reconnect to the MySQL server...";
             const uint32 err_no_ex = open();
             if (err_no_ex == 0) {
-                FAKE_LOG_INFO() << "successfully reconnected to " << m_conn_info.database 
+                FAKE_LOG(INFO) << "successfully reconnected to " << m_conn_info.database 
                     << " " << m_conn_info.host << " " << m_conn_info.port;
                 return true;
             } else {
-                FAKE_LOG_ERROR() << "failed to reconnect to the MySQL server,terminating the server to prevent data corruption!";
+                FAKE_LOG(ERROR) << "failed to reconnect to the MySQL server,terminating the server to prevent data corruption!";
                 return false;
             }
         }
     }
     default:
-        FAKE_LOG_ERROR() <<  "Unhandled MySQL errno:" << err_no << " Unexpected behaviour possible.";
+        FAKE_LOG(ERROR) <<  "Unhandled MySQL errno:" << err_no << " Unexpected behaviour possible.";
         return false;
     }
 }

@@ -135,7 +135,7 @@ uint32 Field::sizeForType(MYSQL_FIELD* field)
         MYSQL_TYPE_SET:
         */
         default:
-            FAKE_LOG_ERROR() << "SQL::SizeForType(): invalid field type " << field->type;
+            FAKE_LOG(ERROR) << "SQL::SizeForType(): invalid field type " << field->type;
             return 0;
     }
 }
@@ -167,7 +167,7 @@ uint8 Field::getUInt8() const
 
     #ifdef TRINITY_DEBUG
     if (!isType(MYSQL_TYPE_TINY)) {
-        FAKE_LOG_ERROR() << "Warning: GetUInt8() on non-tinyint field " << m_meta.m_table_alias << " " << m_meta.m_alias << " " << m_meta.m_table_name << " " << m_meta.m_name << " " << m_meta.m_index << " " << m_meta.m_type;
+        FAKE_LOG(ERROR) << "Warning: GetUInt8() on non-tinyint field " << m_meta.m_table_alias << " " << m_meta.m_alias << " " << m_meta.m_table_name << " " << m_meta.m_name << " " << m_meta.m_index << " " << m_meta.m_type;
         return 0;
     }
     #endif
@@ -187,7 +187,7 @@ int8 Field::getInt8() const
 
     #ifdef TRINITY_DEBUG
     if (!isType(MYSQL_TYPE_TINY)) {
-        FAKE_LOG_ERROR() << "Warning: GetInt8() on non-tinyint field " << m_meta.m_table_alias << " " << m_meta.m_alias << " " << m_meta.m_table_name << " " << m_meta.m_name << " " << m_meta.m_index << " " << m_meta.m_type;
+        FAKE_LOG(ERROR) << "Warning: GetInt8() on non-tinyint field " << m_meta.m_table_alias << " " << m_meta.m_alias << " " << m_meta.m_table_name << " " << m_meta.m_name << " " << m_meta.m_index << " " << m_meta.m_type;
         return 0;
     }
     #endif
@@ -207,7 +207,7 @@ uint16 Field::getUInt16() const
 
     #ifdef TRINITY_DEBUG
     if (!isType(MYSQL_TYPE_SHORT) && !isType(MYSQL_TYPE_YEAR)) {
-        FAKE_LOG_ERROR() << "Warning: GetUInt16() on non-tinyint field " << m_meta.m_table_alias << " " << m_meta.m_alias << " " << m_meta.m_table_name << " " << m_meta.m_name << " " << m_meta.m_index << " " << m_meta.m_type;
+        FAKE_LOG(ERROR) << "Warning: GetUInt16() on non-tinyint field " << m_meta.m_table_alias << " " << m_meta.m_alias << " " << m_meta.m_table_name << " " << m_meta.m_name << " " << m_meta.m_index << " " << m_meta.m_type;
         return 0;
     }
     #endif
@@ -227,7 +227,7 @@ int16 Field::getInt16() const
 
     #ifdef TRINITY_DEBUG
     if (!isType(MYSQL_TYPE_SHORT) && !isType(MYSQL_TYPE_YEAR)) {
-        FAKE_LOG_ERROR() << "Warning: GetInt16() on non-tinyint field " << m_meta.m_table_alias << " " << m_meta.m_alias << " " << m_meta.m_table_name << " " << m_meta.m_name << " " << m_meta.m_index << " " << m_meta.m_type;
+        FAKE_LOG(ERROR) << "Warning: GetInt16() on non-tinyint field " << m_meta.m_table_alias << " " << m_meta.m_alias << " " << m_meta.m_table_name << " " << m_meta.m_name << " " << m_meta.m_index << " " << m_meta.m_type;
         return 0;
     }
     #endif
@@ -247,7 +247,7 @@ uint32 Field::getUInt32() const
 
     #ifdef TRINITY_DEBUG
     if (!isType(MYSQL_TYPE_INT24) && !isType(MYSQL_TYPE_LONG)) {
-        FAKE_LOG_ERROR() << "Warning: GetUInt32() on non-tinyint field " << m_meta.m_table_alias << " " << m_meta.m_alias << " " << m_meta.m_table_name << " " << m_meta.m_name << " " << m_meta.m_index << " " << m_meta.m_type;
+        FAKE_LOG(ERROR) << "Warning: GetUInt32() on non-tinyint field " << m_meta.m_table_alias << " " << m_meta.m_alias << " " << m_meta.m_table_name << " " << m_meta.m_name << " " << m_meta.m_index << " " << m_meta.m_type;
         return 0;
     }
     #endif
@@ -267,7 +267,7 @@ int32 Field::getInt32() const
 
     #ifdef TRINITY_DEBUG
     if (!isType(MYSQL_TYPE_INT24) && !isType(MYSQL_TYPE_LONG)) {
-        FAKE_LOG_ERROR() << "Warning: GetInt32() on non-tinyint field " << m_meta.m_table_alias << " " << m_meta.m_alias << " " << m_meta.m_table_name << " " << m_meta.m_name << " " << m_meta.m_index << " " << m_meta.m_type;
+        FAKE_LOG(ERROR) << "Warning: GetInt32() on non-tinyint field " << m_meta.m_table_alias << " " << m_meta.m_alias << " " << m_meta.m_table_name << " " << m_meta.m_name << " " << m_meta.m_index << " " << m_meta.m_type;
         return 0;
     }
     #endif
@@ -287,7 +287,7 @@ uint64 Field::getUInt64() const
 
     #ifdef TRINITY_DEBUG
     if (!isType(MYSQL_TYPE_LONGLONG) && !isType(MYSQL_TYPE_BIT)) {
-        FAKE_LOG_ERROR() << "Warning: GetUInt64() on non-tinyint field " << m_meta.m_table_alias << " " << m_meta.m_alias << " " << m_meta.m_table_name << " " << m_meta.m_name << " " << m_meta.m_index << " " << m_meta.m_type;
+        FAKE_LOG(ERROR) << "Warning: GetUInt64() on non-tinyint field " << m_meta.m_table_alias << " " << m_meta.m_alias << " " << m_meta.m_table_name << " " << m_meta.m_name << " " << m_meta.m_index << " " << m_meta.m_type;
         return 0;
     }
     #endif
@@ -307,7 +307,7 @@ int64 Field::getInt64() const
 
     #ifdef TRINITY_DEBUG
     if (!isType(MYSQL_TYPE_LONGLONG) && !isType(MYSQL_TYPE_BIT)) {
-        FAKE_LOG_ERROR() << "Warning: GetInt64() on non-tinyint field " << m_meta.m_table_alias << " " << m_meta.m_alias << " " << m_meta.m_table_name << " " << m_meta.m_name << " " << m_meta.m_index << " " << m_meta.m_type;
+        FAKE_LOG(ERROR) << "Warning: GetInt64() on non-tinyint field " << m_meta.m_table_alias << " " << m_meta.m_alias << " " << m_meta.m_table_name << " " << m_meta.m_name << " " << m_meta.m_index << " " << m_meta.m_type;
         return 0;
     }
     #endif
@@ -327,7 +327,7 @@ float Field::getFloat() const
 
     #ifdef TRINITY_DEBUG
     if (!isType(MYSQL_TYPE_FLOAT)) {
-        FAKE_LOG_ERROR() << "Warning: GetFloat() on non-tinyint field " << m_meta.m_table_alias << " " << m_meta.m_alias << " " << m_meta.m_table_name << " " << m_meta.m_name << " " << m_meta.m_index << " " << m_meta.m_type;
+        FAKE_LOG(ERROR) << "Warning: GetFloat() on non-tinyint field " << m_meta.m_table_alias << " " << m_meta.m_alias << " " << m_meta.m_table_name << " " << m_meta.m_name << " " << m_meta.m_index << " " << m_meta.m_type;
         return 0;
     }
     #endif
@@ -347,7 +347,7 @@ double Field::getDouble() const
 
     #ifdef TRINITY_DEBUG
     if (!isType(MYSQL_TYPE_DOUBLE) && !isType(MYSQL_TYPE_NEWDECIMAL)) {
-        FAKE_LOG_ERROR() << "Warning: GetDouble() on non-tinyint field " << m_meta.m_table_alias << " " << m_meta.m_alias << " " << m_meta.m_table_name << " " << m_meta.m_name << " " << m_meta.m_index << " " << m_meta.m_type;
+        FAKE_LOG(ERROR) << "Warning: GetDouble() on non-tinyint field " << m_meta.m_table_alias << " " << m_meta.m_alias << " " << m_meta.m_table_name << " " << m_meta.m_name << " " << m_meta.m_index << " " << m_meta.m_type;
         return 0;
     }
     #endif
@@ -366,7 +366,7 @@ long double Field::getLongDouble() const
         return 0.0f;
 #ifdef TRINITY_DEBUG
     if (!isType(MYSQL_TYPE_DOUBLE) && !isType(MYSQL_TYPE_NEWDECIMAL)) {
-        FAKE_LOG_ERROR() << "Warning: GetDouble() on non-tinyint field " << m_meta.m_table_alias << " " << m_meta.m_alias << " " << m_meta.m_table_name << " " << m_meta.m_name << " " << m_meta.m_index << " " << m_meta.m_type;
+        FAKE_LOG(ERROR) << "Warning: GetDouble() on non-tinyint field " << m_meta.m_table_alias << " " << m_meta.m_alias << " " << m_meta.m_table_name << " " << m_meta.m_name << " " << m_meta.m_index << " " << m_meta.m_type;
         return 0;
     }
 #endif
@@ -388,7 +388,7 @@ char const* Field::getCString() const
     #ifdef TRINITY_DEBUG
     if (isNumeric())
     {
-        FAKE_LOG_ERROR() << "Warning: GetCString() on non-tinyint field " << meta.TableAlias
+        FAKE_LOG(ERROR) << "Warning: GetCString() on non-tinyint field " << meta.TableAlias
             << " " << meta.Alias
             << " " << meta.TableName
             << " " << meta.Name

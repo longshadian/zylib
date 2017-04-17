@@ -15,7 +15,7 @@ MetaData::MetaData(MYSQL_FIELD* field, uint32 field_index)
     m_index = field_index;
 
     /*
-    FAKE_LOG_INFO() << "table_name:" << m_meta.m_table_name 
+    FAKE_LOG(INFO) << "table_name:" << m_meta.m_table_name 
         << " " << "table_alias:" << m_meta.m_table_alias 
         << " " << "name:" << m_meta.m_name 
         << " " << "alias:" << m_meta.m_alias
@@ -142,7 +142,7 @@ bool ResultSet::fetchRows()
         }
         unsigned long* lengths = ::mysql_fetch_lengths(m_mysql_res);
         if (!lengths) {
-            FAKE_LOG_ERROR() << "mysql_fetch_lengths, cannot retrieve value lengths. Error " << ::mysql_error(m_mysql_res->handle);
+            FAKE_LOG(ERROR) << "mysql_fetch_lengths, cannot retrieve value lengths. Error " << ::mysql_error(m_mysql_res->handle);
             return false;
         }
         std::vector<Field> fields{};
@@ -236,7 +236,7 @@ bool PreparedResultSet::fetchRows()
     m_field_count = ::mysql_num_fields(m_mysql_res);
 
     if (::mysql_stmt_store_result(&m_mysql_stmt)) {
-        FAKE_LOG_ERROR() << "mysql_stmt_store_result, cannot bind result from MySQL server. Error:" << ::mysql_stmt_error(&m_mysql_stmt);
+        FAKE_LOG(ERROR) << "mysql_stmt_store_result, cannot bind result from MySQL server. Error:" << ::mysql_stmt_error(&m_mysql_stmt);
         return false;
     }
 
@@ -271,7 +271,7 @@ bool PreparedResultSet::fetchRows()
     }
 
     if (::mysql_stmt_bind_result(&m_mysql_stmt, m_out_bind.data())) {
-        FAKE_LOG_ERROR() << "mysql_stmt_bind_result, cannot bind result from MySQL server. Error: " << ::mysql_stmt_error(&m_mysql_stmt);
+        FAKE_LOG(ERROR) << "mysql_stmt_bind_result, cannot bind result from MySQL server. Error: " << ::mysql_stmt_error(&m_mysql_stmt);
         ::mysql_stmt_free_result(&m_mysql_stmt);
         return false;
     }
