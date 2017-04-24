@@ -1,25 +1,154 @@
 #include "FakeLog.h"
 
-#include <iostream>
+//#include <iostream>
 
 namespace network {
+    
+LogStream::LogStream()
+    : m_mtx()
+    , m_ostm()
+{
+}
+
+LogStream::~LogStream()
+{
+}
+
+
+LogStream& LogStream::operator<<(signed char val) 
+{
+    std::lock_guard<std::mutex> lk{m_mtx};
+    m_ostm << val;
+    return *this;
+}
+
+LogStream& LogStream::operator<<(unsigned char val)
+{
+    std::lock_guard<std::mutex> lk{m_mtx};
+    m_ostm << val;
+    return *this;
+}
+
+LogStream& LogStream::operator<<(char val)
+{
+    std::lock_guard<std::mutex> lk{m_mtx};
+    m_ostm << val;
+    return *this;
+}
+
+LogStream& LogStream::operator<<(short val)
+{
+    std::lock_guard<std::mutex> lk{m_mtx};
+    m_ostm << val;
+    return *this;
+}
+
+LogStream& LogStream::operator<<(unsigned short val)
+{
+    std::lock_guard<std::mutex> lk{m_mtx};
+    m_ostm << val;
+    return *this;
+}
+
+LogStream& LogStream::operator<<(int val)
+{
+    std::lock_guard<std::mutex> lk{m_mtx};
+    m_ostm << val;
+    return *this;
+}
+
+LogStream& LogStream::operator<<(unsigned int val)
+{
+    std::lock_guard<std::mutex> lk{m_mtx};
+    m_ostm << val;
+    return *this;
+}
+
+LogStream& LogStream::operator<<(long val)
+{
+    std::lock_guard<std::mutex> lk{m_mtx};
+    m_ostm << val;
+    return *this;
+}
+
+LogStream& LogStream::operator<<(unsigned long val)
+{
+    std::lock_guard<std::mutex> lk{m_mtx};
+    m_ostm << val;
+    return *this;
+}
+
+LogStream& LogStream::operator<<(long long val)
+{
+    std::lock_guard<std::mutex> lk{m_mtx};
+    m_ostm << val;
+    return *this;
+}
+
+LogStream& LogStream::operator<<(unsigned long long val)
+{
+    std::lock_guard<std::mutex> lk{m_mtx};
+    m_ostm << val;
+    return *this;
+}
+
+LogStream& LogStream::operator<<(float val)
+{
+    std::lock_guard<std::mutex> lk{m_mtx};
+    m_ostm << val;
+    return *this;
+}
+
+LogStream& LogStream::operator<<(double val)
+{
+    std::lock_guard<std::mutex> lk{m_mtx};
+    m_ostm << val;
+    return *this;
+}
+
+LogStream& LogStream::operator<<(long double val)
+{
+    std::lock_guard<std::mutex> lk{m_mtx};
+    m_ostm << val;
+    return *this;
+}
+
+LogStream& LogStream::operator<<(const std::string& val)
+{
+    std::lock_guard<std::mutex> lk{m_mtx};
+    m_ostm << val;
+    return *this;
+}
+
+LogStream& LogStream::operator<<(const char* val)
+{
+    std::lock_guard<std::mutex> lk{m_mtx};
+    m_ostm << val;
+    return *this;
+}
+
+void LogStream::flush()
+{
+    std::lock_guard<std::mutex> lk{m_mtx};
+    m_ostm.str("");
+}
+
 
 const char* LOG_SEVERITY_NAMES[NUM_SEVERITY] =
 {
-	"NETWORK_DEBUG  ",
-	"NETWORK_INFO   ",
-	"NETWORK_WARNING",
-	"NETWORK_ERROR  ",
+	"[NETWORK_DEBUG  ]",
+	"[NETWORK_INFO   ]",
+	"[NETWORK_WARNING]",
+	"[NETWORK_ERROR  ]",
 };
 
+std::unique_ptr<LogStream> g_ostm = nullptr;
+LOG_LEVEL g_level = DEBUG;
 
-std::ostream* g_ostm = nullptr;
-LOG_LEVEL g_level = NUM_SEVERITY;
-
-void initLog(std::ostream* ostm, LOG_LEVEL lv)
+void initLog(std::unique_ptr<LogStream> ostm, LOG_LEVEL lv)
 {
     if (!g_ostm)
-        g_ostm = ostm;
+        g_ostm = std::move(ostm);
     g_level = lv;
 }
 
@@ -46,11 +175,12 @@ FakeLog::~FakeLog()
     if (!g_ostm || m_level < g_level)
         return;
     auto content = m_stream.m_ostm.str();
-    if (!content.empty()) {
-        if (content[content.size() - 1] == '\n')
-            content.pop_back();
-    }
-	(*g_ostm) << '[' << LOG_SEVERITY_NAMES[m_level] << "] [" << m_file << ":" << m_line << "] " << content << "\n";
+    //if (!content.empty()) {
+    //    if (content[content.size() - 1] == '\n')
+    //        content.pop_back();
+    //}
+	(*g_ostm) << LOG_SEVERITY_NAMES[m_level] << " [" << m_file << ":" << m_line << "] " << content;
+    g_ostm->flush();
 }
 
 }

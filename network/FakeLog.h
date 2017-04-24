@@ -1,8 +1,39 @@
 #pragma once
 
 #include <sstream>
+#include <memory>
+#include <mutex>
 
 namespace network {
+
+class LogStream
+{
+public:
+    LogStream();
+    virtual ~LogStream();
+public:
+    LogStream& operator<<(signed char val);
+    LogStream& operator<<(unsigned char val);
+    LogStream& operator<<(char val);
+    LogStream& operator<<(short val);
+    LogStream& operator<<(unsigned short val);
+    LogStream& operator<<(int val);
+    LogStream& operator<<(unsigned int val);
+    LogStream& operator<<(long val);
+    LogStream& operator<<(unsigned long val);
+    LogStream& operator<<(long long val);
+    LogStream& operator<<(unsigned long long val);
+    LogStream& operator<<(float val);
+    LogStream& operator<<(double val);
+    LogStream& operator<<(long double val);
+    LogStream& operator<<(const std::string& val);
+    LogStream& operator<<(const char* val);
+
+    virtual void flush();
+
+    std::mutex         m_mtx;
+    std::ostringstream m_ostm;
+};
 
 enum LOG_LEVEL
 {
@@ -15,8 +46,7 @@ enum LOG_LEVEL
 
 extern const char* LOG_SEVERITY_NAMES[NUM_SEVERITY];
 
-
-void initLog(std::ostream* ostm, LOG_LEVEL lv = DEBUG);
+void initLog(std::unique_ptr<LogStream> ostm, LOG_LEVEL lv = DEBUG);
 
 struct FakeLogStream
 {

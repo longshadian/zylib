@@ -1,9 +1,10 @@
 #include "GlobalService.h"
 
+#include "zylib/Tools.h"
 #include "Log.h"
-
 #include "DataBaseService.h"
 #include "NetworkService.h"
+#include "World.h"
 
 bool Global::init()
 {
@@ -12,6 +13,13 @@ bool Global::init()
         return false;
     }
     instance().m_network_service = std::move(network_service);
+
+    auto world = std::make_shared<World>();
+    if (!world->init()) {
+        return false;
+    }
+    instance().m_world = std::move(world);
+
     return true;
 }
 
@@ -30,3 +38,9 @@ NetworkService& Global::getNetworkService()
 {
     return *instance().m_network_service;
 }
+
+World& Global::getWorld()
+{
+    return *instance().m_world;
+}
+

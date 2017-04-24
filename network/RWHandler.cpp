@@ -64,7 +64,7 @@ void RWHandler::doWrite()
         {
             (void)length;
             if (ec) {
-                FAKE_LOG(ERROR) << "RWHandlerBase::doWrite error " << ec.message();
+                FAKE_LOG(ERROR) << "RWHandlerBase::doWrite error: " << ec.value() << ":" << ec.message();
                 onClosed();
                 return;
             }

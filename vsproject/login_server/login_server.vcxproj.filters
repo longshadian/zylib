@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="login_server">
+      <UniqueIdentifier>{a21e0a4b-a759-43bf-b274-5752a228f761}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="login_server\world">
+      <UniqueIdentifier>{8c379cc4-16b1-49fc-8a2f-14be58d467e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="login_server\net">
+      <UniqueIdentifier>{e439e191-adf9-42d6-9a17-349aacfb485a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\login_server\GameAssert.h">
+      <Filter>login_server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\login_server\ServerApp.h">
+      <Filter>login_server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\login_server\world\TimerService.h">
+      <Filter>login_server\world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\login_server\world\World.h">
+      <Filter>login_server\world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\login_server\world\WorldDefine.h">
+      <Filter>login_server\world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\login_server\world\WorldMsg.h">
+      <Filter>login_server\world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\login_server\world\WorldMsgDispatcher.h">
+      <Filter>login_server\world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\login_server\world\WorldSession.h">
+      <Filter>login_server\world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\login_server\net\NetworkMsg.h">
+      <Filter>login_server\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\login_server\net\NetworkService.h">
+      <Filter>login_server\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\login_server\net\ServerHandler.h">
+      <Filter>login_server\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\login_server\GlobalService.h">
+      <Filter>login_server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\login_server\Log.h">
+      <Filter>login_server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\login_server\Config.h">
+      <Filter>login_server\world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\login_server\net\RouterService.h">
+      <Filter>login_server\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\login_server\net\TcpClient.h">
+      <Filter>login_server\net</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\login_server\main.cpp">
+      <Filter>login_server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\login_server\ServerApp.cpp">
+      <Filter>login_server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\login_server\world\TimerService.cpp">
+      <Filter>login_server\world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\login_server\world\World.cpp">
+      <Filter>login_server\world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\login_server\world\WorldMsg.cpp">
+      <Filter>login_server\world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\login_server\world\WorldMsgDispatcher.cpp">
+      <Filter>login_server\world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\login_server\world\WorldSession.cpp">
+      <Filter>login_server\world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\login_server\net\NetworkMsg.cpp">
+      <Filter>login_server\net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\login_server\net\NetworkService.cpp">
+      <Filter>login_server\net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\login_server\net\ServerHandler.cpp">
+      <Filter>login_server\net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\login_server\GlobalService.cpp">
+      <Filter>login_server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\login_server\Log.cpp">
+      <Filter>login_server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\login_server\Config.cpp">
+      <Filter>login_server\world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\login_server\net\RouterService.cpp">
+      <Filter>login_server\net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\login_server\net\TcpClient.cpp">
+      <Filter>login_server\net</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\login_server\Makefile">
+      <Filter>login_server</Filter>
+    </None>
+  </ItemGroup>
+</Project>

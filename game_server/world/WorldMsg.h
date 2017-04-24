@@ -4,19 +4,12 @@
 #include <string>
 #include <chrono>
 
+#include "NetworkMsg.h"
 #include "WorldDefine.h"
 #include "GameType.h"
-#include "GameConnection.h"
-
-struct GameMessage
-{
-    std::chrono::system_clock::time_point m_timestamp{};
-    int32_t         m_msg_id;
-    std::vector<uint8_t> m_data{};
-};
 
 class WorldSession;
-using WorldSessionFun = void (WorldSession::*)(GameMessage& msg_req);
+using WorldSessionFun = void (WorldSession::*)(NetworkMsg& msg_req);
 
 struct WorldSessionCB
 {
@@ -29,16 +22,16 @@ struct WorldSessionCB
     }
 };
 
-struct GameMessageCB
+struct WorldMsg
 {
     void visitor(WorldSession* session);
 
-    WorldConnection m_conn{};
-    GameMessagePtr  m_msg{nullptr};
+    WorldConnection             m_conn;
+    std::shared_ptr<NetworkMsg> m_network_msg;
     WorldSessionCB  m_session_fun{SESSION_STATE::CLOSED, nullptr};
 };
 
-struct FilterGameMessage
+struct WorldMsgFilter
 {
-    bool operator()(const WorldSession& session, const GameMessageCB& cb) const;
+    bool operator()(const WorldSession& session, const WorldMsg& world_msg) const;
 };

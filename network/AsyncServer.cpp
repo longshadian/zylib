@@ -31,6 +31,7 @@ void AsyncServer::accept()
                     FAKE_LOG(WARNING) << "refuse accept: too much connection " << m_handlers.size() << "/" << m_option.m_max_connection;
                     refuseAccept(std::move(m_socket));
                 }
+                FAKE_LOG(DEBUG) << "current handler:" << m_handlers.size();
             } else {
                 FAKE_LOG(ERROR) << "accept error reason:" << ec.value() << " "  << ec.message();
                 handleAcceptError(ec);

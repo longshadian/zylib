@@ -11,6 +11,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <chrono>
 #include <boost/asio.hpp>
 
 using boost::asio::ip::tcp;
@@ -35,22 +36,32 @@ int main(int argc, char* argv[])
 
         int32_t request_length = (int32_t)std::strlen(request.data());
         if (request_length > 0) {
-            int32_t total_len = request_length + 4;
-            boost::asio::write(s, boost::asio::buffer(&total_len, 4));
+            auto send_tm = std::chrono::system_clock::now();
+            std::array<int32_t, 2> head_buffer{0};
+            head_buffer.fill(0);
+            head_buffer[0] = request_length + 8;
+            head_buffer[1] = 1;
+            boost::asio::write(s, boost::asio::buffer(head_buffer.data(), 8));
             boost::asio::write(s, boost::asio::buffer(request.data(), request_length));
 
-            char reply_head[4] = {0};
-            boost::asio::read(s, boost::asio::buffer(reply_head, 4));
-            int32_t reply_total = 0;
-            std::memcpy(&reply_total, reply_head, 4);
-            if (4 < reply_total && reply_total < 100) {
+            head_buffer.fill(0);
+            char reply_head[8] = {0};
+            boost::asio::read(s, boost::asio::buffer(reply_head, 8));
+            std::memcpy(&head_buffer[0], reply_head, 4);
+            std::memcpy(&head_buffer[1], reply_head + 4, 4);
+
+            if (4 < head_buffer[0] && head_buffer[0] < 100) {
 
                 std::vector<char> reply_body;
-                reply_body.resize(reply_total - 4);
+                reply_body.resize(head_buffer[0] - 8);
                 size_t reply_length = boost::asio::read(s,
                     boost::asio::buffer(reply_body));
                 std::cout << "received: ";
                 std::cout.write(reply_body.data(), reply_body.size());
+
+                std::cout << "cost:" << 
+                    std::chrono::duration_cast<std::chrono::milliseconds>(
+                        std::chrono::system_clock::now() - send_tm).count();
                 std::cout << "\n\n";
             }
         }

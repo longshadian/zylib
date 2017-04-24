@@ -1,10 +1,10 @@
 #pragma once
 
 #include <map>
-#include "GameMessage.h"
+#include "WorldMsg.h"
 #include "WorldSession.h"
 
-class GameMessageDispatcher
+class WorldMsgDispatcher
 {
     struct Slot
     {
@@ -13,10 +13,10 @@ class GameMessageDispatcher
         WorldSessionFun     m_fun;
     };
 
-    GameMessageDispatcher();
 public:
-    ~GameMessageDispatcher() = default;
-    static GameMessageDispatcher& getInstance();
+    WorldMsgDispatcher();
+    ~WorldMsgDispatcher() = default;
+
     bool init();
 
     WorldSessionCB findRegCallback(int32_t cmd) const;

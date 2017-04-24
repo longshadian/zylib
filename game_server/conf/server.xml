@@ -5,7 +5,7 @@
         <ip>127.0.0.1</ip>
         <port>21010</port>
         <client_timeout>60</client_timeout>
-        <max_connect>100000</max_connect>
+        <max_connect>2</max_connect>
         <script>/script/server.xml</script>
         <http_port>21019</http_port>
     </server>

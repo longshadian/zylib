@@ -14,6 +14,8 @@ namespace network {
 class RWHandler;
 class AsyncServer;
 
+using ConnectionHdl = std::weak_ptr<RWHandler>;
+
 class RWHandlerFactory
 {
 public:
@@ -29,8 +31,6 @@ struct ConnectionInfo
     std::string m_ip;
     std::string m_port;
 };
-
-using ConnectionHdl = std::weak_ptr<RWHandler>;
 
 class RWHandler : public std::enable_shared_from_this<RWHandler>
 {

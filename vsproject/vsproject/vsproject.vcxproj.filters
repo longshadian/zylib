@@ -47,6 +47,9 @@
     <Filter Include="test\boost\asio">
       <UniqueIdentifier>{ce242439-4736-4768-9d8c-984c94fa09f6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shared">
+      <UniqueIdentifier>{05f7b7ff-eb4a-41da-a6ba-52774a2ca739}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\mysqlcpp\Assert.h">
@@ -202,15 +205,6 @@
     <ClInclude Include="..\..\game_server\database\QueryResult.h">
       <Filter>game_server\database</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\game_server\world\GameConnection.h">
-      <Filter>game_server\world</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\game_server\world\GameMessage.h">
-      <Filter>game_server\world</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\game_server\world\GameMessageDispatcher.h">
-      <Filter>game_server\world</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\game_server\world\TimerService.h">
       <Filter>game_server\world</Filter>
     </ClInclude>
@@ -248,6 +242,21 @@
       <Filter>network</Filter>
     </ClInclude>
     <ClInclude Include="..\..\network\RWHandler.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game_server\net\NetworkMsg.h">
+      <Filter>game_server\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game_server\world\WorldMsg.h">
+      <Filter>game_server\world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game_server\world\WorldMsgDispatcher.h">
+      <Filter>game_server\world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\network\AsyncClient.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\network\Message.h">
       <Filter>network</Filter>
     </ClInclude>
   </ItemGroup>
@@ -408,15 +417,6 @@
     <ClCompile Include="..\..\game_server\database\DataBaseService.cpp">
       <Filter>game_server\database</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\game_server\world\GameConnection.cpp">
-      <Filter>game_server\world</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\game_server\world\GameMessage.cpp">
-      <Filter>game_server\world</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\game_server\world\GameMessageDispatcher.cpp">
-      <Filter>game_server\world</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\game_server\world\TimerService.cpp">
       <Filter>game_server\world</Filter>
     </ClCompile>
@@ -449,6 +449,27 @@
     </ClCompile>
     <ClCompile Include="..\..\test\boost\asio\blocking_tcp_echo_client.cpp">
       <Filter>test\boost\asio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game_server\Log.cpp">
+      <Filter>game_server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\test\boost\weakptr.cpp">
+      <Filter>test\boost</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game_server\net\NetworkMsg.cpp">
+      <Filter>game_server\net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game_server\world\WorldMsg.cpp">
+      <Filter>game_server\world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game_server\world\WorldMsgDispatcher.cpp">
+      <Filter>game_server\world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\network\AsyncClient.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\network\Message.cpp">
+      <Filter>network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
