@@ -9,10 +9,11 @@
 //#define BOOST_LOG_DYN_LINK 1
 
 #define LOG(log_type) \
-    BOOST_LOG_SEV(zylib::logger::Logger::getInstance().m_lg, zylib::logger::log_type) << __FILE__ << ':' << __LINE__ << ' '
+    BOOST_LOG_SEV(zylib::logger::Logger::getInstance().m_lg, zylib::logger::log_type) \
+        << __FILE__ << ':' << __LINE__ << ':' << __FUNCTION__ << "] "
 
 #define LOG_FMT(log_type, format, ...) \
-    logFormat(zylib::logger::log_type, "%s:%d " format, __FILE__, __LINE__, ##__VA_ARGS__)
+    logFormat(zylib::logger::log_type, "%s:%d:%s] " format, __FILE__, __LINE__, __FUNCTION__, ##__VA_ARGS__)
 
 namespace zylib {
 namespace logger {

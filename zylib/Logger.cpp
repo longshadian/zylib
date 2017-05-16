@@ -74,9 +74,10 @@ void Logger::init(const LogOptional& opt)
     m_sink = boost::make_shared<FileSink>(backend);
     m_sink->set_formatter(
         boost::log::expressions::stream
+        << '['
         << boost::log::expressions::format_date_time< boost::posix_time::ptime >("TimeStamp", "%H:%M:%S.%f")
-        << "\t" << boost::log::expressions::attr<LOG_TYPE>("Severity")
-        << "\t" << boost::log::expressions::message
+        << ' ' << boost::log::expressions::attr<LOG_TYPE>("Severity")
+        << ' ' << boost::log::expressions::message
     );
 
     boost::log::core::get()->add_sink(m_sink);

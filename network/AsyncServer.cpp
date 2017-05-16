@@ -49,6 +49,7 @@ void AsyncServer::stop()
 
 void AsyncServer::handleAcceptError(const boost::system::error_code& ec)
 {
+    (void)ec;
     stopAccept();
 }
 

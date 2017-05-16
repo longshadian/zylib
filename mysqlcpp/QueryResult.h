@@ -52,7 +52,7 @@ public:
 
     uint64 getRowCount() const { return m_row_count; }
     uint32 getFieldCount() const { return m_field_count; }
-    ResultRow getRow(uint32 index) const;
+    ResultRow getRow(uint64 index) const;
 private:
     bool fetchRows();
 private:

@@ -30,7 +30,7 @@ private:
 inline
 std::ostream&   operator<<(std::ostream& os, EventSessionID sid)
 {
-    os << sid.m_fd << "." << sid.m_seq_id;
+    os << "{" << sid.m_fd << "." << sid.m_seq_id << "}";
     return os;
 }
 

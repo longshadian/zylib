@@ -1,5 +1,4 @@
-#ifndef _TIMER_H_
-#define _TIMER_H_
+#pragma once
 
 #include <chrono>
 #include <functional>
@@ -8,117 +7,59 @@ namespace zylib {
 
 using namespace std::chrono;
 
-inline 
-uint32_t getMSTime()
-{
-    static const system_clock::time_point app_start_time = system_clock::now();
-
-    return uint32_t(duration_cast<milliseconds>(system_clock::now() - app_start_time).count());
-}
-
-inline 
-uint32_t getMSTimeDiff(uint32_t old_milliseconds_time, uint32_t new_milliseconds_time)
-{
-    if (old_milliseconds_time > new_milliseconds_time)
-        return (std::numeric_limits<uint32_t>::max() - old_milliseconds_time) + new_milliseconds_time;
-    else
-        return new_milliseconds_time - old_milliseconds_time;
-}
-
-inline 
-uint32_t GetMSTimeDiffToNow(uint32_t old_milliseconds_time)
-{
-    return getMSTimeDiff(old_milliseconds_time, getMSTime());
-}
-
 template <typename T>
-struct TimerTracker
+struct BasicTimer
 {
-public:
-    TimerTracker(T expiry = T())
-        : m_expiry_time(expiry)
-    {
-    }
+	using Duration = T;
 
-    void update(T diff)
-    {
-        if (m_expiry_time >= diff)
-            m_expiry_time -= diff;
-        else 
-            m_expiry_time = 0;
-    }
+	BasicTimer() = default;
 
-    bool passed() const
-    {
-        return m_expiry_time == 0;
-    }
+	template <typename D>
+	BasicTimer(D d)
+		: m_start()
+		, m_expire(d)
+	{
+	}
 
-    void reset(T interval)
-    {
-        m_expiry_time = interval;
-    }
+	void update(Duration delta)
+	{
+		m_start += delta;
+	}
 
-    T getExpiry() const
-    {
-        return m_expiry_time;
-    }
-private:
-    T m_expiry_time;
+	bool passed() const
+	{
+		return m_expire <= m_start;
+	}
+
+	void reset()
+	{
+		m_start = Duration::zero();
+	}
+
+	Duration remain() const
+	{
+		return m_expire - m_start;
+	}
+
+	Duration m_start;
+	Duration m_expire;
 };
 
-//milliseconds
-typedef TimerTracker<uint32_t> MSTimerTracker;
+using TimingWheel = BasicTimer<milliseconds>;
+using Delta = milliseconds;
 
-template <typename T>
-struct TimerWheel
+using TimePoint = std::chrono::steady_clock::time_point;
+
+inline TimePoint getSteadyTimePoint()
 {
-    typedef std::function<void()> Function;
-public:
-    TimerWheel() = default;
-    TimerWheel(T expiry, Function f)
-        : m_init_time(expiry)
-        , m_expiry_time(expiry)
-        , m_fun(std::move(f))
-    {
-    }
+	return std::chrono::steady_clock::now();
+}
 
-    void update(T diff)
-    {
-        if (m_expiry_time >= diff)
-            m_expiry_time -= diff;
-        else 
-            m_expiry_time = 0;
-    }
-
-    bool passed() const
-    {
-        return m_expiry_time == 0;
-    }
-
-    T getExpiry() const
-    {
-        return m_expiry_time;
-    }
-
-    T getInitExpiry() const
-    {
-        return m_init_time;
-    }
-
-    void call()
-    {
-        if (m_fun)
-            m_fun();
-    }
-private:
-    T           m_init_time;
-    T           m_expiry_time;
-    Function    m_fun;
-};
-
-//milliseconds
-typedef TimerWheel<uint32_t> MSTimerWheel;
+inline Delta getDelta(TimePoint b, TimePoint e)
+{
+	return std::chrono::duration_cast<Delta>(e - b);
+}
 
 //////////////////////////////////////////////////////////////////////////
 }
-#endif
+

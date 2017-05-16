@@ -116,7 +116,7 @@ bool ResultSet::init()
     return true;
 }
 
-ResultRow ResultSet::getRow(uint32 index) const
+ResultRow ResultSet::getRow(uint64 index) const
 {
     ASSERT(index < m_row_count);
     return ResultRow(m_rows[index], m_fields_meta);

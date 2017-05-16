@@ -48,8 +48,7 @@ Connection::Connection(redisContext* redis_context)
 
 Connection::~Connection()
 {
-    if (m_redis_context)
-        ::redisFree(m_redis_context);
+    shutdown();
 }
 
 Connection::Connection(Connection&& rhs)
@@ -79,6 +78,13 @@ redisContext* Connection::getRedisContext()
 bool Connection::reconnection()
 {
     return ::redisReconnect(m_redis_context) == REDIS_OK;
+}
+
+void Connection::shutdown()
+{
+    if (m_redis_context)
+        ::redisFree(m_redis_context);
+    m_redis_context = nullptr;
 }
 
 }

@@ -1,5 +1,4 @@
-#ifndef _RATE_GENERATOR_H_
-#define _RATE_GENERATOR_H_
+#pragma once
 
 #include <vector>
 
@@ -88,5 +87,3 @@ private:
     int                         mRangeDivisor;
     std::vector<RateWrapper*>   mRanges;
 };
-
-#endif

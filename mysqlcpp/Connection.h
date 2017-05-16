@@ -43,7 +43,7 @@ public:
     ResultSetPtr query(const char* sql);
 
     bool execute(const char* sql);
-    bool execute(PreparedStatementUPtr& stmt);
+    bool execute(PreparedStatement& stmt);
 
     void beginTransaction();
     void rollbackTransaction();

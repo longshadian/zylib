@@ -1,5 +1,4 @@
-#ifndef _TOOLS_H_
-#define _TOOLS_H_
+#pragma once
 
 #include <string>
 #include <map>
@@ -88,4 +87,3 @@ std::unique_ptr<T> make_unique()
 
 //////////////////////////////////////////////////////////////////////////
 }
-#endif

@@ -16,7 +16,7 @@ Connection::Connection(ConnectionOpt conn_opt)
 	: m_mysql(nullptr)
     , m_conn_info(conn_opt)
     , m_err_no(0)
-    , m_err_str(nullptr)
+    , m_err_str(&Connection::m_null)
 {
 }
 
@@ -126,14 +126,14 @@ bool Connection::execute(const char* sql)
     return true;
 }
 
-bool Connection::execute(PreparedStatementUPtr& stmt)
+bool Connection::execute(PreparedStatement& stmt)
 {
     if (!m_mysql) {
         storeError(CR_UNKNOWN_ERROR, nullptr);
         return false;
     }
-    MYSQL_STMT* mysql_stmt = stmt->getMYSQL_STMT();
-    MYSQL_BIND* mysql_bind = stmt->getMYSQL_BIND();
+    MYSQL_STMT* mysql_stmt = stmt.getMYSQL_STMT();
+    MYSQL_BIND* mysql_bind = stmt.getMYSQL_BIND();
 
     if (::mysql_stmt_bind_param(mysql_stmt, mysql_bind)) {
         uint32 err_no = ::mysql_errno(m_mysql);
