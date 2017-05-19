@@ -50,6 +50,9 @@
     <Filter Include="shared">
       <UniqueIdentifier>{05f7b7ff-eb4a-41da-a6ba-52774a2ca739}</UniqueIdentifier>
     </Filter>
+    <Filter Include="nel">
+      <UniqueIdentifier>{a341d956-dfa4-4871-b34b-f218135bc3f8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\mysqlcpp\Assert.h">
@@ -258,6 +261,33 @@
     </ClInclude>
     <ClInclude Include="..\..\network\Message.h">
       <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\nel\unified_network.h">
+      <Filter>nel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\nel\Log.h">
+      <Filter>nel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\nel\unified_connection.h">
+      <Filter>nel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\nel\Types.h">
+      <Filter>nel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\nel\GAssert.h">
+      <Filter>nel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\nel\NamingClient.h">
+      <Filter>nel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\nel\NetBase.h">
+      <Filter>nel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\nel\NetClient.h">
+      <Filter>nel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\nel\NetServer.h">
+      <Filter>nel</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -470,6 +500,24 @@
     </ClCompile>
     <ClCompile Include="..\..\network\Message.cpp">
       <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\nel\unified_network.cpp">
+      <Filter>nel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\nel\unified_connection.cpp">
+      <Filter>nel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\nel\NamingClient.cpp">
+      <Filter>nel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\nel\NetBase.cpp">
+      <Filter>nel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\nel\NetClient.cpp">
+      <Filter>nel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\nel\NetServer.cpp">
+      <Filter>nel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -27,26 +27,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -148,6 +148,15 @@
     <ClInclude Include="..\..\mysqlcpp\Transaction.h" />
     <ClInclude Include="..\..\mysqlcpp\Types.h" />
     <ClInclude Include="..\..\mysqlcpp\Utils.h" />
+    <ClInclude Include="..\..\nel\GAssert.h" />
+    <ClInclude Include="..\..\nel\Log.h" />
+    <ClInclude Include="..\..\nel\NamingClient.h" />
+    <ClInclude Include="..\..\nel\NetBase.h" />
+    <ClInclude Include="..\..\nel\NetClient.h" />
+    <ClInclude Include="..\..\nel\NetServer.h" />
+    <ClInclude Include="..\..\nel\Types.h" />
+    <ClInclude Include="..\..\nel\unified_connection.h" />
+    <ClInclude Include="..\..\nel\unified_network.h" />
     <ClInclude Include="..\..\network\AsyncClient.h" />
     <ClInclude Include="..\..\network\AsyncServer.h" />
     <ClInclude Include="..\..\network\FakeLog.h" />
@@ -214,6 +223,12 @@
     <ClCompile Include="..\..\mysqlcpp\test\TestSelect.cpp" />
     <ClCompile Include="..\..\mysqlcpp\Transaction.cpp" />
     <ClCompile Include="..\..\mysqlcpp\Utils.cpp" />
+    <ClCompile Include="..\..\nel\NamingClient.cpp" />
+    <ClCompile Include="..\..\nel\NetBase.cpp" />
+    <ClCompile Include="..\..\nel\NetClient.cpp" />
+    <ClCompile Include="..\..\nel\NetServer.cpp" />
+    <ClCompile Include="..\..\nel\unified_connection.cpp" />
+    <ClCompile Include="..\..\nel\unified_network.cpp" />
     <ClCompile Include="..\..\network\AsyncClient.cpp" />
     <ClCompile Include="..\..\network\AsyncServer.cpp" />
     <ClCompile Include="..\..\network\FakeLog.cpp" />
