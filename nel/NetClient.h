@@ -9,18 +9,13 @@
 
 namespace NLNET {
 
-class NetClient : public NetBase, std::enable_shared_from_this<NetClient>
+class NetClient : public NetBase
 {
 public:
     NetClient(boost::asio::io_service& io_service);
     virtual ~NetClient();
 
-    virtual void send(CMessage buffer, CUnifiedConnectionPtr conn) override;
-    virtual uint64_t getReceiveQueueSize() override;
-    virtual uint64_t getSendQueueSize() override;
-
-    virtual void displayReceiveQueueStat() override;
-    virtual void displaySendQueueStat() override;
+    virtual void send(CMessage msg, TSockPtr sock) override;
 
     virtual bool flush(CUnifiedConnectionPtr conn) override;
     virtual void update(DiffTime diff_time) override;
@@ -29,10 +24,8 @@ public:
 
     bool connect(const CInetAddress& addr);
 private:
-    void doWrite();
-private:
     boost::asio::io_service& m_io_service;
-    TcpSocket                m_socket;
+    TSockPtr                 m_sock;
     std::list<CMessage>      m_write_msgs;
     std::atomic<bool>        m_is_connected;
 };

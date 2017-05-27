@@ -154,6 +154,10 @@
     <ClInclude Include="..\..\nel\NetBase.h" />
     <ClInclude Include="..\..\nel\NetClient.h" />
     <ClInclude Include="..\..\nel\NetServer.h" />
+    <ClInclude Include="..\..\nel\ServiceDefine.h" />
+    <ClInclude Include="..\..\nel\test\GameService.h" />
+    <ClInclude Include="..\..\nel\test\NamingService.h" />
+    <ClInclude Include="..\..\nel\TSock.h" />
     <ClInclude Include="..\..\nel\Types.h" />
     <ClInclude Include="..\..\nel\unified_connection.h" />
     <ClInclude Include="..\..\nel\unified_network.h" />
@@ -223,10 +227,15 @@
     <ClCompile Include="..\..\mysqlcpp\test\TestSelect.cpp" />
     <ClCompile Include="..\..\mysqlcpp\Transaction.cpp" />
     <ClCompile Include="..\..\mysqlcpp\Utils.cpp" />
+    <ClCompile Include="..\..\nel\Log.cpp" />
     <ClCompile Include="..\..\nel\NamingClient.cpp" />
     <ClCompile Include="..\..\nel\NetBase.cpp" />
     <ClCompile Include="..\..\nel\NetClient.cpp" />
     <ClCompile Include="..\..\nel\NetServer.cpp" />
+    <ClCompile Include="..\..\nel\ServiceDefine.cpp" />
+    <ClCompile Include="..\..\nel\test\GameService.cpp" />
+    <ClCompile Include="..\..\nel\test\NamingService.cpp" />
+    <ClCompile Include="..\..\nel\TSock.cpp" />
     <ClCompile Include="..\..\nel\unified_connection.cpp" />
     <ClCompile Include="..\..\nel\unified_network.cpp" />
     <ClCompile Include="..\..\network\AsyncClient.cpp" />
@@ -270,6 +279,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\mysqlcpp\Makefile" />
+    <None Include="..\..\nel\test\Makefile" />
     <None Include="..\..\test\boost\log\Makefile" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

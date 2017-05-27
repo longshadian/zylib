@@ -3,51 +3,96 @@
 #include "Log.h"
 
 #include "unified_connection.h"
-
-using namespace std;
+#include "NetClient.h"
+#include "NetServer.h"
+#include "NamingClient.h"
+#include "ServiceDefine.h"
 
 namespace NLNET {
 
-CUnifiedNetwork::CUnifiedNetwork()
+UnifiedNetwork::UnifiedNetwork()
+    : m_io_service()
+    , m_io_work(m_io_service)
+    , m_thread()
+    , m_connections()
+    , m_conn_to_reset()
+    , m_used_conn()
+    , m_self_service_name()
+    , m_self_server_port()
+    , m_self_conn()
+    , m_initialised()
+    , m_naming_client()
 {
 
 }
 
-CUnifiedNetwork::~CUnifiedNetwork()
+UnifiedNetwork::~UnifiedNetwork()
 {
-
+    stop();
+    waitThreadExit();
 }
 
-bool CUnifiedNetwork::init(const std::string& short_name, const CInetAddress& addr)
+void UnifiedNetwork::stop()
+{
+    m_io_service.stop();
+}
+
+void UnifiedNetwork::waitThreadExit()
+{
+    if (m_thread.joinable())
+        m_thread.join();
+}
+
+bool UnifiedNetwork::init(const std::string& short_name, const CInetAddress& addr)
 {
     if (m_initialised)
         return false;
 
-    m_self_server_port = port;
+    m_self_server_port = addr.m_port;
     m_self_service_name = short_name;
 
+    // 先启动线程，以下操作都是异步的，需要转换成同步
+
     // 先监听自己
+    auto conn = std::make_shared<UnifiedConnection>();
+    std::shared_ptr<NetServer> server{};
     try {
-        TcpSocket sock{};
-        boost::asio::ip::tcp::resolver r(m_io_service);
-        boost::asio::connect(sock, r.resolve({ addr.m_ip, addr.m_port }));
-        m_self_conn = addNewEndpoint(m_self_service_name, std::move(sock), CUnifiedConnection::TState::Ready, true);
+        server = std::make_shared<NetServer>(m_io_service, addr.m_ip, addr.m_port, *conn);
     } catch (const std::exception& e) {
-        LOG_WARNING() << "connect to naming service failed:" << e.what();
+        LOG_WARNING << " netserver listen failed: " << addr.m_ip << ":" << addr.m_port;
         return false;
     }
+    server->accept();
+    conn->m_service_name = short_name;
+    conn->m_auto_retry = true;
+    UnifiedConnection::TEndpoint ep{ server };
+    conn->m_endpoints.push_back(ep);
+    m_self_conn = conn;
 
     // 连接naming服务器
-    CInetAddress naming_addr{};
-    if (!m_naming_client->connect(naming_addr)) {
-        LOG_WARNING() << "CUnifiedNetwork init failed: naming service connection failed"; 
-        return false;
+    if (short_name != NamingServiceName) {
+        CInetAddress naming_addr{};
+        if (!m_naming_client->connect(naming_addr)) {
+            LOG_WARNING << "CUnifiedNetwork init failed: naming service connection failed"; 
+            return false;
+        }
+        // TODO 从NS拉取已经注册的服务器信息
     }
 
-    // TODO 从NS拉取已经注册的服务器信息
+    m_thread = std::move(std::thread([this]
+        {
+            try {
+                m_io_service.run();
+            } catch (const std::exception& e) {
+                LOG_WARNING << " exception:" << e.what();
+            }
+        }));
+
+    m_initialised = true;
+    return true;
 }
 
-void CUnifiedNetwork::connect()
+void UnifiedNetwork::connect()
 {
     // 注册到NS服务器,并且注册到所有已经启动的服务
     auto registered_service = m_naming_client->getRegisterService();
@@ -56,135 +101,93 @@ void CUnifiedNetwork::connect()
         if (service.m_service_name == m_self_service_name) {
             continue;
         }
-
         addService(service.m_service_name, service.m_addresses);
     }
 }
 
-void CUnifiedNetwork::addService(const std::string& name, const std::vector<CInetAddress>& addr, bool auto_retry)
+void UnifiedNetwork::addService(const std::string& name, const std::vector<CInetAddress>& addr, bool auto_retry)
 {
     auto conn = findConnection(name);
     if (!conn) {
-        conn = std::make_shared<CUnifiedConnection>();
-        conn->m_ServiceName = name;
-        conn->m_AutoRetry = auto_retry;
+        conn = std::make_shared<UnifiedConnection>();
+        conn->m_service_name = name;
+        conn->m_auto_retry = auto_retry;
     }
 
-    bool	connectSuccess;
     for (size_t i = 0; i != addr.size(); ++i) {
-
-        try {
-            cbc->connect(addr[i]);
-            connectSuccess = true;
-        } catch (const ESocketConnectionFailed &e) {
-            nlwarning("HNETL5: can't connect to %s (sid %u) now (%s) '%s'", name.c_str(), sid.get(), e.what(), addr[i].asString().c_str());
-            connectSuccess = false;
-        }
-
-        if (!connectSuccess && !autoRetry)
-        {
-            nlwarning("HNETL5: Can't add service because no retry and can't connect");
-            delete cbc;
-        }
-        else
-        {
-            uc->Connections[i] = CUnifiedNetwork::CUnifiedConnection::TConnection(cbc);
-        }
-
-        if (connectSuccess && sendId)
-        {
-            // send identification to the service
-            CMessage	msg("UN_SIDENT");
-            msg.serial(_Name);
-            TServiceId		ssid = _SId;
-            if (uc->IsExternal)
-            {
-                // in the case that the service is external, we can't send our sid because the external service can
-                // have other connection with the same sid (for example, LS can have 2 WS with same sid => sid = 0 and leave
-                // the other side to find a good number
-                ssid.set(0);
-            }
-            msg.serial(ssid);	// serializes a 16 bits service id
-            uint8 pos = uint8(j);
-            msg.serial(pos);	// send the position in the connection table
-            msg.serial(uc->IsExternal);
-            cbc->send(msg);
-        }
+        auto client_conn = std::make_shared<NetClient>(m_io_service);
+        if (client_conn->connect(addr[i])) {
+            UnifiedConnection::TEndpoint ep{client_conn};
+            conn->m_endpoints.push_back(ep);
+        } else {
+            LOG_WARNING << "can't add service because no retry and can't connect";
+        } 
     }
 
-    if (addr.size() != uc->Connections.size())
-    {
-        nlwarning("HNETL5: Can't connect to all connections to the service %d/%d", addr.size(), uc->Connections.size());
+    if (addr.size() != conn->m_endpoints.size()) {
+        LOG_WARNING << "can't connect to all connections to the service " << addr.size() << "/" << conn->m_endpoints.size();
     }
 
-    bool cntok = false;
-    for (uint j = 0; j < uc->Connections.size(); j++)
-    {
-        if (uc->Connections[j].CbNetBase != NULL)
-        {
-            if (uc->Connections[j].CbNetBase->connected())
-            {
-                cntok = true;
-                break;
-            }
-        }
+    LOG_DEBUG << "addService was successful";
+}
+
+void UnifiedNetwork::update(DiffTime diff_time)
+{
+    (void)diff_time;
+}
+
+bool UnifiedNetwork::send(SID service_id, CMessage msg, AddrID addr_id)
+{
+    auto conn = findConnection(service_id);
+    if (!conn) {
+        LOG_WARNING << "can't send " << msg.getMsgName() << " to the service " << service_id << " because no connection available";
+        return false;
     }
 
-    if (cntok)
-    {
-        // add the name only if at least one connection is ok
-        addNamedCnx(name, sid);
-
-        callServiceUpCallback(name, sid); // global callback ("*") will be called even for external service
+    auto idx = conn->findEndpointIndex(addr_id);
+    if (idx == InvalidEndpointIndex) {
+        LOG_WARNING << "can't send " << msg.getMsgName() << " to the service " << service_id << " because no connection available";
+        return false;
     }
-    nldebug("HNETL5: addService was successful");
+    conn->m_endpoints[idx].m_net_conn->send(std::move(msg), conn->m_endpoints[idx].m_sock);
+    return true;
 }
 
-void CUnifiedNetwork::update(DiffTime diff_time)
+/*
+void UnifiedNetwork::sendAll(const CMessage& msg)
 {
-
 }
+*/
 
-bool CUnifiedNetwork::send(TServiceId service_id, const CMessage& msg)
+CUnifiedConnectionPtr UnifiedNetwork::findConnection(const std::string& service_name)
 {
-
-}
-
-void CUnifiedNetwork::sendAll(const CMessage& msg)
-{
-
-}
-
-CUnifiedConnectionPtr CUnifiedNetwork::addNewEndpoint(const std::string& service_name, TcpSocket sock,
-    CUnifiedConnection::TState state, bool auto_retry)
-{
-    auto conn = findConnection(service_name);
-    if (conn) {
-        conn->addEndpoint(false, std::move(sock));
-        return conn;
-    } else {
-        conn = std::make_shared<CUnifiedConnection>();
-        conn->m_ServiceName = service_name;
-        conn->m_State = CUnifiedConnection::TState::Ready;
-        conn->m_AutoRetry = auto_retry;
-        conn->addEndpoint(false, std::move(sock));
-        m_connections.push_back(conn);
-        return conn;
-    }
-}
-
-CUnifiedConnectionPtr CUnifiedNetwork::findConnection(const std::string& service_name)
-{
-    auto it = std::find_if(m_connections.begin(), m_connections.end(),
-        [](const CUnifiedConnection& conn)
-        { 
-            return conn.m_ServiceName = service_name;
-        });
-    if (it != m_connections.end()) {
-        return *it;
+    for (auto& it : m_connections) {
+        if (it.second->m_service_name == service_name)
+            return it.second;
     }
     return nullptr;
 }
 
+CUnifiedConnectionPtr UnifiedNetwork::findConnection(const SID& service_id)
+{
+    auto it = m_connections.find(service_id);
+    if (it != m_connections.end()) {
+        return it->second;
+    }
+    return nullptr;
+}
+
+int32_t UnifiedNetwork::findEndpointIndex(SID service_id, AddrID add_id) const
+{
+    auto it = m_connections.find(service_id);
+    if (it == m_connections.end())
+        return InvalidEndpointIndex;
+    const CUnifiedConnectionPtr& conn = it->second;
+    if (add_id == AddrID_Default)
+        return conn->m_default_endpoint_index;
+    if (add_id >= conn->m_endpoints.size())
+        return InvalidEndpointIndex;
+    return static_cast<int32_t>(add_id);
+}
 
 } // NLNET

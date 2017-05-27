@@ -7,22 +7,52 @@
 
 namespace NLNET {
 
-using TcpSocket = boost::asio::ip::tcp::socket;
-using UdpSocket = boost::asio::ip::udp::socket;
-
-using CMessage = std::vector<uint8_t>;
 using DiffTime = uint32_t;
 
-using SID = uint32_t;
+struct CMessage
+{
+    std::string getMsgName() const
+    {
+        return m_msg_name;
+    }
+
+    const void* data() const
+    {
+        return m_data.data();
+    }
+
+    size_t size() const
+    {
+        return m_data.size();
+    }
+    
+    std::string          m_msg_name;
+    std::vector<uint8_t> m_data;
+};
+
+struct NetWorkMessage
+{
+    CMessage m_msg;
+};
+
+using NetWorkMessagePtr = std::shared_ptr<NetWorkMessage>;
+
+using DiffTime = uint32_t;
+
+using SID = size_t;
+using AddrID = size_t;
+
+enum {AddrID_Default = 0xFF};
+enum {InvalidEndpointIndex = -1};
 
 struct CInetAddress
 {
     std::string m_ip;
-    std::string m_port;
+    int16_t     m_port;
 };
 
-class CUnifiedConnection;
-using CUnifiedConnectionPtr = std::shared_ptr<CUnifiedConnection>;
+class UnifiedConnection;
+using CUnifiedConnectionPtr = std::shared_ptr<UnifiedConnection>;
 
 struct ServiceAddr
 {
@@ -31,5 +61,7 @@ struct ServiceAddr
     std::vector<CInetAddress> m_addresses;
 };
 
+class TSock;
+using TSockPtr = std::shared_ptr<TSock>;
 
 }

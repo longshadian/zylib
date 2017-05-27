@@ -53,6 +53,9 @@
     <Filter Include="nel">
       <UniqueIdentifier>{a341d956-dfa4-4871-b34b-f218135bc3f8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="nel\test">
+      <UniqueIdentifier>{9beec4a0-df2a-4015-9cad-27ffc3f5ec91}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\mysqlcpp\Assert.h">
@@ -289,6 +292,18 @@
     <ClInclude Include="..\..\nel\NetServer.h">
       <Filter>nel</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\nel\TSock.h">
+      <Filter>nel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\nel\test\GameService.h">
+      <Filter>nel\test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\nel\test\NamingService.h">
+      <Filter>nel\test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\nel\ServiceDefine.h">
+      <Filter>nel</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\mysqlcpp\Connection.cpp">
@@ -519,6 +534,21 @@
     <ClCompile Include="..\..\nel\NetServer.cpp">
       <Filter>nel</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\nel\TSock.cpp">
+      <Filter>nel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\nel\test\GameService.cpp">
+      <Filter>nel\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\nel\test\NamingService.cpp">
+      <Filter>nel\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\nel\ServiceDefine.cpp">
+      <Filter>nel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\nel\Log.cpp">
+      <Filter>nel</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\mysqlcpp\Makefile">
@@ -526,6 +556,9 @@
     </None>
     <None Include="..\..\test\boost\log\Makefile">
       <Filter>test\boost\log</Filter>
+    </None>
+    <None Include="..\..\nel\test\Makefile">
+      <Filter>nel\test</Filter>
     </None>
   </ItemGroup>
 </Project>

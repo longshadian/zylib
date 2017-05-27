@@ -4,18 +4,13 @@
 
 namespace NLNET {
 
-class NetBase
+class NetBase : public std::enable_shared_from_this<NetBase>
 {
 public:
     NetBase();
     virtual ~NetBase();
 
-    virtual void send(const CMessage& buffer, CUnifiedConnectionPtr conn) = 0;
-    virtual uint64_t getReceiveQueueSize() = 0;
-    virtual uint64_t getSendQueueSize() = 0;
-
-    virtual void displayReceiveQueueStat() = 0;
-    virtual void displaySendQueueStat() = 0;
+    virtual void send(CMessage buffer, TSockPtr sock) = 0;
 
     virtual bool flush(CUnifiedConnectionPtr conn) = 0;
     virtual void update(DiffTime diff_time) = 0;

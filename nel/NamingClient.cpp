@@ -23,11 +23,11 @@ bool NamingClient::isConnected() const
 bool NamingClient::connect(const CInetAddress& addr)
 {
     try {
-        boost::asio::ip::tcp::resolver r(io_service);
-        boost::asio::connect(m_sock, r.resolve({addr.m_ip, addr.m_port}));
+        boost::asio::ip::tcp::resolver r(m_io_service);
+        boost::asio::connect(m_sock, r.resolve({addr.m_ip, std::to_string(addr.m_port)}));
         return true;
     } catch (const std::exception& e) {
-        LOG_WARNING() << "connect to naming service failed:" << e.what();
+        LOG_WARNING << "connect to naming service failed:" << e.what();
         return false;
     }
     m_is_connected = true;

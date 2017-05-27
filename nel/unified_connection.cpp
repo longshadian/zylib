@@ -3,28 +3,39 @@
 namespace NLNET {
 
 
-CUnifiedConnection::CUnifiedConnection()
+UnifiedConnection::UnifiedConnection()
 {
 
 }
 
-CUnifiedConnection::CUnifiedConnection(const std::string& name, TServiceId id)
+void UnifiedConnection::connect(const CInetAddress& addr)
 {
 
 }
 
-void CUnifiedConnection::addEndpoint(bool server_conn, TcpSocket sock)
+int32_t UnifiedConnection::findEndpointIndex(AddrID addr_id) const
 {
-    TEndpoint ep{};
-    ep.m_is_server_conn = server_conn;
-    ep.m_sock = std::move(sock);
-    m_Connections.emplace_back(std::move(ep));
+    if (addr_id == AddrID_Default)
+        return m_default_endpoint_index;
+    if (addr_id >= m_endpoints.size())
+        return InvalidEndpointIndex;
+    return static_cast<int32_t>(addr_id);
 }
 
-void CUnifiedConnection::connect(const CInetAddress& addr)
+void UnifiedConnection::addNewClientScok(TSockPtr sock)
 {
-
+    std::lock_guard<std::mutex> lk{m_mtx};
+    m_new_client_sock.push_back(std::move(sock));
 }
 
+void UnifiedConnection::update()
+{
+}
+
+void UnifiedConnection::addReceivedMsg(NetWorkMessagePtr msg)
+{
+    std::lock_guard<std::mutex> lk{m_mtx};
+    m_new_msg.push_back(std::move(msg));
+}
 
 } // NLNET
