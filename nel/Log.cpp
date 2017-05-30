@@ -172,8 +172,10 @@ FakeLog::FakeLog(int lv, const char* file, int line)
 
 FakeLog::~FakeLog()
 {
+    /*
     if (!g_ostm || m_level < g_level)
         return;
+        */
     auto content = m_stream.m_ostm.str();
     std::cout << LOG_SEVERITY_NAMES[m_level] << " [" << m_file << ":" << m_line << ":" << m_function << "] " 
         << content << "\n";

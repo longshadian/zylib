@@ -64,4 +64,13 @@ struct ServiceAddr
 class TSock;
 using TSockPtr = std::shared_ptr<TSock>;
 
+class NetBase;
+using NetBasePtr = std::shared_ptr<NetBase>;
+
+class NetServer;
+using NetServerPtr = std::shared_ptr<NetServer>;
+
+class NetClient;
+using NetClientPtr = std::shared_ptr<NetClient>;
+
 }

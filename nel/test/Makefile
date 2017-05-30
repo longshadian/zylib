@@ -4,7 +4,7 @@ INC =	-I./
 LIB	=  -L/usr/local/mysql/lib	-lmysqlclient -lboost_system -lpthread
 		
 CC      = g++
-CFLAGS  = -g -Wall -Werror -std=c++14
+CFLAGS  = -g -Wall -Werror -std=c++11
 #  -Wshadow -Wunreachable-code -Wextra -Wconversion
 LDFLAGS = -Wl,--no-as-needed
 

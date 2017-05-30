@@ -16,14 +16,14 @@ class UnifiedConnection
 public:
     struct TEndpoint
     {
-        TEndpoint(std::shared_ptr<NetClient> conn)
+        TEndpoint(NetClientPtr conn)
             : m_is_server_conn(false)
             , m_net_conn(conn)
         {
 
         }
 
-        TEndpoint(std::shared_ptr<NetServer> conn)
+        TEndpoint(NetServerPtr conn)
             : m_is_server_conn(true)
             , m_net_conn(conn)
         {
@@ -32,8 +32,7 @@ public:
 
         /// 是服务端的链接
         bool m_is_server_conn;
-        std::shared_ptr<NetBase> m_net_conn;
-        TSockPtr m_sock;
+        NetBasePtr m_net_conn;
     };
 
 public:
@@ -47,7 +46,8 @@ public:
     void connect(const CInetAddress& addr);
     int32_t findEndpointIndex(AddrID addr_id) const;
 
-    void addNewClientScok(TSockPtr sock);
+    void addNewClientScok(TSockPtr client);
+
     void update();
     void addReceivedMsg(NetWorkMessagePtr msg);
 public:

@@ -6,6 +6,8 @@
 #include <chrono>
 
 #include "unified_network.h"
+#include "unified_connection.h"
+#include "NetServer.h"
 
 NamingService::NamingService()
 {
@@ -24,14 +26,30 @@ void NamingService::start()
     }
 }
 
+void test()
+{
+        NamingService ns{};
+        ns.start();
+        while (true) {
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+        }
+}
+
 int main()
 {
-    NamingService ns{};
-    ns.start();
+    boost::asio::io_service io_service{};
+    boost::asio::io_service::work work{io_service};
 
-    while (true) {
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+    NLNET::UnifiedConnection c{};
+    try {
+        auto s = std::make_shared<NLNET::NetServer>(io_service, "192.0.0.1", 22001, c);
+        s->accept();
+
+        io_service.run();
+    } catch (const std::exception& e) {
+        std::cout << "main exception:" << e.what() << "\n";
     }
 
+    std::cout << "out\n";
     return 0;
 }

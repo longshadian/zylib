@@ -22,7 +22,7 @@ int32_t UnifiedConnection::findEndpointIndex(AddrID addr_id) const
     return static_cast<int32_t>(addr_id);
 }
 
-void UnifiedConnection::addNewClientScok(TSockPtr sock)
+void UnifiedConnection::addNewClientScok(TSockPtr client)
 {
     std::lock_guard<std::mutex> lk{m_mtx};
     m_new_client_sock.push_back(std::move(sock));

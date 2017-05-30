@@ -2,13 +2,15 @@
 
 #include "Log.h"
 #include "TSock.h"
+#include "NetClient.h"
 
 namespace NLNET {
 
 NetServer::NetServer(boost::asio::io_service& io_service, const std::string& ip, int port, UnifiedConnection& conn)
     : m_io_service(io_service)
     , m_conn(conn)
-    , m_acceptor(m_io_service)
+    , m_acceptor(m_io_service,
+        boost::asio::ip::tcp::endpoint{boost::asio::ip::tcp::v4(), (uint16_t)port})
     , m_is_connected()
     , m_socket(m_io_service)
     , m_accept_fail_cb()
@@ -53,9 +55,11 @@ void NetServer::accept()
     m_acceptor.async_accept(m_socket,
         [this, self](const boost::system::error_code& ec)
         {
+            std::cout << "accept xxxx\n";
             if (!ec) {
                 auto sock = std::make_shared<TSock>(m_io_service, std::move(m_socket));
                 sock->start();
+                m_conn.addNewClientScok(sock);
                 m_accept_success_cb(sock);
                 LOG_DEBUG << "new socket";
             } else {

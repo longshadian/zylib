@@ -2,6 +2,8 @@
 
 #include "Log.h"
 
+#include <iostream>
+
 #include "unified_connection.h"
 #include "NetClient.h"
 #include "NetServer.h"
