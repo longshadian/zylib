@@ -28,6 +28,9 @@ public:
     //返回当前列表长度
     long long LPUSH(Buffer key, Buffer val);
     long long RPUSH(Buffer key, Buffer val);
+
+    void LTRIM(Buffer key, int start, int stop);
+    Buffer LINDEX(Buffer key, int index);
 private:
     Connection& m_conn;
 };

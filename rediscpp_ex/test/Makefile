@@ -5,8 +5,8 @@ INC =	-I/usr/local/include/hiredis	\
 LIB	= 	-lhiredis -ldl -lpthread
 		
 CC      = g++
-CFLAGS  = -g -Wall -Werror -std=c++11  -Wshadow -Wunreachable-code -Wextra -Wconversion
-LDFLAGS = -Wl,--no-as-needed
+CFLAGS  = -g -Wall -Werror -std=c++11  -Wshadow -Wunreachable-code -Wextra
+LDFLAGS = -Wl,--no-as-needed -lprotobuf
 
 .SUFFIXES:  .o .cpp .cc
 
@@ -25,7 +25,7 @@ OBJS += $(CURRENT_OBJS:%.cpp=%.o)
 OBJS = $(SRC_CPP:%.cpp=%.o)
 OBJS += $(SRC_CC:%.cc=%.o)
 
-OUTPUT = tstring tlist tzset tscript tset tconn
+OUTPUT = tstring tlist tzset tscript tset tconn tbigdata
 
 all:$(OBJS) $(OUTPUT)
 
@@ -45,7 +45,7 @@ tscript:$(OBJS) TestScript.cpp TestTool.cpp
 tconn:$(OBJS) TestConn.cpp TestTool.cpp
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@ 
         
-tset:$(OBJS) TestSet.cpp TestTool.cpp
+tbigdata:$(OBJS) TestBigData.cpp bigdata.pb.cc
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@    
 
 .cpp.o:

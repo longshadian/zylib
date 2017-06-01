@@ -35,5 +35,7 @@ long long DEL(Connection& conn, std::vector<std::string> keys);
 long long DEL(Connection& conn, Buffer key);
 long long DEL(Connection& conn, std::vector<Buffer> keys);
 
+std::vector<Buffer> KEYS(Connection& conn, Buffer key);
+
 std::string catFile(std::string path);
 }

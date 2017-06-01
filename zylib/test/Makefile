@@ -1,13 +1,11 @@
 
-INC =	-I/usr/local/mysql/include		\
-		-I./
+INC = -I./
 
 LIB	=  -L/usr/local/mysql/lib	-lmysqlclient
 		
 CC      = g++
-CFLAGS  = -g -Wall -Werror -std=c++11 
-#  -Wshadow -Wunreachable-code -Wextra -Wconversion
-LDFLAGS = -Wl,--no-as-needed,-rpath=/usr/local/mysql/lib -lpthread
+CFLAGS  = -g -Wall -Werror -std=c++14 -Wshadow -Wunreachable-code -Wextra -Wconversion
+LDFLAGS = -Wl,--no-as-needed 
 
 .SUFFIXES:  .o .cpp .cc
 
@@ -21,23 +19,13 @@ INC += -I$(SRC_DIR)
 OBJS = $(SRC_CPP:%.cpp=%.o)
 OBJS += $(SRC_CC:%.cc=%.o)
 
-#OUTPUT = testmisc testselect
-OUTPUT = test_select test_dbservice test_transaction
+OUTPUT = test_snowflake
 
-all:$(OBJS) $(OUTPUT)
+#all:$(OBJS) $(OUTPUT)
+all:$(OUTPUT)
 
-test_misc:$(OBJS) TestMisc.cpp
+test_snowflake:../Snowflake.h ../TypeTraits.h TestSnowflake.cpp
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
-    
-test_select:$(OBJS) TestSelect.cpp
-	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
-
-test_dbservice:$(OBJS) TestDBService.cpp DataBaseService.cpp
-	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
-
-test_transaction:$(OBJS) TestTransaction.cpp
-	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
-    
 
 .cpp.o:
 	@echo [  $(shell expr $(shell echo $(OBJS)|sed 's#$@.*$$#$@#'|wc -w) \* 100 / $(words $(OBJS)))%] $(CC) -c $< -o $@ 

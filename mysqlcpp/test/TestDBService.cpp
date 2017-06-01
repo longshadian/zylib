@@ -113,7 +113,7 @@ void testConnClosed()
 
 int main()
 {
-    mysqlcpp::initLog(&std::cout, mysqlcpp::LOG_ERROR);
+    mysqlcpp::initLog(&std::cout, mysqlcpp::ERROR);
 
     //test();
     //test2();

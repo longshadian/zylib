@@ -102,4 +102,37 @@ long long List::RPUSH(Buffer key, Buffer val)
     return r->integer;
 }
 
+void List::LTRIM(Buffer key, int start, int stop)
+{
+    Reply reply{reinterpret_cast<redisReply*>(
+        ::redisCommand(m_conn.getRedisContext(), "LTRIM %b %d %d", key.getData(), key.getLen(),
+            start, stop))};
+    redisReply* r = reply.getRedisReply();
+    if (!r)
+        throw ConnectionException("LTRIM reply null");
+    if (r->type == REDIS_REPLY_ERROR)
+        throw ReplyErrorException(r->str);
+    if (r->type != REDIS_REPLY_STATUS)
+        throw ReplyTypeException("LTRIM type REDIS_REPLY_STATUS");
+    if (r->str != std::string("OK"))
+        throw ReplyTypeException("LTRIM type REDIS_REPLY_STATUS != OK");
+}
+
+Buffer List::LINDEX(Buffer key, int index)
+{
+    Reply reply{reinterpret_cast<redisReply*>(
+        ::redisCommand(m_conn.getRedisContext(), "LINDEX %b %d", key.getData(), key.getLen(),
+            index))};
+    redisReply* r = reply.getRedisReply();
+    if (!r)
+        throw ConnectionException("LINDEX reply null");
+    if (r->type == REDIS_REPLY_ERROR)
+        throw ReplyErrorException(r->str);
+    if (r->type == REDIS_REPLY_NIL)
+        return {};
+    if (r->type != REDIS_REPLY_STRING)
+        throw ReplyTypeException("LINDEX type REDIS_REPLY_STRING");
+    return replyToRedisBuffer(r);
+}
+
 }

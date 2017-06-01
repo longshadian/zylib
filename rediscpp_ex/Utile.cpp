@@ -147,4 +147,20 @@ std::string catFile(std::string path)
     return content;
 }
 
+std::vector<Buffer> KEYS(Connection& conn, Buffer key)
+{
+    Reply reply{ reinterpret_cast<redisReply*>(
+        ::redisCommand(conn.getRedisContext(),"KEYS %b", key.getData(), key.getLen())
+        )
+    };
+    redisReply* r = reply.getRedisReply();
+    if (!r)
+        throw ConnectionException("KEYS reply null");
+    if (r->type == REDIS_REPLY_ERROR)
+        throw ReplyErrorException(r->str);
+    if (r->type != REDIS_REPLY_ARRAY)
+        throw ReplyTypeException("KEYS type REDIS_REPLY_ARRAY");
+    return replyArrayToBuffer(r, r->elements);
+}
+
 }

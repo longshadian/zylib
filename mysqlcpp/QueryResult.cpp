@@ -277,7 +277,7 @@ bool PreparedResultSet::fetchRows()
     }
 
     m_rows.resize(m_row_count);
-    size_t m_row_position = 0;
+    m_row_position = 0;
     while (true) {
         int ret = nextRow();
         if (ret == -1)
