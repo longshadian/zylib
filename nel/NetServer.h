@@ -16,15 +16,14 @@ class UnifiedConnection;
 class NetServer : public NetBase
 {
 public:
-public:
     NetServer(boost::asio::io_service& io_service, const std::string& ip, int port, UnifiedConnection& conn);
     virtual ~NetServer();
 
     virtual void send(CMessage msg, TSockPtr sock) override;
-    virtual bool flush(CUnifiedConnectionPtr conn) override;
+    virtual bool flush(UnifiedConnectionPtr conn) override;
     virtual void update(DiffTime diff_time) override;
     virtual bool connected() const override;
-    virtual void disconnect(CUnifiedConnectionPtr conn) override;
+    virtual void disconnect(UnifiedConnectionPtr conn) override;
 
     void accept();
     void setAcceptFailCB(AcceptFailCB cb);

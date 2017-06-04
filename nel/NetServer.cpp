@@ -3,6 +3,7 @@
 #include "Log.h"
 #include "TSock.h"
 #include "NetClient.h"
+#include "UnifiedConnection.h"
 
 namespace NLNET {
 
@@ -24,13 +25,13 @@ NetServer::~NetServer()
 
 void NetServer::send(CMessage msg, TSockPtr sock)
 {
-    m_io_service.post([sock, msg = std::move(msg)]
+    m_io_service.post([sock, msgw = std::move(msg)]
     {
-        sock->sendMsg(std::move(msg));
+        sock->sendMsg(std::move(msgw));
     });
 }
 
-bool NetServer::flush(CUnifiedConnectionPtr conn)
+bool NetServer::flush(UnifiedConnectionPtr conn)
 {
     return true;
 }
@@ -45,7 +46,7 @@ bool NetServer::connected() const
     return true;
 }
 
-void NetServer::disconnect(CUnifiedConnectionPtr conn)
+void NetServer::disconnect(UnifiedConnectionPtr conn)
 {
 }
 
@@ -55,16 +56,18 @@ void NetServer::accept()
     m_acceptor.async_accept(m_socket,
         [this, self](const boost::system::error_code& ec)
         {
-            std::cout << "accept xxxx\n";
+            // TODO 设置最多能有多少链接
+            LOG_DEBUG << "start accept";
             if (!ec) {
-                auto sock = std::make_shared<TSock>(m_io_service, std::move(m_socket));
+                auto sock = std::make_shared<TSock>(std::move(m_socket), m_conn);
                 sock->start();
-                m_conn.addNewClientScok(sock);
-                m_accept_success_cb(sock);
+                m_conn.onServerSockAccept(sock);
+                //m_accept_success_cb(sock);
                 LOG_DEBUG << "new socket";
             } else {
-                LOG_WARNING << "accept error reason:" << ec.value() << " "  << ec.message();
-                m_accept_fail_cb(ec);
+                LOG_WARNING << "accept error. service will stop accept. reason:" 
+                    << ec.value() << " "  << ec.message();
+                //m_accept_fail_cb(ec);
                 return;
             }
             accept();

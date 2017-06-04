@@ -7,7 +7,7 @@ namespace NLNET {
 NamingClient::NamingClient(boost::asio::io_service& io_service)
     : m_io_service(io_service)
     , m_sock(io_service)
-    , m_is_connected(true)
+    , m_is_connected()
 {
 }
 

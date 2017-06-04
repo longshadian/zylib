@@ -5,8 +5,8 @@
 #include <string>
 #include <chrono>
 
-#include "unified_network.h"
-#include "unified_connection.h"
+#include "UnifiedNetwork.h"
+#include "UnifiedConnection.h"
 #include "NetServer.h"
 
 NamingService::NamingService()
@@ -20,7 +20,7 @@ NamingService::~NamingService()
 void NamingService::start()
 {
     NLNET::UnifiedNetwork network;
-    if (!network.init("ns", NLNET::CInetAddress{"127.0.0.1", 22001})) {
+    if (!network.init(99, "ns", NLNET::CInetAddress{"127.0.0.1", 22001})) {
         std::cout << "init error\n";
         return;
     }
@@ -37,6 +37,7 @@ void test()
 
 int main()
 {
+    /*
     boost::asio::io_service io_service{};
     boost::asio::io_service::work work{io_service};
 
@@ -49,6 +50,7 @@ int main()
     } catch (const std::exception& e) {
         std::cout << "main exception:" << e.what() << "\n";
     }
+    */
 
     std::cout << "out\n";
     return 0;

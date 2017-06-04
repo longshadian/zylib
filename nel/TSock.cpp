@@ -2,29 +2,32 @@
 
 #include <chrono>
 #include <thread>
-#include <future>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 #include "Log.h"
+#include "UnifiedConnection.h"
 
 namespace NLNET {
 
-TSock::TSock(boost::asio::io_service& io_service, boost::asio::ip::tcp::socket socket)
-    : m_io_service(io_service)
+TSock::TSock(boost::asio::ip::tcp::socket socket, UnifiedConnection& conn)
+    : m_conn(conn)
     , m_socket(std::move(socket))
     , m_write_buffer()
     , m_is_closed(false)
+    , m_received_msg_cb()
+    , m_closed_cb()
+    , m_timeout_cb()
+    , m_read_timeout_seconds()
+    , m_read_head()
+    , m_read_buffer()
+    , m_sock_id(-1)
 {
+    m_read_head.fill(0);
 }
 
 TSock::~TSock()
 {
-}
-
-bool TSock::connect(const std::string& ip, int32_t port)
-{
-    return syncConnect(ip, port);
 }
 
 void TSock::start()
@@ -34,8 +37,16 @@ void TSock::start()
 
 void TSock::sendMsg(CMessage msg)
 {
+    std::vector<uint8_t> all{};
+    auto body = msg.serializeToArray();
+    all.resize(4 + body.size());
+
+    int32_t len = (int32_t)body.size() + 4;
+    std::memcpy(all.data(), &len, 4);
+    std::memcpy(all.data() + 4, body.data(), body.size());
+
     auto self(shared_from_this());
-    m_io_service.post([this, self, msg = std::move(msg)]()
+    getIoService().post([this, self, msg = std::move(all)]()
         {
             bool wait_write = !m_write_buffer.empty();
             m_write_buffer.push_back(std::move(msg));
@@ -70,6 +81,31 @@ void TSock::doRead()
     std::shared_ptr<boost::asio::deadline_timer> timer;
     if (m_read_timeout_seconds > 0)
         timer = setTimeoutTimer(m_read_timeout_seconds);
+    boost::asio::async_read(getSocket(), boost::asio::buffer(m_read_head),
+        [this, self = shared_from_this(), timer](boost::system::error_code ec, size_t length)
+    {
+        timeoutCancel(timer);
+        (void)length;
+        if (ec) {
+            onClosed();
+            LOG_WARNING << "readBody error " << ec.message();
+            return;
+        }
+
+        int32_t len = 0;
+        std::memcpy(&len, m_read_head.data(), m_read_head.size());
+        m_read_buffer.resize(len - 4);
+
+        LOG_DEBUG << "read head len :" << len;
+        doReadBody();
+    });
+}
+
+void TSock::doReadBody()
+{
+    std::shared_ptr<boost::asio::deadline_timer> timer;
+    if (m_read_timeout_seconds > 0)
+        timer = setTimeoutTimer(m_read_timeout_seconds);
     boost::asio::async_read(getSocket(), boost::asio::buffer(m_read_buffer),
         [this, self = shared_from_this(), timer](boost::system::error_code ec, size_t length)
     {
@@ -80,10 +116,18 @@ void TSock::doRead()
             LOG_WARNING << "readBody error " << ec.message();
             return;
         }
-        std::string s = (const char*)m_read_buffer.data();
 
-        NetWorkMessage msg{};
-        m_received_msg_cb(msg, self->getConnectionHdl());
+        auto msg = std::make_shared<NetWorkMessage>();
+        msg->m_sock_id = getSockID();
+        msg->m_msg.parseFromArray(m_read_buffer);
+        //m_received_msg_cb(msg, self->getConnectionHdl());
+
+        LOG_DEBUG << "read body: " <<  msg->m_msg.getMsgName() 
+            << " data:" << msg->m_msg.getData();
+        m_conn.onReceivedMsg(std::move(msg));
+
+        m_read_head.fill(0);
+        m_read_buffer.clear();
 
         doRead();
     });
@@ -96,7 +140,7 @@ boost::asio::ip::tcp::socket& TSock::getSocket()
 
 boost::asio::io_service& TSock::getIoService()
 {
-    return m_io_service;
+    return m_socket.get_io_service();
 }
 
 void TSock::closeSocket()
@@ -112,9 +156,11 @@ void TSock::onClosed(CLOSED_TYPE type)
     if (m_is_closed.exchange(true))
         return;
     if (type == CLOSED_TYPE::NORMAL) {
-        m_closed_cb(getConnectionHdl());
+        //m_closed_cb(getConnectionHdl());
+        m_conn.onServerSockClosed(getSockID());
     } else if (type == CLOSED_TYPE::TIMEOUT) {
-        m_timeout_cb(getConnectionHdl());
+        //m_timeout_cb(getConnectionHdl());
+        m_conn.onServerSockTimeout(getSockID());
     }
     closeSocket();
 }
@@ -124,7 +170,7 @@ void TSock::shutdown()
     if (m_is_closed)
         return;
     auto self(shared_from_this());
-    m_io_service.post([this, self]() 
+    getIoService().post([this, self]() 
         {
             self->onClosed(CLOSED_TYPE::ACTIVITY);
         });
@@ -132,7 +178,7 @@ void TSock::shutdown()
 
 std::shared_ptr<boost::asio::deadline_timer> TSock::setTimeoutTimer(int seconds)
 {
-    auto timer = std::make_shared<boost::asio::deadline_timer>(m_io_service);
+    auto timer = std::make_shared<boost::asio::deadline_timer>(getIoService());
     timer->expires_from_now(boost::posix_time::seconds(seconds));
 
     auto self(shared_from_this());
@@ -162,26 +208,19 @@ void TSock::setReceivedMsgCB(ReceivedMsgCallback cb)
     m_received_msg_cb = std::move(cb);
 }
 
-bool TSock::syncConnect(const std::string& ip, int32_t port)
+SockID TSock::getSockID() const
 {
-    std::promise<bool> p{};
-    auto f = p.get_future();
-    std::thread t([this, &p, &ip, & port] {
-        try {
-            boost::asio::ip::tcp::resolver r(m_io_service);
-            boost::asio::connect(getSocket(), r.resolve({ip, std::to_string(port)}));
-            p.set_value(true);
-        } catch (const std::exception& e) {
-            p.set_exception(std::current_exception());
-        }
-    });
+    return m_sock_id;
+}
 
-    try {
-        auto ret = f.get();
-        return ret;
-    } catch (const std::exception& e) {
-        return false;
-    }
+void TSock::setSockID(SockID sid)
+{
+    m_sock_id = sid;
+}
+
+boost::asio::io_service& TSock::getIOService()
+{
+    return m_socket.get_io_service();
 }
 
 } // NLNET

@@ -9,6 +9,7 @@
 
 namespace NLNET {
 
+
 class NamingClient
 {
 public:

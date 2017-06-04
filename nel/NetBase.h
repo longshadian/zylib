@@ -12,10 +12,10 @@ public:
 
     virtual void send(CMessage buffer, TSockPtr sock) = 0;
 
-    virtual bool flush(CUnifiedConnectionPtr conn) = 0;
+    virtual bool flush(UnifiedConnectionPtr conn) = 0;
     virtual void update(DiffTime diff_time) = 0;
     virtual bool connected() const = 0;
-    virtual void disconnect(CUnifiedConnectionPtr conn) = 0;
+    virtual void disconnect(UnifiedConnectionPtr conn) = 0;
 };
 
 }

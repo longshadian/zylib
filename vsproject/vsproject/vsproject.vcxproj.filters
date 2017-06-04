@@ -265,13 +265,7 @@
     <ClInclude Include="..\..\network\Message.h">
       <Filter>network</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\nel\unified_network.h">
-      <Filter>nel</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\nel\Log.h">
-      <Filter>nel</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\nel\unified_connection.h">
       <Filter>nel</Filter>
     </ClInclude>
     <ClInclude Include="..\..\nel\Types.h">
@@ -302,6 +296,18 @@
       <Filter>nel\test</Filter>
     </ClInclude>
     <ClInclude Include="..\..\nel\ServiceDefine.h">
+      <Filter>nel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\nel\CallbackManager.h">
+      <Filter>nel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\nel\UnifiedNetwork.h">
+      <Filter>nel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\nel\UnifiedConnection.h">
+      <Filter>nel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\nel\Service.h">
       <Filter>nel</Filter>
     </ClInclude>
   </ItemGroup>
@@ -516,12 +522,6 @@
     <ClCompile Include="..\..\network\Message.cpp">
       <Filter>network</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\nel\unified_network.cpp">
-      <Filter>nel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\nel\unified_connection.cpp">
-      <Filter>nel</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\nel\NamingClient.cpp">
       <Filter>nel</Filter>
     </ClCompile>
@@ -548,6 +548,21 @@
     </ClCompile>
     <ClCompile Include="..\..\nel\Log.cpp">
       <Filter>nel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\nel\CallbackManager.cpp">
+      <Filter>nel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\nel\UnifiedNetwork.cpp">
+      <Filter>nel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\nel\UnifiedConnection.cpp">
+      <Filter>nel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\nel\Service.cpp">
+      <Filter>nel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\nel\test\TestClient.cpp">
+      <Filter>nel\test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

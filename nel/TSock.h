@@ -12,6 +12,7 @@
 namespace NLNET {
 
 class TSock;
+class UnifiedConnection;
 
 using TSockHdl = std::weak_ptr<TSock>;
 
@@ -28,7 +29,7 @@ public:
     using ConnectionAccept = std::function<void(TSockHdl, const ConnectionInfo)>;
     using ConnectionClosed = std::function<void(TSockHdl)>;
     using ConnectionTimeout = std::function<void(TSockHdl)>;
-    using ReceivedMsgCallback = std::function<void(NetWorkMessage, TSockHdl)>;
+    using ReceivedMsgCallback = std::function<void(NetWorkMessagePtr, TSockHdl)>;
 
     enum class CLOSED_TYPE : int
     {
@@ -38,10 +39,9 @@ public:
     };
 
 public:
-    TSock(boost::asio::io_service& io_service, boost::asio::ip::tcp::socket socket);
+    TSock(boost::asio::ip::tcp::socket socket, UnifiedConnection& conn);
     ~TSock();
 
-    bool connect(const std::string& ip, int32_t port);
     void start();
 
     void sendMsg(CMessage msg);
@@ -51,25 +51,32 @@ public:
     void onClosed(CLOSED_TYPE type = CLOSED_TYPE::NORMAL);
 
     void setReceivedMsgCB(ReceivedMsgCallback cb);
+
+    SockID getSockID() const;
+    void setSockID(SockID sid);
 private:
-    bool syncConnect(const std::string& ip, int32_t port);
+    boost::asio::io_service& getIOService();
+
 protected:
     TSockHdl getConnectionHdl();
     void closeSocket();
     void doWrite();
     void doRead();
+    void doReadBody();
     std::shared_ptr<boost::asio::deadline_timer> setTimeoutTimer(int seconds);
     void timeoutCancel(std::shared_ptr<boost::asio::deadline_timer> timer);
 protected:
-    boost::asio::io_service&        m_io_service;
+    UnifiedConnection&              m_conn;
     boost::asio::ip::tcp::socket    m_socket;
-    std::list<CMessage>             m_write_buffer;
+    std::list<std::vector<uint8_t>> m_write_buffer;
     std::atomic<bool>               m_is_closed;
     ReceivedMsgCallback             m_received_msg_cb;
     ConnectionClosed                m_closed_cb;
     ConnectionTimeout               m_timeout_cb;
     int32_t                         m_read_timeout_seconds;
+    std::array<uint8_t, 4>          m_read_head;
     std::vector<uint8_t>            m_read_buffer;
+    SockID                          m_sock_id;
 };
 
 } // NLNET

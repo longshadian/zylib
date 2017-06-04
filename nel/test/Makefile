@@ -4,7 +4,7 @@ INC =	-I./
 LIB	=  -L/usr/local/mysql/lib	-lmysqlclient -lboost_system -lpthread
 		
 CC      = g++
-CFLAGS  = -g -Wall -Werror -std=c++11
+CFLAGS  = -g -Wall -Werror -std=c++14
 #  -Wshadow -Wunreachable-code -Wextra -Wconversion
 LDFLAGS = -Wl,--no-as-needed
 
@@ -20,7 +20,7 @@ INC += -I$(SRC_DIR)
 OBJS = $(SRC_CPP:%.cpp=%.o)
 OBJS += $(SRC_CC:%.cc=%.o)
 
-OUTPUT = naming_service game_service
+OUTPUT = naming_service game_service test_client
 
 all:$(OBJS) $(OUTPUT)
 
@@ -28,6 +28,9 @@ naming_service:$(OBJS) NamingService.cpp
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
     
 game_service:$(OBJS) GameService.cpp
+	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
+
+test_client:$(OBJS) TestClient.cpp
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
 
 .cpp.o:
