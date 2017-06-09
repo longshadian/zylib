@@ -28,13 +28,11 @@ public:
 
 	void connect();
 
+	void addService(ServiceID service_id, const std::string& name, const CInetAddress& addr, bool auto_retry = false);
 	void addService(ServiceID service_id, const std::string& name, const std::vector<CInetAddress>& addr, bool auto_retry = false);
 
 	void update(DiffTime diff_time);
-
-    /*
 	bool send(ServiceID service_id, CMessage msg, AddrID add_id = AddrID_Default);
-    */
 
 	//void sendAll(const CMessage& msg);
 

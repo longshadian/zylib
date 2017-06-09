@@ -114,6 +114,13 @@ void UnifiedNetwork::connect()
 }
 
 void UnifiedNetwork::addService(ServiceID service_id,
+    const std::string& name, const CInetAddress& addr, bool auto_retry)
+{
+    std::vector<CInetAddress> addrs = {addr};
+    addService(service_id, name, addrs, auto_retry);
+}
+
+void UnifiedNetwork::addService(ServiceID service_id,
     const std::string& name,
     const std::vector<CInetAddress>& addr, bool auto_retry)
 {
@@ -129,7 +136,7 @@ void UnifiedNetwork::addService(ServiceID service_id,
             continue;
         auto net_client = std::make_shared<NetClient>(m_io_service, *conn);
         if (net_client->connect(addr[i])) {
-            conn->addClientEndpoint(std::move(net_client));
+            conn->addClientEndpoint(std::move(net_client), addr[i]);
         } else {
             LOG_WARNING << "can't add service because no retry and can't connect";
         } 
@@ -152,7 +159,6 @@ void UnifiedNetwork::update(DiffTime diff_time)
     }
 }
 
-/*
 bool UnifiedNetwork::send(ServiceID service_id, CMessage msg, AddrID addr_id)
 {
     auto conn = findConnection(service_id);
@@ -169,7 +175,6 @@ bool UnifiedNetwork::send(ServiceID service_id, CMessage msg, AddrID addr_id)
     conn->sendMsg(std::move(msg));
     return true;
 }
-*/
 
 /*
 void UnifiedNetwork::sendAll(const CMessage& msg)

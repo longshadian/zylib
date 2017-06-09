@@ -76,10 +76,13 @@ bool NetClient::syncConnect(const std::string& ip, int32_t port)
             boost::asio::connect(m_sock->getSocket(),
                 r.resolve({ip, std::to_string(port)}));
             p.set_value(true);
-        } catch (const std::exception& e) {
-            p.set_exception(std::current_exception());
+        } catch (std::exception e) {
+            LOG_WARNING << "conn exception " << e.what();
+            p.set_value(false);
         }
     });
+
+    t.join();
 
     try {
         auto ret = f.get();

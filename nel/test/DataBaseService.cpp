@@ -1,4 +1,4 @@
-#include "GameService.h"
+#include "DataBaseService.h"
 
 #include <thread>
 #include <chrono>
@@ -9,40 +9,26 @@
 
 #include "TestDefine.h"
 
-GameService* g_service = nullptr;
-
-void reqTest(NLNET::TSockPtr sock, NLNET::CMessage& msg)
+void reqUserData(NLNET::TSockPtr sock, NLNET::CMessage& req)
 {
-    auto s = msg.getData();
-    std::cout << "req:" << msg.m_msg_name << " content:" << s << "\n";
-    s += " req_user_data";
-
-    NLNET::CMessage req_db{def::_REQ_USER_DATA, s};
-    g_service->m_network->send(def::DBS_SID, req_db);
-}
-
-void rspUserData(NLNET::TSockPtr sock, NLNET::CMessage& msg)
-{
-    auto s = msg.getData();
-    std::cout << "receive:" << msg.m_msg_name << " content:" << s << "\n";
-    s += " GS-rspUserData";
-
-    NLNET::CMessage rsp{def::_RSP_TEST, s};
+    auto s = req.getData();
+    std::cout << "req:" << req.m_msg_name << " content:" << s << "\n";
+    s += " rsp from dbs  user_data:xxxx";
+    NLNET::CMessage rsp{ def::_RSP_USER_DATA, s};
     sock->sendMsg(rsp);
 }
 
 NLNET::MsgCallbackArray call_array = 
 {
-    {def::_REQ_TEST, &reqTest},
-    {def::_RSP_USER_DATA, &rspUserData},
+    {def::_REQ_USER_DATA, &reqUserData },
 };
 
-GameService::GameService()
+DataBaseService::DataBaseService()
     : m_network()
 {
 }
 
-GameService::~GameService()
+DataBaseService::~DataBaseService()
 {
     if (m_network) {
         m_network->stop();
@@ -50,29 +36,32 @@ GameService::~GameService()
     }
 }
 
-bool GameService::start()
+bool DataBaseService::start()
 {
     m_network = std::make_unique<NLNET::UnifiedNetwork>();
-    if (!m_network->init(def::GS_SID, def::GS_NAME, def::GS_ADDR)) {
+    if (!m_network->init(def::DBS_SID, def::DBS_NAME, def::DBS_ADDR)) {
         std::cout << "network init faild!\n";
         return false;  
     }
-
-    m_network->addService(def::DBS_SID, def::DBS_NAME, def::DBS_ADDR, false);
 
     m_network->getCallbackManager().setMsgCallbackArray(std::move(call_array));
     return true;
 }
 
-void GameService::update(uint32_t diff)
+bool DataBaseService::sendMsg(std::string s)
+{
+    (void)s;
+    return true;
+}
+
+void DataBaseService::update(uint32_t diff)
 {
     m_network->update(diff);
 } 
 
 int main()
 {
-    GameService gs{};
-    g_service = &gs;
+    DataBaseService gs{};
     if (!gs.start())
         return 0;
 

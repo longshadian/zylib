@@ -14,8 +14,6 @@ namespace NLNET {
 class TSock;
 class UnifiedConnection;
 
-using TSockHdl = std::weak_ptr<TSock>;
-
 struct ConnectionInfo
 {
     size_t m_timeout_seconds;
@@ -52,8 +50,7 @@ public:
 
     void setReceivedMsgCB(ReceivedMsgCallback cb);
 
-    SockID getSockID() const;
-    void setSockID(SockID sid);
+    TSockHdl getSockHdl();
 private:
     boost::asio::io_service& getIOService();
 
@@ -76,7 +73,6 @@ protected:
     int32_t                         m_read_timeout_seconds;
     std::array<uint8_t, 4>          m_read_head;
     std::vector<uint8_t>            m_read_buffer;
-    SockID                          m_sock_id;
 };
 
 } // NLNET

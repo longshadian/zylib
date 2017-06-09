@@ -4,6 +4,7 @@
 #include <string>
 #include <mutex>
 #include <unordered_set>
+#include <unordered_map>
 
 #include "Types.h"
 #include "NetBase.h"
@@ -22,7 +23,6 @@ public:
         TEndpoint()
             : m_is_server_conn()
             , m_net_conn()
-            , m_sock_id()
             , m_sock()
         {
         }
@@ -62,7 +62,6 @@ public:
         /// 是服务端的链接
         bool        m_is_server_conn;
         NetBasePtr  m_net_conn;
-        SockID      m_sock_id;
         TSockPtr    m_sock;
     };
 
@@ -77,11 +76,10 @@ public:
         bool auto_retry = false);
 
     void connect(const CInetAddress& addr);
-    int32_t findEndpointIndex(AddrID addr_id) const;
 
     void onServerSockAccept(TSockPtr sock);
-    void onServerSockTimeout(SockID sock_id);
-    void onServerSockClosed(SockID sock_id);
+    void onServerSockTimeout(TSockPtr sock);
+    void onServerSockClosed(TSockPtr sock);
     void onReceivedMsg(NetWorkMessagePtr msg);
 
     void update(DiffTime diff_time);
@@ -95,14 +93,13 @@ public:
     ServiceID getServiceID() const;
 
     void addServerAcceptEndpoint(NetServerPtr net_server);
-    void addClientEndpoint(NetClientPtr net_client);
+    void addClientEndpoint(NetClientPtr net_client, const CInetAddress& addr);
     bool hasEndpoint(const CInetAddress& addr) const;
-    TEndpoint* getEndpoint(SockID sock_id);
 
-    void sendMsg(SockID sock_id, CMessage msg);
+    void sendMsg(TSockPtr sock, CMessage msg);
 private:
-    TEndpoint* findEmptyEndpoint();
-    TEndpoint* findOrCreateEmptyEndpoint();
+    TEndpoint* findEndpoint(const TSockPtr& sock);
+    void eraseEndpoint(const TSockPtr& sock);
 
 private:
     UnifiedNetwork&         m_network;
@@ -110,14 +107,15 @@ private:
     ServiceID               m_service_id;
     STATE                   m_state;
     bool                    m_auto_retry;
-    std::vector<TEndpoint>  m_endpoints;
-    SockID                  m_default_endpoint_index;
+    std::unordered_map<TSockPtr, TEndpoint> m_endpoints;
 
     std::mutex              m_mtx;
     std::list<TSockPtr>     m_new_client_sock;
-    std::list<SockID>       m_closed_sock;
-    std::list<SockID>       m_timeout_sock;
+    std::list<TSockPtr>     m_closed_sock;
+    std::list<TSockPtr>     m_timeout_sock;
     std::list<NetWorkMessagePtr> m_new_msg;
+    NetServerPtr            m_net_server;
+    std::vector<CInetAddress> m_addrs;
 };
 
 

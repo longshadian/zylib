@@ -21,6 +21,5 @@ public:
     bool sendMsg(std::string s);
     void update(uint32_t diff);
 
-private:
     std::unique_ptr<NLNET::UnifiedNetwork> m_network;
 };

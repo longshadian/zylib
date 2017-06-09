@@ -157,8 +157,10 @@
     <ClInclude Include="..\..\nel\NetServer.h" />
     <ClInclude Include="..\..\nel\Service.h" />
     <ClInclude Include="..\..\nel\ServiceDefine.h" />
+    <ClInclude Include="..\..\nel\test\DataBaseService.h" />
     <ClInclude Include="..\..\nel\test\GameService.h" />
     <ClInclude Include="..\..\nel\test\NamingService.h" />
+    <ClInclude Include="..\..\nel\test\TestDefine.h" />
     <ClInclude Include="..\..\nel\TSock.h" />
     <ClInclude Include="..\..\nel\Types.h" />
     <ClInclude Include="..\..\nel\UnifiedConnection.h" />
@@ -237,9 +239,11 @@
     <ClCompile Include="..\..\nel\NetServer.cpp" />
     <ClCompile Include="..\..\nel\Service.cpp" />
     <ClCompile Include="..\..\nel\ServiceDefine.cpp" />
+    <ClCompile Include="..\..\nel\test\DataBaseService.cpp" />
     <ClCompile Include="..\..\nel\test\GameService.cpp" />
     <ClCompile Include="..\..\nel\test\NamingService.cpp" />
     <ClCompile Include="..\..\nel\test\TestClient.cpp" />
+    <ClCompile Include="..\..\nel\test\TestDefine.cpp" />
     <ClCompile Include="..\..\nel\TSock.cpp" />
     <ClCompile Include="..\..\nel\UnifiedConnection.cpp" />
     <ClCompile Include="..\..\nel\UnifiedNetwork.cpp" />

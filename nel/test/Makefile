@@ -20,17 +20,20 @@ INC += -I$(SRC_DIR)
 OBJS = $(SRC_CPP:%.cpp=%.o)
 OBJS += $(SRC_CC:%.cc=%.o)
 
-OUTPUT = naming_service game_service test_client
+OUTPUT = naming_service game_service test_client db_service
 
 all:$(OBJS) $(OUTPUT)
 
-naming_service:$(OBJS) NamingService.cpp
+naming_service:$(OBJS) NamingService.cpp TestDefine.cpp
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
     
-game_service:$(OBJS) GameService.cpp
+game_service:$(OBJS) GameService.cpp TestDefine.cpp
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
 
-test_client:$(OBJS) TestClient.cpp
+db_service:$(OBJS) DataBaseService.cpp TestDefine.cpp
+	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
+
+test_client:$(OBJS) TestClient.cpp TestDefine.cpp
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
 
 .cpp.o:

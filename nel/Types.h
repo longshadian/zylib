@@ -8,9 +8,13 @@
 namespace NLNET {
 
 using ServiceID = int32_t;
-using SockID = int32_t;
+//using SockID = int32_t;
 
 using DiffTime = uint32_t;
+
+class TSock;
+using TSockPtr = std::shared_ptr<TSock>;
+using TSockHdl = std::weak_ptr<TSock>;
 
 struct CMessage
 {
@@ -102,7 +106,7 @@ struct CMessage
 struct NetWorkMessage
 {
     NetWorkMessage() = default;
-    SockID   m_sock_id;
+    TSockHdl m_sock_hdl;
     CMessage m_msg;
 };
 
@@ -128,9 +132,6 @@ struct ServiceAddr
     ServiceID   m_service_id;
     std::vector<CInetAddress> m_addresses;
 };
-
-class TSock;
-using TSockPtr = std::shared_ptr<TSock>;
 
 class NetBase;
 using NetBasePtr = std::shared_ptr<NetBase>;

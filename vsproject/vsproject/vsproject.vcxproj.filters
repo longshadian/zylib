@@ -310,6 +310,12 @@
     <ClInclude Include="..\..\nel\Service.h">
       <Filter>nel</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\nel\test\DataBaseService.h">
+      <Filter>nel\test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\nel\test\TestDefine.h">
+      <Filter>nel\test</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\mysqlcpp\Connection.cpp">
@@ -562,6 +568,12 @@
       <Filter>nel</Filter>
     </ClCompile>
     <ClCompile Include="..\..\nel\test\TestClient.cpp">
+      <Filter>nel\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\nel\test\DataBaseService.cpp">
+      <Filter>nel\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\nel\test\TestDefine.cpp">
       <Filter>nel\test</Filter>
     </ClCompile>
   </ItemGroup>

@@ -21,7 +21,6 @@ TSock::TSock(boost::asio::ip::tcp::socket socket, UnifiedConnection& conn)
     , m_read_timeout_seconds()
     , m_read_head()
     , m_read_buffer()
-    , m_sock_id(-1)
 {
     m_read_head.fill(0);
 }
@@ -37,6 +36,7 @@ void TSock::start()
 
 void TSock::sendMsg(CMessage msg)
 {
+    // TODO
     std::vector<uint8_t> all{};
     auto body = msg.serializeToArray();
     all.resize(4 + body.size());
@@ -118,7 +118,7 @@ void TSock::doReadBody()
         }
 
         auto msg = std::make_shared<NetWorkMessage>();
-        msg->m_sock_id = getSockID();
+        msg->m_sock_hdl = getSockHdl();
         msg->m_msg.parseFromArray(m_read_buffer);
         //m_received_msg_cb(msg, self->getConnectionHdl());
 
@@ -157,10 +157,10 @@ void TSock::onClosed(CLOSED_TYPE type)
         return;
     if (type == CLOSED_TYPE::NORMAL) {
         //m_closed_cb(getConnectionHdl());
-        m_conn.onServerSockClosed(getSockID());
+        m_conn.onServerSockClosed(shared_from_this());
     } else if (type == CLOSED_TYPE::TIMEOUT) {
         //m_timeout_cb(getConnectionHdl());
-        m_conn.onServerSockTimeout(getSockID());
+        m_conn.onServerSockTimeout(shared_from_this());
     }
     closeSocket();
 }
@@ -208,14 +208,9 @@ void TSock::setReceivedMsgCB(ReceivedMsgCallback cb)
     m_received_msg_cb = std::move(cb);
 }
 
-SockID TSock::getSockID() const
+TSockHdl TSock::getSockHdl()
 {
-    return m_sock_id;
-}
-
-void TSock::setSockID(SockID sid)
-{
-    m_sock_id = sid;
+    return TSockHdl{shared_from_this()};
 }
 
 boost::asio::io_service& TSock::getIOService()
