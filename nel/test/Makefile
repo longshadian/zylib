@@ -27,7 +27,7 @@ all:$(OBJS) $(OUTPUT)
 naming_service:$(OBJS) NamingService.cpp TestDefine.cpp
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
     
-game_service:$(OBJS) GameService.cpp TestDefine.cpp
+game_service:$(OBJS) GameService.cpp TestDefine.cpp GSCallbackManager.cpp
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
 
 db_service:$(OBJS) DataBaseService.cpp TestDefine.cpp

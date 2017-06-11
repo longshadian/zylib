@@ -316,6 +316,15 @@
     <ClInclude Include="..\..\nel\test\TestDefine.h">
       <Filter>nel\test</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\nel\test\DBSCallbackManager.h">
+      <Filter>nel\test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\nel\test\GSCallbackManager.h">
+      <Filter>nel\test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\nel\test\X.h">
+      <Filter>nel\test</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\mysqlcpp\Connection.cpp">
@@ -574,6 +583,18 @@
       <Filter>nel\test</Filter>
     </ClCompile>
     <ClCompile Include="..\..\nel\test\TestDefine.cpp">
+      <Filter>nel\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\nel\test\DBSCallbackManager.cpp">
+      <Filter>nel\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\nel\test\GSCallbackManager.cpp">
+      <Filter>nel\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\nel\test\main.cpp">
+      <Filter>nel\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\nel\test\X.cpp">
       <Filter>nel\test</Filter>
     </ClCompile>
   </ItemGroup>

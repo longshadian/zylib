@@ -5,6 +5,7 @@
 
 #include "UnifiedNetwork.h"
 #include "CallbackManager.h"
+#include "TSock.h"
 
 namespace NLNET {
 
@@ -16,13 +17,14 @@ UnifiedConnection::UnifiedConnection(UnifiedNetwork& network,
     , m_state()
     , m_auto_retry(auto_retry)
     , m_endpoints()
+    , m_retry_endpoints()
+    , m_net_server()
+    , m_service_addrs()
     , m_mtx()
     , m_new_client_sock()
     , m_closed_sock()
     , m_timeout_sock()
     , m_new_msg()
-    , m_net_server()
-    , m_addrs()
 {
 }
 
@@ -33,20 +35,42 @@ void UnifiedConnection::connect(const CInetAddress& addr)
 
 void UnifiedConnection::onServerSockAccept(TSockPtr sock)
 {
+    sock->setReceivedMsgCallback(
+        std::bind(&UnifiedConnection::onReceivedMsg,
+            this, std::placeholders::_1));
+    sock->setClosedCallback(
+        std::bind(&UnifiedConnection::onSockClosed,
+            this, std::placeholders::_1));
+    sock->setTimeoutCallback(
+        std::bind(&UnifiedConnection::onSockTimeout,
+            this, std::placeholders::_1));
     std::lock_guard<std::mutex> lk{m_mtx};
     m_new_client_sock.push_back(std::move(sock));
 }
 
-void UnifiedConnection::onServerSockTimeout(TSockPtr sock)
+void UnifiedConnection::onClientSockConnect(TSockPtr sock)
 {
-    std::lock_guard<std::mutex> lk{m_mtx};
-    m_closed_sock.push_back(sock);
+    sock->setReceivedMsgCallback(
+        std::bind(&UnifiedConnection::onReceivedMsg,
+            this, std::placeholders::_1));
+    sock->setClosedCallback(
+        std::bind(&UnifiedConnection::onSockClosed,
+            this, std::placeholders::_1));
+    sock->setTimeoutCallback(
+        std::bind(&UnifiedConnection::onSockTimeout,
+            this, std::placeholders::_1));
 }
 
-void UnifiedConnection::onServerSockClosed(TSockPtr sock)
+void UnifiedConnection::onSockTimeout(TSockPtr sock)
 {
     std::lock_guard<std::mutex> lk{m_mtx};
     m_timeout_sock.push_back(sock);
+}
+
+void UnifiedConnection::onSockClosed(TSockPtr sock)
+{
+    std::lock_guard<std::mutex> lk{m_mtx};
+    m_closed_sock.push_back(sock);
 }
 
 void UnifiedConnection::update(DiffTime diff_time)
@@ -58,10 +82,8 @@ void UnifiedConnection::update(DiffTime diff_time)
         std::swap(new_socks, m_new_client_sock);
     }
     for (auto& it : new_socks) {
-        TEndpoint endpoint{};
-        endpoint.m_sock = it;
-        endpoint.m_is_server_conn = true;
-        m_endpoints[endpoint.m_sock] = endpoint;
+        auto endpoint = std::make_shared<TEndpoint>(it);
+        m_endpoints[endpoint->m_sock] = endpoint;
     }
     new_socks.clear();
 
@@ -73,13 +95,20 @@ void UnifiedConnection::update(DiffTime diff_time)
     }
     while (!all_closed_sock.empty()) {
         auto sock = all_closed_sock.front();
-        auto* endpoint = findEndpoint(sock);
+        auto endpoint = findEndpoint(sock);
         GASSERT(endpoint);
 
-        // TODO 回调
         endpoint->shutdown();
         eraseEndpoint(sock);
+        if (m_auto_retry) {
+            m_retry_endpoints[sock] = endpoint;
+        }
+
+        LOG_DEBUG << "closed sock:" << sock;
         all_closed_sock.pop_front();
+        auto sock_context = createSockContext(std::move(sock));
+        m_network.getCallbackManager().callbackServiceDown(
+            sock_context);
     }
 
     // 处理超时的链接
@@ -88,19 +117,24 @@ void UnifiedConnection::update(DiffTime diff_time)
         std::lock_guard<std::mutex> lk{m_mtx};
         std::swap(all_timeout_sock, m_timeout_sock);
     }
-
     while (!all_timeout_sock.empty()) {
         auto sock = all_timeout_sock.front();
-        auto* endpoint = findEndpoint(sock);
+        auto endpoint = findEndpoint(sock);
         GASSERT(endpoint);
 
-        // TODO 回调
         endpoint->shutdown();
         eraseEndpoint(sock);
+        if (m_auto_retry) {
+            m_retry_endpoints[sock] = endpoint;
+        }
         all_timeout_sock.pop_front();
+
+        auto sock_context = createSockContext(std::move(sock));
+        m_network.getCallbackManager().callbackServiceDown(
+            sock_context);
     }
 
-    // TODO 处理收到的消息
+    // 处理收到的消息
     std::list<NetWorkMessagePtr> all_new_msg{};
     {
         std::lock_guard<std::mutex> lk{m_mtx};
@@ -113,7 +147,9 @@ void UnifiedConnection::update(DiffTime diff_time)
             LOG_WARNING << "sock is shutdown. discard msg_name:" << msg->m_msg.m_msg_name;
         } else {
             // 调用回调函数
-            auto ret = m_network.getCallbackManager().callbackMsg(sock, msg->m_msg);
+            auto sock_context = createSockContext(std::move(sock));
+            auto ret = m_network.getCallbackManager().callbackMsg(
+                sock_context, msg->m_msg);
             if (!ret) {
                 LOG_WARNING << "can't find callback function msg_name:" << msg->m_msg.m_msg_name;
             }
@@ -121,17 +157,25 @@ void UnifiedConnection::update(DiffTime diff_time)
         all_new_msg.pop_front();
     }
 
-    // TODO 处理需要重连的sock
+    // 处理需要重连的sock
     if (m_auto_retry) {
-        for (auto it = m_endpoints.begin(); it != m_endpoints.end(); ++it) {
+        LOG_DEBUG << "retry true:" << m_retry_endpoints.size();
+        for (auto it = m_retry_endpoints.begin(); it != m_retry_endpoints.end();) {
             auto& endpoint = it->second;
-            // 当前为空，或者是服务端链接，不需要考虑重连
-            if (endpoint.empty() ||
-                endpoint.m_is_server_conn ||
-                endpoint.m_net_conn->connected())
-                continue;
-            auto net_client = std::dynamic_pointer_cast<NetClient>(endpoint.m_net_conn);
-            net_client->reconnect();
+            if (endpoint->m_client->reconnect()) {
+                auto sock = endpoint->m_client->getSock();
+                m_endpoints[sock] = endpoint;
+                it = m_retry_endpoints.erase(it);
+
+                LOG_DEBUG << "reconn sock:" << sock;
+
+                auto sock_context = createSockContext(endpoint->m_sock);
+                m_network.getCallbackManager().callbackServiceUp(
+                    sock_context);
+            } else {
+                LOG_DEBUG << "need retry faild";
+                ++it;
+            }
         }
     }
 }
@@ -162,56 +206,96 @@ void UnifiedConnection::setServiceID(ServiceID service_id)
     m_service_id = service_id;
 }
 
-ServiceID UnifiedConnection::getServiceID() const
+const ServiceID& UnifiedConnection::getServiceID() const
 {
     return m_service_id;
 }
 
-void UnifiedConnection::addServerAcceptEndpoint(NetServerPtr net_server)
+void UnifiedConnection::addAcceptorEndpoint(NetServerPtr net_server)
 {
     m_net_server = net_server;
 }
 
-void UnifiedConnection::addClientEndpoint(NetClientPtr net_client, const CInetAddress& addr)
+void UnifiedConnection::addServiceEndpoint(NetClientPtr net_client
+    , const CInetAddress& addr)
 {
-    auto sock = net_client->getSock();
-
-    TEndpoint endpoint{};
-    endpoint.m_is_server_conn = false;
-    endpoint.m_net_conn = net_client;
-    endpoint.m_sock = sock;
-    m_endpoints[sock] = endpoint;
-
-    m_addrs.push_back(addr);
+    auto endpoint = std::make_shared<TEndpoint>(net_client, addr);
+    m_endpoints[endpoint->m_sock] = endpoint;
+    m_service_addrs.push_back(addr);
 }
 
-bool UnifiedConnection::hasEndpoint(const CInetAddress& addr) const
+bool UnifiedConnection::hasServiceAddr(const CInetAddress& addr) const
 {
-    auto it = std::find_if(m_addrs.begin(), m_addrs.end(), [&addr](const CInetAddress& r)
+    auto it = std::find_if(m_service_addrs.begin(), m_service_addrs.end(), [&addr](const CInetAddress& r)
         {
             return addr.m_ip == r.m_ip && addr.m_port == r.m_port;
         });
-    return it != m_addrs.end();
+    return it != m_service_addrs.end();
 }
 
-void UnifiedConnection::sendMsg(TSockPtr sock, CMessage msg)
+bool UnifiedConnection::sendMsg(const TSockPtr& sock, CMessage msg)
 {
-    auto* endpoint = findEndpoint(sock);
+    auto endpoint = findEndpoint(sock);
     if (endpoint)
-        endpoint->m_net_conn->send(msg, endpoint->m_sock);
+        return endpoint->m_sock->sendMsg(std::move(msg));
+    return false;
 }
 
-UnifiedConnection::TEndpoint* UnifiedConnection::findEndpoint(const TSockPtr& sock)
+bool UnifiedConnection::sendMsg(const CInetAddress& addr, CMessage msg)
+{
+    auto endpoint = findEndpoint(addr);
+    if (endpoint) {
+        return endpoint->m_sock->sendMsg(std::move(msg));
+    }
+    return false;
+}
+
+std::shared_ptr<UnifiedConnection::TEndpoint>
+    UnifiedConnection::findEndpoint(const TSockPtr& sock)
 {
     auto it = m_endpoints.find(sock);
     if (it != m_endpoints.end())
-        return &it->second;
+        return it->second;
+    return nullptr;
+}
+
+std::shared_ptr<UnifiedConnection::TEndpoint>
+    UnifiedConnection::findEndpoint(const CInetAddress& addr)
+{
+    for (auto& ep : m_endpoints) {
+        if (ep.second->m_remote_addr == addr)
+            return ep.second;
+    }
+    return nullptr;
+}
+
+std::shared_ptr<UnifiedConnection::TEndpoint>
+    UnifiedConnection::findRetryEndpoint(const TSockPtr& sock)
+{
+    auto it = m_retry_endpoints.find(sock);
+    if (it != m_retry_endpoints.end())
+        return it->second;
+    return nullptr;
+}
+
+std::shared_ptr<UnifiedConnection::TEndpoint>
+    UnifiedConnection::findRetryEndpoint(const CInetAddress& addr)
+{
+    for (auto& ep : m_retry_endpoints) {
+        if (ep.second->m_remote_addr == addr)
+            return ep.second;
+    }
     return nullptr;
 }
 
 void UnifiedConnection::eraseEndpoint(const TSockPtr& sock)
 {
     m_endpoints.erase(sock);
+}
+
+TSockContext UnifiedConnection::createSockContext(TSockPtr sock) const
+{
+    return TSockContext{getServiceName(), getServiceID(), std::move(sock)};
 }
 
 } // NLNET

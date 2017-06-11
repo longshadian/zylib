@@ -7,12 +7,12 @@
 
 namespace NLNET {
 
-NetClient::NetClient(boost::asio::io_service& io_service,
-    UnifiedConnection& conn)
+NetClient::NetClient(boost::asio::io_service& io_service)
     : m_io_service(io_service)
-    , m_sock(std::make_shared<TSock>(boost::asio::ip::tcp::socket(m_io_service), conn))
-    , m_write_msgs()
+    , m_sock(std::make_shared<TSock>(boost::asio::ip::tcp::socket(m_io_service)))
     , m_is_connected()
+    , m_address() 
+    , m_connect_cb()
 {
 }
 
@@ -20,32 +20,12 @@ NetClient::~NetClient()
 {
 }
 
-void NetClient::send(CMessage msg, TSockPtr /* sock */)
-{
-    auto self = std::dynamic_pointer_cast<NetClient>(shared_from_this());
-    m_io_service.post([this, self, msg = std::move(msg)]
-    {
-        m_sock->sendMsg(std::move(msg));
-    });
-}
-
-bool NetClient::flush(UnifiedConnectionPtr conn)
-{
-    (void)conn;
-    return true;
-}
-
-void NetClient::update(DiffTime diff_time)
-{
-    (void)diff_time;
-}
-
-bool NetClient::connected() const
+bool NetClient::isConnected() const
 {
     return m_is_connected;
 }
 
-void NetClient::disconnect(UnifiedConnectionPtr /* conn */)
+void NetClient::disconnect()
 {
     m_sock->shutdown();
 }
@@ -53,15 +33,26 @@ void NetClient::disconnect(UnifiedConnectionPtr /* conn */)
 bool NetClient::connect(const CInetAddress& addr)
 { 
     m_address = addr;
-    return syncConnect(addr.m_ip, addr.m_port);
+    m_is_connected = syncConnect(addr.m_ip, addr.m_port);
+    if (m_is_connected)
+        m_connect_cb(m_sock);
+    return m_is_connected;
 }
 
 bool NetClient::reconnect()
 {
-    return syncConnect(m_address.m_ip, m_address.m_port);
+    m_is_connected = syncConnect(m_address.m_ip, m_address.m_port);
+    if (m_is_connected)
+        m_connect_cb(m_sock);
+    return m_is_connected;
 }
 
-TSockPtr NetClient::getSock()
+void NetClient::setConnectCallback(ConnectCallback cb)
+{
+    m_connect_cb = std::move(cb);
+}
+
+TSockPtr& NetClient::getSock()
 {
     return m_sock;
 }
@@ -76,6 +67,7 @@ bool NetClient::syncConnect(const std::string& ip, int32_t port)
             boost::asio::connect(m_sock->getSocket(),
                 r.resolve({ip, std::to_string(port)}));
             p.set_value(true);
+            m_sock->start();
         } catch (std::exception e) {
             LOG_WARNING << "conn exception " << e.what();
             p.set_value(false);

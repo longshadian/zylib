@@ -1,12 +1,14 @@
 #include "NamingClient.h"
 
+#include <future>
+
 #include "Log.h"
+#include "TSock.h"
 
 namespace NLNET {
 
 NamingClient::NamingClient(boost::asio::io_service& io_service)
-    : m_io_service(io_service)
-    , m_sock(io_service)
+    : m_sock(std::make_shared<TSock>(boost::asio::ip::tcp::socket(io_service)))
     , m_is_connected()
 {
 }
@@ -22,15 +24,8 @@ bool NamingClient::isConnected() const
 
 bool NamingClient::connect(const CInetAddress& addr)
 {
-    try {
-        boost::asio::ip::tcp::resolver r(m_io_service);
-        boost::asio::connect(m_sock, r.resolve({addr.m_ip, std::to_string(addr.m_port)}));
-        return true;
-    } catch (const std::exception& e) {
-        LOG_WARNING << "connect to naming service failed:" << e.what();
-        return false;
-    }
-    m_is_connected = true;
+    m_is_connected = syncConnect(addr.m_ip, addr.m_port);
+    return m_is_connected;
 }
 
 void NamingClient::update()
@@ -42,6 +37,31 @@ std::vector<ServiceAddr> NamingClient::getRegisterService()
 {
     // TODO ·µ»ØÔÚNS×¢²áµÄservice
     return {};
+}
+
+bool NamingClient::syncConnect(const std::string& ip, int32_t port)
+{
+    std::promise<bool> p{};
+    auto f = p.get_future();
+    std::thread t([this, &p, &ip, &port] {
+        try {
+            boost::asio::ip::tcp::resolver r(m_sock->getIoService());
+            boost::asio::connect(m_sock->getSocket(),
+                r.resolve({ ip, std::to_string(port) }));
+            p.set_value(true);
+            m_sock->start();
+        } catch (std::exception e) {
+            LOG_WARNING << "conn exception " << e.what();
+            p.set_value(false);
+        }
+    });
+    t.join();
+    try {
+        auto ret = f.get();
+        return ret;
+    } catch (const std::exception& e) {
+        return false;
+    }
 }
 
 

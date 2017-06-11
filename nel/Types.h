@@ -121,6 +121,16 @@ struct CInetAddress
 {
     std::string m_ip;
     int16_t     m_port;
+
+    bool operator==(const CInetAddress& rhs) const
+    {
+        return m_ip == rhs.m_ip && m_port == rhs.m_port;
+    }
+
+    bool operator!=(const CInetAddress& rhs) const
+    {
+        return !(*this == rhs);
+    }
 };
 
 class UnifiedConnection;

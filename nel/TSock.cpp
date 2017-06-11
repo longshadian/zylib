@@ -10,9 +10,8 @@
 
 namespace NLNET {
 
-TSock::TSock(boost::asio::ip::tcp::socket socket, UnifiedConnection& conn)
-    : m_conn(conn)
-    , m_socket(std::move(socket))
+TSock::TSock(boost::asio::ip::tcp::socket socket)
+    : m_socket(std::move(socket))
     , m_write_buffer()
     , m_is_closed(false)
     , m_received_msg_cb()
@@ -31,11 +30,14 @@ TSock::~TSock()
 
 void TSock::start()
 {
+    m_is_closed.store(false);
     doRead();
 }
 
-void TSock::sendMsg(CMessage msg)
+bool TSock::sendMsg(CMessage msg)
 {
+    if (m_is_closed)
+        return false;
     // TODO
     std::vector<uint8_t> all{};
     auto body = msg.serializeToArray();
@@ -54,6 +56,7 @@ void TSock::sendMsg(CMessage msg)
                 doWrite();
             }
         });
+    return true;
 }
 
 void TSock::doWrite()
@@ -124,7 +127,7 @@ void TSock::doReadBody()
 
         LOG_DEBUG << "read body: " <<  msg->m_msg.getMsgName() 
             << " data:" << msg->m_msg.getData();
-        m_conn.onReceivedMsg(std::move(msg));
+        m_received_msg_cb(std::move(msg));
 
         m_read_head.fill(0);
         m_read_buffer.clear();
@@ -152,15 +155,13 @@ void TSock::closeSocket()
 
 void TSock::onClosed(CLOSED_TYPE type)
 {
-    LOG_DEBUG << "closed type:" << int(type);
     if (m_is_closed.exchange(true))
         return;
+    LOG_DEBUG << "closed type:" << int(type);
     if (type == CLOSED_TYPE::NORMAL) {
-        //m_closed_cb(getConnectionHdl());
-        m_conn.onServerSockClosed(shared_from_this());
+        m_closed_cb(shared_from_this());
     } else if (type == CLOSED_TYPE::TIMEOUT) {
-        //m_timeout_cb(getConnectionHdl());
-        m_conn.onServerSockTimeout(shared_from_this());
+        m_timeout_cb(shared_from_this());
     }
     closeSocket();
 }
@@ -203,15 +204,37 @@ TSockHdl TSock::getConnectionHdl()
     return TSockHdl{shared_from_this()};
 }
 
-void TSock::setReceivedMsgCB(ReceivedMsgCallback cb)
+void TSock::setReceivedMsgCallback(ReceivedMsgCallback cb)
 {
     m_received_msg_cb = std::move(cb);
+}
+
+void TSock::setClosedCallback(ClosedCallback cb)
+{
+    m_closed_cb = std::move(cb);
+}
+
+void TSock::setTimeoutCallback(TimeoutCallback cb)
+{
+    m_timeout_cb = std::move(cb);
 }
 
 TSockHdl TSock::getSockHdl()
 {
     return TSockHdl{shared_from_this()};
 }
+
+/*
+const std::string& TSock::getServiceName() const
+{
+    return m_conn.getServiceName();
+}
+
+const ServiceID& TSock::getServiceID() const
+{
+    return m_conn.getServiceID();
+}
+*/
 
 boost::asio::io_service& TSock::getIOService()
 {

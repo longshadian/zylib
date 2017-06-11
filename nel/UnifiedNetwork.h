@@ -32,7 +32,7 @@ public:
 	void addService(ServiceID service_id, const std::string& name, const std::vector<CInetAddress>& addr, bool auto_retry = false);
 
 	void update(DiffTime diff_time);
-	bool send(ServiceID service_id, CMessage msg, AddrID add_id = AddrID_Default);
+	bool send(ServiceID service_id, CMessage msg, const CInetAddress& addr);
 
 	//void sendAll(const CMessage& msg);
 
@@ -40,8 +40,6 @@ public:
 private:
     UnifiedConnectionPtr findConnection(const std::string& service_name);
     UnifiedConnectionPtr findConnection(const ServiceID& service_id);
-    //SockID findEndpointIndex(ServiceID service_id, AddrID add_id) const;
-
     void addConnection(UnifiedConnectionPtr conn);
 private:
     boost::asio::io_service                         m_io_service;
@@ -56,6 +54,7 @@ private:
 	bool                                            m_initialised;
     std::shared_ptr<NamingClient>                   m_naming_client;
     std::shared_ptr<CallbackManager>                m_cb_manager;
+    bool                                            m_use_naming_service;
 };
 
 } // NLNET

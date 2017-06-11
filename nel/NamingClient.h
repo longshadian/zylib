@@ -9,7 +9,6 @@
 
 namespace NLNET {
 
-
 class NamingClient
 {
 public:
@@ -24,8 +23,9 @@ public:
 
     std::vector<ServiceAddr> getRegisterService();
 private:
-    boost::asio::io_service&     m_io_service;
-    boost::asio::ip::tcp::socket m_sock;
+    bool syncConnect(const std::string& ip, int32_t port);
+private:
+    TSockPtr                     m_sock;
     bool                         m_is_connected;
 };
 

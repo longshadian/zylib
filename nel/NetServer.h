@@ -4,38 +4,30 @@
 
 #include <boost/asio.hpp>
 
-#include "NetBase.h"
+#include "Types.h"
 
 namespace NLNET {
 
-using AcceptFailCB = std::function<void(boost::system::error_code)>;
-using AcceptSuccessCB = std::function<void(TSockPtr)>;
+using AcceptFailCallback = std::function<void(boost::system::error_code)>;
+using AcceptSuccessCallback = std::function<void(TSockPtr)>;
 
-class UnifiedConnection;
-
-class NetServer : public NetBase
+class NetServer : public std::enable_shared_from_this<NetServer>
 {
 public:
-    NetServer(boost::asio::io_service& io_service, const std::string& ip, int port, UnifiedConnection& conn);
-    virtual ~NetServer();
+    NetServer(boost::asio::io_service& io_service, const std::string& ip, int port);
+    ~NetServer();
 
-    virtual void send(CMessage msg, TSockPtr sock) override;
-    virtual bool flush(UnifiedConnectionPtr conn) override;
-    virtual void update(DiffTime diff_time) override;
-    virtual bool connected() const override;
-    virtual void disconnect(UnifiedConnectionPtr conn) override;
-
+    void stop();
     void accept();
-    void setAcceptFailCB(AcceptFailCB cb);
-    void setAcceptSuccessCB(AcceptSuccessCB cb);
+    void setAcceptFailCallback(AcceptFailCallback cb);
+    void setAcceptSuccessCallback(AcceptSuccessCallback cb);
 private:
     boost::asio::io_service&        m_io_service;
-    UnifiedConnection&              m_conn;
     boost::asio::ip::tcp::acceptor  m_acceptor;
     std::atomic<bool>               m_is_connected;
     boost::asio::ip::tcp::socket    m_socket;
-    AcceptFailCB                    m_accept_fail_cb;
-    AcceptSuccessCB                 m_accept_success_cb;
+    AcceptFailCallback              m_accept_fail_cb;
+    AcceptSuccessCallback           m_accept_success_cb;
 };
 
 }

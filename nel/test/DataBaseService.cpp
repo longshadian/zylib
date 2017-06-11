@@ -9,19 +9,14 @@
 
 #include "TestDefine.h"
 
-void reqUserData(NLNET::TSockPtr sock, NLNET::CMessage& req)
+void reqUserData(NLNET::TSockContext& sock, NLNET::CMessage& req)
 {
     auto s = req.getData();
     std::cout << "req:" << req.m_msg_name << " content:" << s << "\n";
     s += " rsp from dbs  user_data:xxxx";
     NLNET::CMessage rsp{ def::_RSP_USER_DATA, s};
-    sock->sendMsg(rsp);
+    sock.m_sock->sendMsg(rsp);
 }
-
-NLNET::MsgCallbackArray call_array = 
-{
-    {def::_REQ_USER_DATA, &reqUserData },
-};
 
 DataBaseService::DataBaseService()
     : m_network()
@@ -43,6 +38,11 @@ bool DataBaseService::start()
         std::cout << "network init faild!\n";
         return false;  
     }
+
+    NLNET::MsgCallbackArray call_array = 
+    {
+        {def::_REQ_USER_DATA, &reqUserData },
+    };
 
     m_network->getCallbackManager().setMsgCallbackArray(std::move(call_array));
     return true;
