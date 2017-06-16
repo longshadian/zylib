@@ -1,6 +1,6 @@
 #pragma once
 
-#include <hiredis.h>
+#include "Hiredis.h"
 
 #include <string>
 #include <vector>
@@ -16,7 +16,7 @@ public:
 
     explicit Buffer(const char* p);
     explicit Buffer(const std::string& str);
-    explicit Buffer(const char* p, int len);
+    explicit Buffer(const char* p, size_t len);
     explicit Buffer(std::vector<uint8_t> data);
     explicit Buffer(int val);
     explicit Buffer(unsigned int val);

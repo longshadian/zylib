@@ -15,6 +15,7 @@ public:
     EventSession*           createSession(int fd);
     EventSession*           findSession(EventSessionID sid);
     void                    eraseSession(EventSessionID sid);
+    size_t                  sessionCount() const;
 private:
     typedef std::map<EventSessionID, EventSession*> SessionMap;
     int32_t                 m_seq_id;

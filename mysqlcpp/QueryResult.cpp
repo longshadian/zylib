@@ -148,7 +148,7 @@ bool ResultSet::fetchRows()
         std::vector<Field> fields{};
         fields.resize(m_field_count);
         for (uint32 j = 0; j < m_field_count; ++j) {
-            fields[j].setByteValue(m_mysql_fields[j].type, row[j], lengths[j], false);
+            fields[j].setByteValue(m_mysql_fields[j].type, row[j], static_cast<uint32>(lengths[j]), false);
         }
         m_rows[i] = std::move(fields);
     }

@@ -122,7 +122,7 @@ uint32 Field::sizeForType(MYSQL_FIELD* field)
         case MYSQL_TYPE_BLOB:
         case MYSQL_TYPE_STRING:
         case MYSQL_TYPE_VAR_STRING:
-            return field->max_length;
+            return static_cast<uint32>(field->max_length);
 
         case MYSQL_TYPE_DECIMAL:
         case MYSQL_TYPE_NEWDECIMAL:
@@ -141,7 +141,7 @@ uint32 Field::sizeForType(MYSQL_FIELD* field)
 }
 
 
-void Field::setByteValue(enum_field_types type, void* src, uint32 src_len, bool raw_bytes)
+void Field::setByteValue(enum_field_types type, void* src, uint64 src_len, bool raw_bytes)
 {
     m_data.m_type = type;
     m_data.m_raw = raw_bytes;

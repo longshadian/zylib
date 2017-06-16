@@ -48,7 +48,7 @@ private:
     MYSQL_STMT*             m_stmt;
     std::vector<MYSQL_BIND> m_bind_param;
     std::vector<bool>       m_param_set;
-    uint32					m_param_count;
+    uint64 					m_param_count;
     std::vector<std::vector<uint8>> m_bind_param_buffer;
 };
 

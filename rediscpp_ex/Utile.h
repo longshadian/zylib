@@ -1,12 +1,12 @@
 #pragma once
 
+#include "Hiredis.h"
+
 #include <sys/time.h>
 #include <string>
 #include <vector>
 #include <map>
 #include <list>
-#include <hiredis.h>
-
 
 namespace rediscpp {
 

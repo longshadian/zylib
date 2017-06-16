@@ -140,12 +140,12 @@ time_t DateTime::getTime() const
 
 void DateTime::setMysqlTime(const std::array<unsigned long, 6>& arr)
 {
-    m_mysql_time.year = arr[0];
-    m_mysql_time.month = arr[1];
-    m_mysql_time.day = arr[2];
-    m_mysql_time.hour = arr[3];
-    m_mysql_time.minute = arr[4];
-    m_mysql_time.second = arr[5];
+    m_mysql_time.year   = static_cast<decltype(m_mysql_time.year)>(arr[0]);
+    m_mysql_time.month  = static_cast<decltype(m_mysql_time.month)>(arr[1]);
+    m_mysql_time.day    = static_cast<decltype(m_mysql_time.day)>(arr[2]);
+    m_mysql_time.hour   = static_cast<decltype(m_mysql_time.hour)>(arr[3]);
+    m_mysql_time.minute = static_cast<decltype(m_mysql_time.minute)>(arr[4]);
+    m_mysql_time.second = static_cast<decltype(m_mysql_time.second)>(arr[5]);
     m_mysql_time.second_part = 0;
     m_mysql_time.neg = 0;
     m_mysql_time.time_type = MYSQL_TIMESTAMP_DATETIME;
@@ -179,9 +179,9 @@ void DateTime::dateFromString(const std::string& str)
     util::Tokenizer tk{str, '-'};
     if (tk.size() != 3)
         return;
-    m_mysql_time.year = std::strtol(tk[0], nullptr, 10);
-    m_mysql_time.month = std::strtol(tk[1], nullptr, 10);
-    m_mysql_time.day = std::strtol(tk[2], nullptr, 10);
+    m_mysql_time.year = static_cast<decltype(m_mysql_time.year)>(std::strtol(tk[0], nullptr, 10));
+    m_mysql_time.month = static_cast<decltype(m_mysql_time.month)>(std::strtol(tk[1], nullptr, 10));
+    m_mysql_time.day = static_cast<decltype(m_mysql_time.day)>(std::strtol(tk[2], nullptr, 10));
 }
 
 void DateTime::timeFromString(const std::string& str)
@@ -189,9 +189,9 @@ void DateTime::timeFromString(const std::string& str)
     util::Tokenizer tk{str, ':'};
     if (tk.size() != 3)
         return;
-    m_mysql_time.hour = std::strtol(tk[0], nullptr, 10);
-    m_mysql_time.minute = std::strtol(tk[1], nullptr, 10);
-    m_mysql_time.second = std::strtol(tk[2], nullptr, 10);
+    m_mysql_time.hour = static_cast<decltype(m_mysql_time.hour)>(std::strtol(tk[0], nullptr, 10));
+    m_mysql_time.minute = static_cast<decltype(m_mysql_time.minute)>(std::strtol(tk[1], nullptr, 10));
+    m_mysql_time.second = static_cast<decltype(m_mysql_time.second)>(std::strtol(tk[2], nullptr, 10));
 }
 
 bool DateTime::isNull() const

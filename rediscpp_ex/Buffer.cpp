@@ -25,9 +25,9 @@ Buffer::Buffer(const std::string& str)
     m_data.assign(ptr, ptr + str.size());
 }
 
-Buffer::Buffer(const char* p, int len)
+Buffer::Buffer(const char* p, size_t len)
 {
-    if (len <= 0)
+    if (len == 0)
         return;
     auto ptr = reinterpret_cast<const uint8_t*>(p);
     m_data.assign(ptr, ptr + len);

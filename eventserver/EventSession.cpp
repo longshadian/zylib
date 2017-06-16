@@ -170,6 +170,7 @@ void EventSession::asyncWrite()
 
 bool EventSession::release()
 {
+    m_shutdown = true;
     //session还有write事件，暂时不关闭。在write回调结束后会再次检测能否关闭
     if (m_wait_writen)
         return false;

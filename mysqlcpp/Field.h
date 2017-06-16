@@ -51,7 +51,7 @@ class Field
         enum_field_types    m_type;      // Field type
         bool                m_raw;       // Raw bytes? (Prepared statement or ad hoc)
         std::vector<uint8>  m_buffer;
-        uint32              m_length;    // Length (prepared strings only)
+        uint64              m_length;    // Length (prepared strings only)
     };
 public:
     Field();
@@ -83,7 +83,7 @@ public:
     bool isNull() const;
     DateTime getDateTime() const;
 
-    void setByteValue(enum_field_types type, void* src, uint32 src_len, bool raw_bytes);
+    void setByteValue(enum_field_types type, void* src, uint64 src_len, bool raw_bytes);
 
     bool isType(enum_field_types type) const;
     bool isNumeric() const;

@@ -40,3 +40,8 @@ void EventSessionManager::eraseSession(EventSessionID sid)
 {
     m_sessions.erase(sid);
 }
+
+size_t EventSessionManager::sessionCount() const
+{
+    return m_sessions.size();
+}
