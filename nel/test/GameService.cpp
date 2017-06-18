@@ -6,9 +6,7 @@
 #include "Types.h"
 #include "CallbackManager.h"
 #include "TSock.h"
-
 #include "TestDefine.h"
-
 
 #include "GSCallbackManager.h"
 GameService* g_service = nullptr;
@@ -22,19 +20,19 @@ void reqTest(NLNET::TSockContext sock, NLNET::CMessage& msg)
     NLNET::CMessage req_db{def::_REQ_USER_DATA, s};
     g_service->m_network->send(def::DBS_SID, req_db, def::DBS_ADDR);
     g_service->getCBMgr().regCBRspUserData(12,
-        [sock_hdl = sock.m_sock->getSockHdl()](NLNET::CMessage& msg)
+        [sock_hdl = sock.m_sock->getSockHdl()](NLNET::CMessage& rmsg)
         {
-            auto sock = sock_hdl.lock();
-            if (!sock) {
-                std::cout << "sock is disconnection!\n";
+            auto rsock = sock_hdl.lock();
+            if (!rsock) {
+                std::cout << "rsock is disconnection!\n";
                 return;
             }
 
-            auto s = msg.getData();
-            std::cout << "receive:" << msg.m_msg_name << " content:" << s << "\n";
-            s += " GS-rspUserData";
-            NLNET::CMessage rsp{def::_RSP_TEST, s};
-            sock->sendMsg(rsp);
+            auto str = rmsg.getData();
+            std::cout << "receive:" << rmsg.m_msg_name << " content:" << str << "\n";
+            str += " GS-rspUserData";
+            NLNET::CMessage rsp{def::_RSP_TEST, str};
+            rsock->sendMsg(rsp);
         });
 }
 

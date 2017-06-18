@@ -15,6 +15,7 @@ NetServer::NetServer(boost::asio::io_service& io_service, const std::string& ip,
     , m_accept_fail_cb()
     , m_accept_success_cb()
 {
+    (void)ip;
 }
 
 NetServer::~NetServer()

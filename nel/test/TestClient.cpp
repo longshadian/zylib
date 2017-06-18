@@ -24,6 +24,8 @@ std::vector<uint8_t> parseMsg(const NLNET::CMessage& msg)
 
 int main(int argc, char* argv[])
 {
+    (void)argc;
+    (void)argv;
   try
   {
     boost::asio::io_service io_service;
@@ -61,9 +63,8 @@ int main(int argc, char* argv[])
             if (4 < rsp_len) {
                 std::vector<uint8_t> rsp_body;
                 rsp_body.resize(rsp_len - 4);
-                size_t rsp_len = boost::asio::read(s,
+                boost::asio::read(s,
                     boost::asio::buffer(rsp_body));
-                (void)rsp_len;
 
                 NLNET::CMessage rsp_msg{};
                 rsp_msg.parseFromArray(rsp_body);

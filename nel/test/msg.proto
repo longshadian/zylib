@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package pt;
+
+message obj_addr
+{
+	string ip = 1;
+	int32  port = 2;
+};
+
+message obj_service
+{
+	int32 			   	sid = 1;
+	string				sname = 2;
+	repeated obj_addr  	addrs = 3;
+};
+
+// 拉取已经注册的service
+message req_service
+{
+	int32 sid = 1;
+};
+
+message rsp_service
+{
+	repeated obj_service services = 1;
+};
+
+// 注册service
+message req_register_service
+{
+	int32 sid = 1;
+};
+
+//
+message rsp_register_service
+{
+	int32 sid = 1;
+};
+
+message broadcast_register_service
+{
+	obj_service service = 1;
+};

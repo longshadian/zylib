@@ -210,6 +210,7 @@ CallbackManager& UnifiedNetwork::getCallbackManager()
 
 void UnifiedNetwork::addConnection(UnifiedConnectionPtr conn)
 {
+    (void)conn;
 }
 
 } // NLNET

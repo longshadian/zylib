@@ -4,9 +4,9 @@ INC =	-I./
 LIB	=  -L/usr/local/mysql/lib	-lmysqlclient -lboost_system -lpthread
 		
 CC      = g++
-CFLAGS  = -g -Wall -Werror -std=c++14
-#  -Wshadow -Wunreachable-code -Wextra -Wconversion
-LDFLAGS = -Wl,--no-as-needed
+CFLAGS  = -g -Wall -Werror -Wshadow -Wunreachable-code -Wextra -Wconversion -std=c++14
+CCFLAGS  = -g -Wall -Werror -std=c++14
+LDFLAGS = -Wl,--no-as-needed -lprotobuf
 
 .SUFFIXES:  .o .cpp .cc
 
@@ -17,8 +17,12 @@ SRC_CPP = $(wildcard $(SRC_DIR)/*.cpp)
 SRC_CC = $(wildcard $(SRC_DIR)/*.cc)
 INC += -I$(SRC_DIR)
 
+SRC_CC += $(wildcard ./*.cc)
+
+
 OBJS = $(SRC_CPP:%.cpp=%.o)
 OBJS += $(SRC_CC:%.cc=%.o)
+
 
 OUTPUT = naming_service game_service test_client db_service
 
@@ -36,13 +40,16 @@ db_service:$(OBJS) DataBaseService.cpp TestDefine.cpp
 test_client:$(OBJS) TestClient.cpp TestDefine.cpp
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
 
+proto:
+	protoc ./msg.proto --cpp_out=./
+
 .cpp.o:
 	@echo [  $(shell expr $(shell echo $(OBJS)|sed 's#$@.*$$#$@#'|wc -w) \* 100 / $(words $(OBJS)))%] $(CC) -c $< -o $@ 
 	@$(CC) $(CFLAGS) $(INC) -c $< -o $@ 
     
 .cc.o:
 	@echo [  $(shell expr $(shell echo $(OBJS)|sed 's#$@.*$$#$@#'|wc -w) \* 100 / $(words $(OBJS)))%] $(CC) -c $< -o $@ 
-	@$(CC) $(CFLAGS) $(INC) -c $< -o $@ 
+	@$(CC) $(CCFLAGS) $(INC) -c $< -o $@ 
 
 clean: 
 	@echo $(OBJS)

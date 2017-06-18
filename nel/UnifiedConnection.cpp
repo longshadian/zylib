@@ -30,7 +30,7 @@ UnifiedConnection::UnifiedConnection(UnifiedNetwork& network,
 
 void UnifiedConnection::connect(const CInetAddress& addr)
 {
-
+    (void)addr;
 }
 
 void UnifiedConnection::onServerSockAccept(TSockPtr sock)
@@ -75,6 +75,7 @@ void UnifiedConnection::onSockClosed(TSockPtr sock)
 
 void UnifiedConnection::update(DiffTime diff_time)
 {
+    (void)diff_time;
     // 处理新到来的链接
     std::list<TSockPtr> new_socks{};
     {
