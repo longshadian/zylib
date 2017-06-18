@@ -74,7 +74,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\;..\..\mysqlcpp;..\..\rediscpp_ex;..\..\..\vsinclude\hiredis;..\..\..\vsinclude\boost;..\..\..\vsinclude\mysql-connector-c\include;..\..\game_server\database;..\..\game_server\world;..\..\game_server\net;..\..\game_server;..\..\nel\;..\..\nel\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\;..\..\mysqlcpp;..\..\rediscpp_ex;..\..\..\vsinclude\hiredis;..\..\..\vsinclude\boost;..\..\..\vsinclude\mysql-connector-c\include;..\..\..\vsinclude\protobuf\src;..\..\game_server\database;..\..\game_server\world;..\..\game_server\net;..\..\game_server;..\..\nel\;..\..\nel\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -161,9 +161,11 @@
     <ClInclude Include="..\..\nel\test\DBSCallbackManager.h" />
     <ClInclude Include="..\..\nel\test\GameService.h" />
     <ClInclude Include="..\..\nel\test\GSCallbackManager.h" />
+    <ClInclude Include="..\..\nel\test\msg.pb.h" />
     <ClInclude Include="..\..\nel\test\NamingService.h" />
     <ClInclude Include="..\..\nel\test\TestDefine.h" />
     <ClInclude Include="..\..\nel\test\X.h" />
+    <ClInclude Include="..\..\nel\Tools.h" />
     <ClInclude Include="..\..\nel\TSock.h" />
     <ClInclude Include="..\..\nel\Types.h" />
     <ClInclude Include="..\..\nel\UnifiedConnection.h" />
@@ -247,10 +249,12 @@
     <ClCompile Include="..\..\nel\test\GameService.cpp" />
     <ClCompile Include="..\..\nel\test\GSCallbackManager.cpp" />
     <ClCompile Include="..\..\nel\test\main.cpp" />
+    <ClCompile Include="..\..\nel\test\msg.pb.cc" />
     <ClCompile Include="..\..\nel\test\NamingService.cpp" />
     <ClCompile Include="..\..\nel\test\TestClient.cpp" />
     <ClCompile Include="..\..\nel\test\TestDefine.cpp" />
     <ClCompile Include="..\..\nel\test\X.cpp" />
+    <ClCompile Include="..\..\nel\Tools.cpp" />
     <ClCompile Include="..\..\nel\TSock.cpp" />
     <ClCompile Include="..\..\nel\UnifiedConnection.cpp" />
     <ClCompile Include="..\..\nel\UnifiedNetwork.cpp" />
