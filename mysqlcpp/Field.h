@@ -84,6 +84,7 @@ public:
     DateTime getDateTime() const;
 
     void setByteValue(enum_field_types type, void* src, uint64 src_len, bool raw_bytes);
+    void setMYSQL_TIME(const MYSQL_TIME& tm);
 
     bool isType(enum_field_types type) const;
     bool isNumeric() const;

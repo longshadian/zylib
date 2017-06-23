@@ -155,6 +155,28 @@ void Field::setByteValue(enum_field_types type, void* src, uint64 src_len, bool 
     }
 }
 
+void Field::setMYSQL_TIME(const MYSQL_TIME& tm)
+{
+    // TODO
+    m_data.m_type = MYSQL_TYPE_DATETIME;
+    m_data.m_raw = false;
+
+    std::array<char, 32> temp{};
+    auto len = snprintf(temp.data(), temp.size(), "%04d-%02d-%02d %02d:%02d:%02d",
+            tm.year,
+        tm.month,
+        tm.day,
+        tm.hour,
+        tm.minute,
+        tm.second
+        // ,tm->second_part
+        );
+
+    m_data.m_buffer.resize(len);
+    std::copy(temp.begin(), temp.begin() + len, m_data.m_buffer.begin());
+    m_data.m_length = m_data.m_buffer.size();
+}
+
 bool Field::getBool() const 
 { 
     return getUInt8() == 1; 

@@ -18,6 +18,7 @@ public:
     explicit DateTime(const timeval& t);
     explicit DateTime(const std::string& str);
     explicit DateTime(const char* str);
+    explicit DateTime(const MYSQL_TIME& mysql_time);
     DateTime(const std::string& str, enum_field_types type);
 
     DateTime(const DateTime& rhs);

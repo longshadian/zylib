@@ -291,7 +291,19 @@ bool PreparedResultSet::fetchRows()
             unsigned long fetched_length = *m_out_bind[i].length;
             if (!*m_out_bind[i].is_null) {
                 void* buffer = m_out_bind[i].buffer;
-                fields[i].setByteValue(m_out_bind[i].buffer_type, buffer, fetched_length, true);
+                if (m_out_bind[i].buffer_type == MYSQL_TYPE_DATETIME
+                    || m_out_bind[i].buffer_type == MYSQL_TYPE_TIMESTAMP
+                    || m_out_bind[i].buffer_type == MYSQL_TYPE_DATE
+                    || m_out_bind[i].buffer_type == MYSQL_TYPE_TIME
+                    || m_out_bind[i].buffer_type == MYSQL_TYPE_DATETIME) {
+                    MYSQL_TIME tm;
+                    std::memset(&tm, 0, sizeof(tm));
+                    ASSERT(sizeof(tm) == fetched_length);
+                    std::memcpy(&tm, buffer, fetched_length);
+                    fields[i].setMYSQL_TIME(tm);
+                } else {
+                    fields[i].setByteValue(m_out_bind[i].buffer_type, buffer, fetched_length, true);
+                }
             } else {
                 fields[i].setByteValue(m_out_bind[i].buffer_type, nullptr, *m_out_bind[i].length, true);
             }
@@ -310,7 +322,7 @@ bool PreparedResultSet::fetchRows()
     return true;
 }
 
-ResultRow PreparedResultSet::getRow(uint32 index) const
+ResultRow PreparedResultSet::getRow(uint64 index) const
 {
     ASSERT(index < m_row_count);
     return ResultRow(m_rows[index], m_fields_meta);

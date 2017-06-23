@@ -45,6 +45,12 @@ DateTime::DateTime(const char* str)
 {
 }
 
+DateTime::DateTime(const MYSQL_TIME& mysql_time)
+    : m_mysql_time(mysql_time)
+    , m_out_str()
+{
+}
+
 DateTime::DateTime(const std::string& str, enum_field_types type)
     :DateTime()
 {

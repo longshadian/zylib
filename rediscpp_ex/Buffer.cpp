@@ -183,9 +183,16 @@ size_t Buffer::getLen() const
     return m_data.size();
 }
 
-const std::vector<uint8_t>& Buffer::getDataVector() const
+const std::vector<uint8_t>& Buffer::getDataVector() const &
 {
     return m_data;
+}
+
+std::vector<uint8_t> Buffer::getDataVector() &&
+{
+    std::vector<uint8_t> temp{};
+    temp.swap(m_data);
+    return temp;
 }
 
 bool Buffer::empty() const

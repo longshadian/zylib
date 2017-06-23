@@ -53,7 +53,8 @@ public:
 
     const uint8_t* getData() const;
     size_t getLen() const;
-    const std::vector<uint8_t>& getDataVector() const;
+    const std::vector<uint8_t>& getDataVector() const &;
+    std::vector<uint8_t> getDataVector() && ;
     bool empty() const;
     void clearBuffer();
 
