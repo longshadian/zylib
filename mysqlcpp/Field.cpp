@@ -1,7 +1,11 @@
 #include "Field.h"
 
+#include <cstring>
+
 #include "FakeLog.h"
 #include "DateTime.h"
+#include "Utils.h"
+#include "Assert.h"
 
 namespace mysqlcpp {
 
@@ -140,7 +144,6 @@ uint32 Field::sizeForType(MYSQL_FIELD* field)
     }
 }
 
-
 void Field::setByteValue(enum_field_types type, void* src, uint64 src_len, bool raw_bytes)
 {
     m_data.m_type = type;
@@ -153,28 +156,6 @@ void Field::setByteValue(enum_field_types type, void* src, uint64 src_len, bool 
         m_data.m_buffer.clear();
         m_data.m_length = 0;
     }
-}
-
-void Field::setMYSQL_TIME(const MYSQL_TIME& tm)
-{
-    // TODO
-    m_data.m_type = MYSQL_TYPE_DATETIME;
-    m_data.m_raw = false;
-
-    std::array<char, 32> temp{};
-    auto len = snprintf(temp.data(), temp.size(), "%04d-%02d-%02d %02d:%02d:%02d",
-            tm.year,
-        tm.month,
-        tm.day,
-        tm.hour,
-        tm.minute,
-        tm.second
-        // ,tm->second_part
-        );
-
-    m_data.m_buffer.resize(len);
-    std::copy(temp.begin(), temp.begin() + len, m_data.m_buffer.begin());
-    m_data.m_length = m_data.m_buffer.size();
 }
 
 bool Field::getBool() const 
@@ -445,7 +426,17 @@ bool Field::isNull() const
 
 DateTime Field::getDateTime() const
 {
-    return DateTime(getString(), m_data.m_type);
+    if (isNull())
+        return DateTime{};
+    if (m_data.m_raw) {
+        MYSQL_TIME mysql_time{};
+        std::memset(&mysql_time, 0, sizeof(mysql_time));
+        std::memcpy(&mysql_time, m_data.m_buffer.data(), m_data.m_length);
+        return DateTime(mysql_time);
+    }
+    DateTime tm{};
+    ASSERT(util::datetimeFromString(&tm, getString()));
+    return tm;
 }
 
 bool Field::isType(enum_field_types type) const

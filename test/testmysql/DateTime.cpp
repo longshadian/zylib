@@ -6,8 +6,8 @@
 
 #include <mysql.h>
 
-std::string db_name = "test";
-std::string db_ip   = "192.168.0.123";
+std::string db_name = "my_test";
+std::string db_ip   = "192.168.207.128";
 std::string db_user = "root";
 std::string db_passwd = "123456";
 int db_port         = 3306;
@@ -193,7 +193,7 @@ void funStmt()
 
 void fun()
 {
-    const char* sql = " SELECT `id`, `fdatetime`, `ftime`, `fdate`, `ftimestamp` FROM `test_datetime` "
+    const char* sql = " SELECT `id`, `fdatetime`, `ftime`, `fdate`, `ftimestamp`, `fyear` FROM `test_datetime` "
         " where `id` = 1";
     MYSQL* mysql = init();
     if (!mysql) {
@@ -240,9 +240,9 @@ void fun()
         }
 
         for (uint32_t j = 0; j < field_count; ++j) {
-            std::cout << mysql_fields[j].type << "\t\t"
-                << "\t\t" << row[j]
-                << "\t\t" << lengths[j]
+            std::cout << mysql_fields[j].type << "\t"
+                << "\t" << row[j]
+                << "\t" << lengths[j]
                 << "\n";
 
             if (j == 4) {
@@ -257,8 +257,8 @@ void fun()
 
 int main()
 {
-    funStmt();
-    std::cout << sizeof(MYSQL_TIME) << "\n";
+    //funStmt();
+    //std::cout << sizeof(MYSQL_TIME) << "\n";
     fun();
     return 0;
 }

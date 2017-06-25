@@ -16,10 +16,7 @@ public:
     DateTime();
     explicit DateTime(time_t t);
     explicit DateTime(const timeval& t);
-    explicit DateTime(const std::string& str);
-    explicit DateTime(const char* str);
     explicit DateTime(const MYSQL_TIME& mysql_time);
-    DateTime(const std::string& str, enum_field_types type);
 
     DateTime(const DateTime& rhs);
     DateTime& operator=(const DateTime& rhs);
@@ -30,19 +27,16 @@ public:
     ~DateTime();
 public:
     std::vector<uint8> getBinary() const;
+    const MYSQL_TIME&  getMYSQL_TIME() const;
+    MYSQL_TIME&        getMYSQL_TIME();
     std::string        getString() const;
     time_t             getTime() const;
 private:
     static std::array<unsigned long, 6> getLocaltime(time_t t);
-
     void setMysqlTime(const std::array<unsigned long, 6>& arr);
-    void datetimeFromString(const std::string& str);
-    void dateFromString(const std::string& str);
-    void timeFromString(const std::string& str);
     bool isNull() const;
 private:
     MYSQL_TIME m_mysql_time;
-    std::string m_out_str;     
 };
 
 }

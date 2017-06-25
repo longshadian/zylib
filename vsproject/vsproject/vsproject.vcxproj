@@ -234,6 +234,7 @@
     <ClCompile Include="..\..\mysqlcpp\test\TestDBService.cpp" />
     <ClCompile Include="..\..\mysqlcpp\test\TestMisc.cpp" />
     <ClCompile Include="..\..\mysqlcpp\test\TestSelect.cpp" />
+    <ClCompile Include="..\..\mysqlcpp\test\TestTransaction.cpp" />
     <ClCompile Include="..\..\mysqlcpp\Transaction.cpp" />
     <ClCompile Include="..\..\mysqlcpp\Utils.cpp" />
     <ClCompile Include="..\..\nel\Log.cpp" />

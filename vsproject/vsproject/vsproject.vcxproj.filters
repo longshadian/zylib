@@ -609,6 +609,9 @@
     <ClCompile Include="..\..\nel\Tools.cpp">
       <Filter>nel</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp\test\TestTransaction.cpp">
+      <Filter>mysqlcpp\test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\mysqlcpp\Makefile">

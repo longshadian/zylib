@@ -3,6 +3,7 @@
 #include <ctime>
 #include <time.h>
 #include <cstring>
+#include <array>
 
 #include "Utils.h"
 
@@ -10,7 +11,6 @@ namespace mysqlcpp {
 
 DateTime::DateTime()
     : m_mysql_time()
-    , m_out_str()
 {
     std::memset(&m_mysql_time, 0, sizeof(m_mysql_time));
 }
@@ -28,61 +28,13 @@ DateTime::DateTime(const timeval& t)
     m_mysql_time.second_part = t.tv_usec;
 }
 
-DateTime::DateTime(const std::string& str)
-    : DateTime()
-{
-    //0000-00-00 00:00:00
-    if (str.length() == 19)
-        datetimeFromString(str);
-    else if (str.length() == 10)
-        dateFromString(str);
-    else if (str.length() == 8)
-        timeFromString(str);
-}
-
-DateTime::DateTime(const char* str)
-    :DateTime(std::string(str))
-{
-}
-
 DateTime::DateTime(const MYSQL_TIME& mysql_time)
     : m_mysql_time(mysql_time)
-    , m_out_str()
 {
-}
-
-DateTime::DateTime(const std::string& str, enum_field_types type)
-    :DateTime()
-{
-    m_out_str = str;
-    switch (type)
-    {
-    case MYSQL_TYPE_TIMESTAMP:
-        datetimeFromString(str);
-        break;
-    case MYSQL_TYPE_DATE:
-        dateFromString(str);
-        break;
-    case MYSQL_TYPE_TIME:
-        timeFromString(str);
-        break;
-    case MYSQL_TYPE_DATETIME:
-        datetimeFromString(str);
-        break;
-    case MYSQL_TYPE_TIMESTAMP2:
-        break;
-    case MYSQL_TYPE_DATETIME2:
-        break;
-    case MYSQL_TYPE_TIME2:
-        break;
-    default:
-        break;
-    }
 }
 
 DateTime::DateTime(const DateTime& rhs)
     : m_mysql_time(rhs.m_mysql_time)
-    , m_out_str(rhs.m_out_str)
 {
 }
 
@@ -90,14 +42,12 @@ DateTime& DateTime::operator=(const DateTime& rhs)
 {
     if (this != &rhs) {
         m_mysql_time = rhs.m_mysql_time;
-        m_out_str = rhs.m_out_str;
     }
     return *this;
 }
 
 DateTime::DateTime(DateTime&& rhs)
     : m_mysql_time(std::move(rhs.m_mysql_time))
-    , m_out_str(std::move(rhs.m_out_str))
 {
 }
 
@@ -105,7 +55,6 @@ DateTime& DateTime::operator=(DateTime& rhs)
 {
     if (this != &rhs) {
         m_mysql_time = std::move(rhs.m_mysql_time);
-        m_out_str = std::move(rhs.m_out_str);
     }
     return *this;
 }
@@ -124,9 +73,25 @@ std::vector<uint8> DateTime::getBinary() const
     return buffer;
 }
 
+const MYSQL_TIME& DateTime::getMYSQL_TIME() const
+{
+    return m_mysql_time;
+}
+
+MYSQL_TIME& DateTime::getMYSQL_TIME()
+{
+    return m_mysql_time;
+}
+
 std::string DateTime::getString() const
 {
-    return m_out_str;
+    std::array<char, 128> arr{};
+    arr.fill(0);
+    snprintf(arr.data(), arr.size(),"%04d-%02d-%02d %02d:%02d:%02d"
+        , m_mysql_time.year, m_mysql_time.month, m_mysql_time.day
+        , m_mysql_time.hour, m_mysql_time.minute, m_mysql_time.second
+        );
+    return std::string{arr.data()};
 }
 
 time_t DateTime::getTime() const
@@ -169,35 +134,6 @@ std::array<unsigned long, 6> DateTime::getLocaltime(time_t t)
     val[4] = ptm->tm_min;
     val[5] = ptm->tm_sec;
     return val;
-}
-
-void DateTime::datetimeFromString(const std::string& str)
-{
-    util::Tokenizer tk{str, ' '};
-    if (tk.size() != 2)
-        return;
-    dateFromString(tk[0]);
-    timeFromString(tk[1]);
-}
-
-void DateTime::dateFromString(const std::string& str)
-{
-    util::Tokenizer tk{str, '-'};
-    if (tk.size() != 3)
-        return;
-    m_mysql_time.year = static_cast<decltype(m_mysql_time.year)>(std::strtol(tk[0], nullptr, 10));
-    m_mysql_time.month = static_cast<decltype(m_mysql_time.month)>(std::strtol(tk[1], nullptr, 10));
-    m_mysql_time.day = static_cast<decltype(m_mysql_time.day)>(std::strtol(tk[2], nullptr, 10));
-}
-
-void DateTime::timeFromString(const std::string& str)
-{
-    util::Tokenizer tk{str, ':'};
-    if (tk.size() != 3)
-        return;
-    m_mysql_time.hour = static_cast<decltype(m_mysql_time.hour)>(std::strtol(tk[0], nullptr, 10));
-    m_mysql_time.minute = static_cast<decltype(m_mysql_time.minute)>(std::strtol(tk[1], nullptr, 10));
-    m_mysql_time.second = static_cast<decltype(m_mysql_time.second)>(std::strtol(tk[2], nullptr, 10));
 }
 
 bool DateTime::isNull() const

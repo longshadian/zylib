@@ -18,7 +18,7 @@ mysqlcpp::ConnectionOpt initConn()
     mysqlcpp::ConnectionOpt conn_info{};
     conn_info.user = "root";
     conn_info.password = "123456";
-    conn_info.database = "mj_game";
+    conn_info.database = "my_test";
     conn_info.host = "127.0.0.1";
     conn_info.port = 3306;
     return conn_info;
@@ -235,6 +235,43 @@ void test()
     return;
 }
 
+void testDateTimeStmt()
+{
+    auto conn_info = initConn();
+    mysqlcpp::Connection conn{conn_info};
+    if (conn.open() != 0) {
+        std::cout << "open error\n";
+        return;
+    }
+
+    const char* sql =
+    " SELECT `fdatetime`, "
+    " `fdate`, `ftime`, "
+    " `fyear`, `ftimestamp`, "
+    " `fx`, `val` "
+    " FROM `test_datetime` WHERE `id` = ?";
+
+    auto stmt = conn.prepareStmt(sql);
+    if (!stmt) {
+        std::cout << "prepare stmt error:" << conn.getErrno() << ":" << conn.getError();
+        return;
+    }
+
+    stmt->setUInt64(0, 1);
+    auto query_result = conn.query(*stmt);
+    auto row = query_result->getRow(0);
+    std::cout << row["fdatetime"]->getDateTime().getTime() << "\t";
+    std::cout << row["fdatetime"]->getDateTime().getString() << "\n";
+    std::cout << row["fdate"]->getDateTime().getString() << "\n";
+    std::cout << row["ftime"]->getDateTime().getString() << "\n";
+    std::cout << row["fyear"]->getDateTime().getString() << "\n";
+    std::cout << row["ftimestamp"]->getDateTime().getTime() << "\n";
+    std::cout << row["fx"]->getString() << "\n";
+    std::cout << row["val"]->getInt32() << "\n";
+
+    return;
+}
+
 void testDateTime()
 {
     auto conn_info = initConn();
@@ -245,20 +282,24 @@ void testDateTime()
     }
 
     const char* sql =
-    " SELECT `room_uuid`, `room_create_tm` "
-    " FROM `user_zjrecord` WHERE `user_id` = ?";
+    " SELECT `fdatetime`, "
+    " `fdate`, `ftime`, "
+    " `fyear`, `ftimestamp`, "
+    " `fx`, `val` "
+    " FROM `test_datetime` WHERE `id` = 1";
 
-    auto stmt = conn.prepareStmt(sql);
-    if (!stmt) {
-        std::cout << "prepare stmt error:" << conn.getErrno() << ":" << conn.getError();
-        return;
-    }
-
-    stmt->setUInt64(0, 111950);
-    auto query_result = conn.query(*stmt);
+    auto query_result = conn.query(sql);
     auto row = query_result->getRow(0);
-    std::cout << row["room_create_tm"]->getDateTime().getTime() << "\n";
-    std::cout << row["room_create_tm"]->getString() << "\n";
+    std::cout << row["fdatetime"]->getDateTime().getTime() << "\t";
+    std::cout << row["fdatetime"]->getDateTime().getString() << "\n";
+    //std::cout << row["fdate"]->getDateTime().getString() << "\n";
+    //std::cout << row["ftime"]->getDateTime().getString() << "\n";
+    //std::cout << row["fyear"]->getDateTime().getString() << "\n";
+    std::cout << row["ftimestamp"]->getDateTime().getTime() << "\t";
+    std::cout << row["ftimestamp"]->getDateTime().getString() << "\n";
+    std::cout << row["fx"]->getString() << "\n";
+    std::cout << row["val"]->getInt32() << "\n";
+
     return;
 }
 
@@ -266,6 +307,8 @@ int main()
 {
     mysqlcpp::initLog(&std::cout);
     //test();
+    testDateTimeStmt();
+    std::cout << "==================\n";
     testDateTime();
 
     return 0;
