@@ -2,9 +2,7 @@
 #include <iostream>
 #include <set>
 
-#include "Snowflake.h"
-
-using namespace zylib;
+#include "zylib/Snowflake.h"
 
 const uint64_t ID = 15;
 const uint64_t SEQ = 7;
@@ -31,7 +29,7 @@ Cell parseID(int64_t id)
 
 int main()
 {
-    using SF = Snowflake<41, ID, SEQ>;
+    using SF = zylib::Snowflake<41, ID, SEQ>;
     SF sf{89, 0};
     std::cout << "tm_max:  " << int64_t(SF::MAX_TM) << "\n";
     std::cout << "id_max:  " << int64_t(SF::MAX_WORKER_ID) << "\n";

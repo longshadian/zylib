@@ -4,8 +4,8 @@ INC = -I./
 LIB	=  -L/usr/local/mysql/lib	-lmysqlclient
 		
 CC      = g++
-CFLAGS  = -g -Wall -Werror -std=c++14 -Wshadow -Wunreachable-code -Wextra -Wconversion
-LDFLAGS = -Wl,--no-as-needed 
+CFLAGS  = -g -Wall -Werror -std=c++14 -Wshadow -Wunreachable-code -Wextra -Wconversion -DBOOST_LOG_DYN_LINK
+LDFLAGS = -Wl,--no-as-needed -lboost_log -lboost_system -lboost_thread -lpthread
 
 .SUFFIXES:  .o .cpp .cc
 
@@ -15,16 +15,23 @@ SRC_DIR	= ..
 SRC_CPP = $(wildcard $(SRC_DIR)/*.cpp)
 SRC_CC = $(wildcard $(SRC_DIR)/*.cc)
 INC += -I$(SRC_DIR)
+INC += -I../../
 
 OBJS = $(SRC_CPP:%.cpp=%.o)
 OBJS += $(SRC_CC:%.cc=%.o)
 
-OUTPUT = test_snowflake
+OUTPUT = test_snowflake test_log test_random
 
-#all:$(OBJS) $(OUTPUT)
-all:$(OUTPUT)
+all:$(OBJS) $(OUTPUT)
+#all:$(OUTPUT)
 
-test_snowflake:../Snowflake.h ../TypeTraits.h TestSnowflake.cpp
+test_snowflake:$(OBJS) TestSnowflake.cpp
+	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
+
+test_log: $(OBJS) TestLog.cpp
+	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
+
+test_random: $(OBJS) TestRandom.cpp
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
 
 .cpp.o:

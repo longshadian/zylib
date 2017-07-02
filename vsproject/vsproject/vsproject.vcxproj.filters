@@ -56,6 +56,9 @@
     <Filter Include="nel\test">
       <UniqueIdentifier>{9beec4a0-df2a-4015-9cad-27ffc3f5ec91}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zylib\test">
+      <UniqueIdentifier>{b3f477a0-b295-48d9-a86e-fb2722bf3f15}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\mysqlcpp\Assert.h">
@@ -330,6 +333,9 @@
     </ClInclude>
     <ClInclude Include="..\..\nel\Tools.h">
       <Filter>nel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\zylib\TypeTraits.h">
+      <Filter>zylib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -611,6 +617,15 @@
     </ClCompile>
     <ClCompile Include="..\..\mysqlcpp\test\TestTransaction.cpp">
       <Filter>mysqlcpp\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\zylib\test\TestSnowflake.cpp">
+      <Filter>zylib\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\zylib\test\TestLog.cpp">
+      <Filter>zylib\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\zylib\test\TestRandom.cpp">
+      <Filter>zylib\test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

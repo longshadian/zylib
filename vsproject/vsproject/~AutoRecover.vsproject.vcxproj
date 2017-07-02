@@ -202,6 +202,7 @@
     <ClInclude Include="..\..\zylib\ThreadPool.h" />
     <ClInclude Include="..\..\zylib\Timer.h" />
     <ClInclude Include="..\..\zylib\Tools.h" />
+    <ClInclude Include="..\..\zylib\TypeTraits.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\game_server\Config.cpp" />
@@ -296,6 +297,9 @@
     <ClCompile Include="..\..\zylib\Logger.cpp" />
     <ClCompile Include="..\..\zylib\Random.cpp" />
     <ClCompile Include="..\..\zylib\String.cpp" />
+    <ClCompile Include="..\..\zylib\test\TestLog.cpp" />
+    <ClCompile Include="..\..\zylib\test\TestRandom.cpp" />
+    <ClCompile Include="..\..\zylib\test\TestSnowflake.cpp" />
     <ClCompile Include="..\..\zylib\Tools.cpp" />
   </ItemGroup>
   <ItemGroup>
