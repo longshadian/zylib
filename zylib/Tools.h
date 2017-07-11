@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstring>
 #include <string>
 #include <map>
 #include <vector>
@@ -83,6 +84,13 @@ inline
 std::unique_ptr<T> make_unique()
 {
     return std::unique_ptr<T>{ new T() };
+}
+
+template <typename T>
+void bzero(T* t)
+{
+    static_assert(std::is_pod<T>::value, "T must be pod!");
+    std::memset(t, 0, sizeof(T));
 }
 
 //////////////////////////////////////////////////////////////////////////

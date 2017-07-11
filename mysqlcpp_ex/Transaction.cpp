@@ -1,0 +1,32 @@
+#include "Transaction.h"
+
+#include <algorithm>
+
+#include "Connection.h"
+#include "Statement.h"
+
+namespace mysqlcpp {
+
+Transaction::Transaction(Connection& conn)
+    : m_conn(conn)
+    , m_stmt(conn.createStatement())
+    , m_rollback(true)
+{
+    m_stmt->execute("START TRANSACTION");
+}
+
+Transaction::~Transaction()
+{
+    if (m_rollback) {
+        m_stmt->execute("ROLLBACK");
+    }
+}
+
+void Transaction::commit()
+{
+    m_stmt->execute("COMMIT");
+    m_rollback = false;
+}
+
+
+}

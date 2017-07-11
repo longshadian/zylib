@@ -68,19 +68,25 @@ bool isUtf8Internal(const char* pos, size_t len)
     for (size_t i = 0; i != len; ++i) {
         unsigned c = static_cast<unsigned char>(pos[i]);
         if (multi_len == 0) {
-            if (c <= 0x7F)          //0xxx xxxx     ascii码
+            if ((c & 0x80) == 0)                // 1000 0000 以下是ascii码
                 multi_len = 1;
-            else if (c <= 0xDF)     //110x xxxx
+            else if ((c & 0xE0) == 0xC0)        // 110x xxxx   0xE0是11100000  0xC0是11000000  
                 multi_len = 2;
-            else if (c <= 0xEF)     //1110 xxxx
+            else if ((c & 0xF0) == 0xE0)        // 1110 xxxx   0xF0是11110000  0xE0是11100000  
                 multi_len = 3;
-            else if (c <= 0xF7)     //1111 0xxx
+            else if ((c & 0xF8) == 0xF0)        // 1111 0xxx   0xF8是11111000
                 multi_len = 4;
             else
-                return false;       //不考虑4字节以后的编码
+                return false;                   // 不考虑4字节以后的编码
+            /*
+            else if ((c & 0xFC) == 0xF8)
+                count = 5;
+            else if ((c & 0xFE) == 0xFC)
+                count = 6;
+            */
             multi_len--;
         } else {
-            if ((c & 0xC0) != 0x80) //最高2bit不是10xx xxxx
+            if ((c & 0xC0) != 0x80) // 最高2bit不是10xx xxxx
                 return false;
             multi_len--;
         }
