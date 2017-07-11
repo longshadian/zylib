@@ -4,7 +4,6 @@
 #include <memory>
 
 #include "MySqlCpp.h"
-#include "zylib/Logger.h"
 
 mysqlcpp::ConnectionOpt initOpt()
 {
@@ -220,10 +219,10 @@ int testPool()
 
 int main()
 {
-    zylib::logger::initSyncConsole();
+    //zylib::logger::initSyncConsole();
     //mysqlcpp::initLog(&std::cout);
 
-    LOG(DEBUG) << "aaa from zylog";
+    //LOG(DEBUG) << "aaa from zylog";
     //BOOST_LOG_TRIVIAL(debug) << "sssss";
 
     //funPreparedStmt();
