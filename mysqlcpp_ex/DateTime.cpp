@@ -126,9 +126,9 @@ std::array<unsigned long, 6> DateTime::getLocaltime(time_t t)
 {
     std::array<unsigned long, 6> val{0};
     struct tm tms;
-    //struct tm* ptm = localtime_r(&t, &tms);
-    localtime_s(&tms, &t);
-    struct tm* ptm = &tms;
+    struct tm* ptm = localtime_r(&t, &tms);
+    //localtime_s(&tms, &t);
+    //struct tm* ptm = &tms;
     val[0] = ptm->tm_year + 1900;
     val[1] = ptm->tm_mon + 1;
     val[2] = ptm->tm_mday;

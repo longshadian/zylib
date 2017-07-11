@@ -2,6 +2,7 @@
 
 #include <mysql.h>
 
+#include <cstring>
 #include <vector>
 #include <memory>
 

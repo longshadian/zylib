@@ -4,7 +4,6 @@
 #include <memory>
 #include <mysql.h>
 
-#include "Assert.h"
 #include "Types.h"
 
 namespace mysqlcpp {

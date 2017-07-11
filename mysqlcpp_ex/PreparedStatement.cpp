@@ -2,7 +2,7 @@
 
 #include <cstring>
 
-#include "Assert.h"
+#include "MyAssert.h"
 #include "Connection.h"
 #include "FakeLog.h"
 #include "Utils.h"

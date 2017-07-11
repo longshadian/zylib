@@ -2,7 +2,7 @@
 
 #include <algorithm>
 #include "FakeLog.h"
-#include "Assert.h"
+#include "MyAssert.h"
 
 namespace mysqlcpp {
 

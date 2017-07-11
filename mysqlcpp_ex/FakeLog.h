@@ -1,11 +1,39 @@
-#ifndef _MYSQLCPP_FAKELOG_H
-#define _MYSQLCPP_FAKELOG_H
+#pragma once
 
 #include <sstream>
+#include <memory>
+#include <mutex>
 
 namespace mysqlcpp {
 
-#undef ERROR
+class LogStream
+{
+public:
+    LogStream();
+    virtual ~LogStream();
+public:
+    LogStream& operator<<(signed char val);
+    LogStream& operator<<(unsigned char val);
+    LogStream& operator<<(char val);
+    LogStream& operator<<(short val);
+    LogStream& operator<<(unsigned short val);
+    LogStream& operator<<(int val);
+    LogStream& operator<<(unsigned int val);
+    LogStream& operator<<(long val);
+    LogStream& operator<<(unsigned long val);
+    LogStream& operator<<(long long val);
+    LogStream& operator<<(unsigned long long val);
+    LogStream& operator<<(float val);
+    LogStream& operator<<(double val);
+    LogStream& operator<<(long double val);
+    LogStream& operator<<(const std::string& val);
+    LogStream& operator<<(const char* val);
+
+    virtual void flush();
+
+    std::mutex         m_mtx;
+    std::ostringstream m_ostm;
+};
 
 enum LOG_LEVEL
 {
@@ -18,8 +46,7 @@ enum LOG_LEVEL
 
 extern const char* LOG_SEVERITY_NAMES[NUM_SEVERITY];
 
-
-void initLog(std::ostream* ostm, LOG_LEVEL lv = DEBUG);
+void initLog(std::unique_ptr<LogStream> ostm, LOG_LEVEL lv = DEBUG);
 
 struct FakeLogStream
 {
@@ -36,8 +63,7 @@ inline FakeLogStream& operator<<(FakeLogStream& os, const T& t)
 
 struct FakeLog
 {
-    FakeLog(int lv, int line, const char* file, const char* function);
-    FakeLog(int lv, const char* file, int line);
+    FakeLog(int lv, const char* file, int line, const char* fun);
     ~FakeLog();
 
     FakeLogStream& stream() { return m_stream; }
@@ -49,9 +75,6 @@ private:
     FakeLogStream   m_stream;
 };
 
-#define FAKE_LOG(type)	FakeLog(type,		__FILE__, __LINE__).stream()
+#define FAKE_LOG(type)	FakeLog(type,		__FILE__, __LINE__, __FUNCTION__).stream()
 
 }
-
-
-#endif

@@ -1,5 +1,7 @@
 #include "ResultBind.h"
 
+#include <cstring>
+
 #include "PreparedStatement.h"
 #include "FakeLog.h"
 
