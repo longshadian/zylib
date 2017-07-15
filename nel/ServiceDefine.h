@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace NLNET {
+namespace nlnet {
 
 extern const std::string NamingServiceName;
 

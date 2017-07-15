@@ -7,7 +7,10 @@
 
 #include <boost/asio.hpp>
 
-namespace NLNET {
+namespace nlnet {
+
+class CInetAddress;
+class ServiceAddr;
 
 class NamingClient
 {

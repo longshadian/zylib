@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="mysqlcpp">
+      <UniqueIdentifier>{008cbc04-7e44-4211-a58d-65326733f4fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mysqlcpp\test">
+      <UniqueIdentifier>{0b21dad5-acb7-4512-8bf6-555f5724b631}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\mysqlcpp_ex\Connection.cpp">
+      <Filter>mysqlcpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_ex\ConnectionPool.cpp">
+      <Filter>mysqlcpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_ex\DateTime.cpp">
+      <Filter>mysqlcpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_ex\FakeLog.cpp">
+      <Filter>mysqlcpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_ex\Field.cpp">
+      <Filter>mysqlcpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_ex\FieldMeta.cpp">
+      <Filter>mysqlcpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_ex\ParamBind.cpp">
+      <Filter>mysqlcpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_ex\PreparedStatement.cpp">
+      <Filter>mysqlcpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_ex\ResultBind.cpp">
+      <Filter>mysqlcpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_ex\ResultSet.cpp">
+      <Filter>mysqlcpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_ex\Statement.cpp">
+      <Filter>mysqlcpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_ex\Transaction.cpp">
+      <Filter>mysqlcpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_ex\Utils.cpp">
+      <Filter>mysqlcpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_ex\test\TestAll.cpp">
+      <Filter>mysqlcpp\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_ex\test\TestThreads.cpp">
+      <Filter>mysqlcpp\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_ex\test\TestXX.cpp">
+      <Filter>mysqlcpp\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_ex\test\TestXX2.cpp">
+      <Filter>mysqlcpp\test</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\mysqlcpp_ex\Connection.h">
+      <Filter>mysqlcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp_ex\ConnectionPool.h">
+      <Filter>mysqlcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp_ex\DateTime.h">
+      <Filter>mysqlcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp_ex\FakeLog.h">
+      <Filter>mysqlcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp_ex\Field.h">
+      <Filter>mysqlcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp_ex\FieldMeta.h">
+      <Filter>mysqlcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp_ex\MySqlCpp.h">
+      <Filter>mysqlcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp_ex\MysqlcppAssert.h">
+      <Filter>mysqlcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp_ex\ParamBind.h">
+      <Filter>mysqlcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp_ex\PreparedStatement.h">
+      <Filter>mysqlcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp_ex\ResultBind.h">
+      <Filter>mysqlcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp_ex\ResultSet.h">
+      <Filter>mysqlcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp_ex\Statement.h">
+      <Filter>mysqlcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp_ex\Transaction.h">
+      <Filter>mysqlcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp_ex\Types.h">
+      <Filter>mysqlcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp_ex\Utils.h">
+      <Filter>mysqlcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp_ex\test\AsyncTask.h">
+      <Filter>mysqlcpp\test</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\mysqlcpp_ex\test\Makefile">
+      <Filter>mysqlcpp\test</Filter>
+    </None>
+  </ItemGroup>
+</Project>

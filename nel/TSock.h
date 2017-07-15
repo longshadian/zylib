@@ -9,9 +9,7 @@
 
 #include "Types.h"
 
-namespace NLNET {
-
-class TSock;
+namespace nlnet {
 
 struct ConnectionInfo
 {
@@ -20,28 +18,12 @@ struct ConnectionInfo
     std::string m_port;
 };
 
-struct TSockContext
-{
-    TSockContext(const std::string& sname,
-        const ServiceID& sid,
-        TSockPtr sock)
-        : m_service_name(sname)
-        , m_service_id(sid)
-        , m_sock(std::move(sock))
-    {
-    }
-
-    const std::string&  m_service_name;
-    const ServiceID&    m_service_id;
-    TSockPtr            m_sock;
-};
-
 class TSock : public std::enable_shared_from_this<TSock>
 {
 public:
-    using ClosedCallback = std::function<void(TSockPtr)>;
-    using TimeoutCallback = std::function<void(TSockPtr)>;
-    using ReceivedMsgCallback = std::function<void(NetWorkMessagePtr)>;
+    using Closed_Callback = std::function<void(TSockPtr)>;
+    using Timeout_Callback = std::function<void(TSockPtr)>;
+    using ReceivedMsg_Callback = std::function<void(NetworkMessagePtr)>;
 
     enum class CLOSED_TYPE : int
     {
@@ -62,13 +44,11 @@ public:
     void shutdown();
     void onClosed(CLOSED_TYPE type = CLOSED_TYPE::NORMAL);
 
-    void setReceivedMsgCallback(ReceivedMsgCallback cb);
-    void setClosedCallback(ClosedCallback cb);
-    void setTimeoutCallback(TimeoutCallback cb);
+    void setReceivedMsgCallback(ReceivedMsg_Callback cb);
+    void setClosedCallback(Closed_Callback cb);
+    void setTimeoutCallback(Timeout_Callback cb);
 
     TSockHdl getSockHdl();
-    //const std::string& getServiceName() const;
-    //const ServiceID& getServiceID() const;
 private:
     boost::asio::io_service& getIOService();
 
@@ -84,9 +64,9 @@ protected:
     boost::asio::ip::tcp::socket    m_socket;
     std::list<std::vector<uint8_t>> m_write_buffer;
     std::atomic<bool>               m_is_closed;
-    ReceivedMsgCallback             m_received_msg_cb;
-    ClosedCallback                  m_closed_cb;
-    TimeoutCallback                 m_timeout_cb;
+    ReceivedMsg_Callback             m_received_msg_cb;
+    Closed_Callback                  m_closed_cb;
+    Timeout_Callback                 m_timeout_cb;
     int32_t                         m_read_timeout_seconds;
     std::array<uint8_t, 4>          m_read_head;
     std::vector<uint8_t>            m_read_buffer;

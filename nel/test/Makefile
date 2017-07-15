@@ -24,7 +24,8 @@ OBJS = $(SRC_CPP:%.cpp=%.o)
 OBJS += $(SRC_CC:%.cc=%.o)
 
 
-OUTPUT = naming_service game_service test_client db_service
+#OUTPUT = naming_service game_service test_client db_service
+OUTPUT = test_client
 
 all:$(OBJS) $(OUTPUT)
 

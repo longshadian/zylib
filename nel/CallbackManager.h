@@ -5,14 +5,15 @@
 
 #include "Types.h"
 
-namespace NLNET {
-class TSockContext;
+namespace nlnet {
 
-using MsgCallbackFunction = std::function<void(TSockContext&, CMessage& msg)>;
-using MsgCallbackArray = std::unordered_map<std::string, MsgCallbackFunction>;
+class NetworkMessageContext;
 
-using ServiceUpCallback     = std::function<void(TSockContext&)>;
-using ServiceDownCallback   = std::function<void(TSockContext&)>;
+using Msg_Callback          = std::function<void(NetworkMessageContext&, CMessage& msg)>;
+using Msg_Callback_Array    = std::unordered_map<std::string, Msg_Callback>;
+
+using ServiceUp_Callback    = std::function<void(NetworkMessageContext&)>;
+using ServiceDown_Callback  = std::function<void(NetworkMessageContext&)>;
 
 class CallbackManager
 {
@@ -22,23 +23,24 @@ public:
     CallbackManager(const CallbackManager& rhs) = delete;
     CallbackManager& operator=(const CallbackManager& rhs) = delete;
 
-    bool callbackMsg(TSockContext& sock, CMessage& msg);
-    void callbackServiceUp(TSockContext& sock);
-    void callbackServiceDown(TSockContext& sock);
+    bool callbackMsg(NetworkMessageContext& sock, CMessage& msg);
+    void callbackServiceConnect(NetworkMessageContext& sock);
+    void callbackServiceDisconnect(NetworkMessageContext& sock);
 
-    void setMsgCallbackArray(MsgCallbackArray msg_cb_array);
+    void setMsgCallbackArray(Msg_Callback_Array msg_cb_array);
 
-    bool setServiceUpCallback(const std::string& service_name, ServiceUpCallback cb);
-    bool setServiceDownCallback(const std::string& service_name, ServiceDownCallback cb);
-    void removeServiceUpCallback(const std::string& service_name);
-    void removeServiceDownCallback(const std::string& service_name);
+    bool setServiceConnectCallback(const std::string& service_name, ServiceUp_Callback cb);
+    bool setServiceDisconnectCallback(const std::string& service_name, ServiceDown_Callback cb);
+
+    void removeServiceConnectCallback(const std::string& service_name);
+    void removeServiceDisconnectCallback(const std::string& service_name);
 private:
-    ServiceUpCallback* findUpCallback(const std::string& service_name);
-    ServiceDownCallback* findDownCallback(const std::string& service_name);
+    ServiceUp_Callback* findUpCallback(const std::string& service_name);
+    ServiceDown_Callback* findDownCallback(const std::string& service_name);
 private:
-    MsgCallbackArray m_msg_cb_array;
-    std::unordered_map<std::string, ServiceUpCallback> m_up_cbs;
-    std::unordered_map<std::string, ServiceDownCallback> m_down_cbs;
+    Msg_Callback_Array m_msg_cb_array;
+    std::unordered_map<std::string, ServiceUp_Callback> m_up_cbs;
+    std::unordered_map<std::string, ServiceDown_Callback> m_down_cbs;
 };
 
 } // NLNET

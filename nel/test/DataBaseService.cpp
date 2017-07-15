@@ -9,12 +9,12 @@
 
 #include "TestDefine.h"
 
-void reqUserData(NLNET::TSockContext& sock, NLNET::CMessage& req)
+void reqUserData(nlnet::TSockContext& sock, nlnet::CMessage& req)
 {
     auto s = req.getData();
     std::cout << "req:" << req.m_msg_name << " content:" << s << "\n";
     s += " rsp from dbs  user_data:xxxx";
-    NLNET::CMessage rsp{ def::_RSP_USER_DATA, s};
+    nlnet::CMessage rsp{ def::_RSP_USER_DATA, s};
     sock.m_sock->sendMsg(rsp);
 }
 
@@ -33,13 +33,13 @@ DataBaseService::~DataBaseService()
 
 bool DataBaseService::start()
 {
-    m_network = std::make_unique<NLNET::UnifiedNetwork>();
+    m_network = std::make_unique<nlnet::UnifiedNetwork>();
     if (!m_network->init(def::DBS_SID, def::DBS_NAME, def::DBS_ADDR)) {
         std::cout << "network init faild!\n";
         return false;  
     }
 
-    NLNET::MsgCallbackArray call_array = 
+    nlnet::Msg_Callback_Array call_array = 
     {
         {def::_REQ_USER_DATA, &reqUserData },
     };

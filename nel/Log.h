@@ -4,7 +4,7 @@
 #include <memory>
 #include <mutex>
 
-namespace NLNET {
+namespace nlnet {
 
 class LogStream
 {
@@ -76,7 +76,7 @@ private:
     FakeLogStream   m_stream;
 };
 
-#define LOG_DEBUG	FakeLog(DEBUG,      __FILE__, __LINE__, __FUNCTION__).stream()
-#define LOG_WARNING	FakeLog(WARNING,    __FILE__, __LINE__, __FUNCTION__).stream()
+} // nlnet
 
-}
+#define LOG(S) FakeLog(nlnet::S,    __FILE__, __LINE__, __FUNCTION__).stream()
+

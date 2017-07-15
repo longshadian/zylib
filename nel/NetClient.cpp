@@ -5,13 +5,12 @@
 #include "Log.h"
 #include "TSock.h"
 
-namespace NLNET {
+namespace nlnet {
 
 NetClient::NetClient(boost::asio::io_service& io_service)
     : m_io_service(io_service)
     , m_sock(std::make_shared<TSock>(boost::asio::ip::tcp::socket(m_io_service)))
-    , m_is_connected()
-    , m_address() 
+    , m_inet_addr() 
     , m_connect_cb()
 {
 }
@@ -20,9 +19,9 @@ NetClient::~NetClient()
 {
 }
 
-bool NetClient::isConnected() const
+int32_t NetClient::getState() const
 {
-    return m_is_connected;
+    return m_state;
 }
 
 void NetClient::disconnect()
@@ -30,46 +29,46 @@ void NetClient::disconnect()
     m_sock->shutdown();
 }
 
-bool NetClient::connect(const CInetAddress& addr)
+bool NetClient::connect(const CInetAddress& addr, Connect_Callback cb)
 { 
-    m_address = addr;
-    m_is_connected = syncConnect(addr.m_ip, addr.m_port);
-    if (m_is_connected)
-        m_connect_cb(m_sock);
-    return m_is_connected;
+    if (m_state != DISCONNECT)
+        return false;
+    m_connect_cb = std::move(cb);
+    m_inet_addr = addr;
+    return asyncConnect(m_inet_addr);
 }
 
 bool NetClient::reconnect()
 {
-    m_is_connected = syncConnect(m_address.m_ip, m_address.m_port);
-    if (m_is_connected)
-        m_connect_cb(m_sock);
-    return m_is_connected;
+    if (!m_connect_cb)
+        return false;
+    return asyncConnect(m_inet_addr);
 }
 
-void NetClient::setConnectCallback(ConnectCallback cb)
-{
-    m_connect_cb = std::move(cb);
-}
-
-TSockPtr& NetClient::getSock()
+const TSockPtr& NetClient::getSock() const
 {
     return m_sock;
 }
 
-bool NetClient::syncConnect(const std::string& ip, int32_t port)
+const CInetAddress& NetClient::getAddress() const
+{
+    return m_inet_addr;
+}
+
+bool NetClient::syncConnect(const CInetAddress& addr)
 {
     std::promise<bool> p{};
     auto f = p.get_future();
-    std::thread t([this, &p, &ip, & port] {
+    std::thread t([this, &p, &addr] {
         try {
             boost::asio::ip::tcp::resolver r(m_io_service);
             boost::asio::connect(m_sock->getSocket(),
-                r.resolve({ip, std::to_string(port)}));
+                r.resolve({ addr.m_ip, std::to_string(addr.m_port) }));
             p.set_value(true);
             m_sock->start();
-        } catch (std::exception e) {
-            LOG_WARNING << "conn exception " << e.what();
+        }
+        catch (std::exception e) {
+            LOG(WARNING) << "conn exception " << e.what();
             p.set_value(false);
         }
     });
@@ -84,5 +83,33 @@ bool NetClient::syncConnect(const std::string& ip, int32_t port)
     }
 }
 
+bool NetClient::asyncConnect(const CInetAddress& addr)
+{
+    try {
+        boost::asio::ip::address baddr{};
+        baddr.from_string(addr.m_ip);
+        boost::asio::ip::tcp::endpoint ep_pair{ baddr, addr.m_port };
+        m_state = IS_CONNECTING;
+        m_sock->getSocket().async_connect(ep_pair,
+            [this, self = shared_from_this()](boost::system::error_code ec)
+            {
+                if (!ec) {
+                    LOG(DEBUG) << "connect " << m_inet_addr.toString() << " success";
+                    m_sock->start();
+                    m_state = CONNECTED;
+                } else {
+                    LOG(WARNING) << "connect " << m_inet_addr.toString() << " fail " << ec.message();
+                    m_state = DISCONNECT;
+                }
+
+                if (m_connect_cb)
+                    m_connect_cb(ec, self);
+            });
+            return true;
+    } catch (std::exception e) {
+        LOG(WARNING) << "conn exception " << e.what();
+    }
+    return false;
+}
 
 }

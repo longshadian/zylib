@@ -1,6 +1,8 @@
 #include "Tools.h"
 
-namespace NLNET {
+#include "CMessage.h"
+
+namespace nlnet {
 
 namespace tools {
 

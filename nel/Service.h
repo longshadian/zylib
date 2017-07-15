@@ -4,7 +4,7 @@
 
 #include "Types.h"
 
-namespace NLNET {
+namespace nlnet {
 
 class UnifiedNetwork;
 

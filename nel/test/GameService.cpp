@@ -11,16 +11,16 @@
 #include "GSCallbackManager.h"
 GameService* g_service = nullptr;
 
-void reqTest(NLNET::TSockContext sock, NLNET::CMessage& msg)
+void reqTest(nlnet::TSockContext sock, nlnet::CMessage& msg)
 {
     auto s = msg.getData();
     std::cout << "req:" << msg.m_msg_name << " content:" << s << "\n";
     s += " req_user_data";
 
-    NLNET::CMessage req_db{def::_REQ_USER_DATA, s};
+    nlnet::CMessage req_db{def::_REQ_USER_DATA, s};
     g_service->m_network->send(def::DBS_SID, req_db, def::DBS_ADDR);
     g_service->getCBMgr().regCBRspUserData(12,
-        [sock_hdl = sock.m_sock->getSockHdl()](NLNET::CMessage& rmsg)
+        [sock_hdl = sock.m_sock->getSockHdl()](nlnet::CMessage& rmsg)
         {
             auto rsock = sock_hdl.lock();
             if (!rsock) {
@@ -31,12 +31,12 @@ void reqTest(NLNET::TSockContext sock, NLNET::CMessage& msg)
             auto str = rmsg.getData();
             std::cout << "receive:" << rmsg.m_msg_name << " content:" << str << "\n";
             str += " GS-rspUserData";
-            NLNET::CMessage rsp{def::_RSP_TEST, str};
+            nlnet::CMessage rsp{def::_RSP_TEST, str};
             rsock->sendMsg(rsp);
         });
 }
 
-void rspUserData(NLNET::TSockContext sock, NLNET::CMessage& msg)
+void rspUserData(nlnet::TSockContext sock, nlnet::CMessage& msg)
 {
     (void)sock;
     g_service->getCBMgr().callback(12, msg);
@@ -58,18 +58,18 @@ GameService::~GameService()
 
 bool GameService::start()
 {
-    m_network = std::make_unique<NLNET::UnifiedNetwork>();
+    m_network = std::make_unique<nlnet::UnifiedNetwork>();
     m_gs_cb_mgr = std::make_unique<GSCallbackManager>();
 
-    NLNET::MsgCallbackArray call_array = 
+    nlnet::Msg_Callback_Array call_array = 
     {
         {def::_REQ_TEST, &reqTest},
         {def::_RSP_USER_DATA, &rspUserData},
     };
     m_network->getCallbackManager().setMsgCallbackArray(std::move(call_array));
-    m_network->getCallbackManager().setServiceUpCallback(def::DBS_NAME,
+    m_network->getCallbackManager().setServiceConnectCallback(def::DBS_NAME,
         std::bind(&GameService::cbServiceUp, this, std::placeholders::_1));
-    m_network->getCallbackManager().setServiceDownCallback(def::DBS_NAME,
+    m_network->getCallbackManager().setServiceDisconnectCallback(def::DBS_NAME,
         std::bind(&GameService::cbServiceDown, this, std::placeholders::_1));
 
     if (!m_network->init(def::GS_SID, def::GS_NAME, def::GS_ADDR)) {
@@ -112,14 +112,14 @@ int main()
     return 0;
 }
 
-void GameService::cbServiceUp(NLNET::TSockContext& sock)
+void GameService::cbServiceUp(nlnet::TSockContext& sock)
 {
     std::cout << "sock up. sid:" << sock.m_service_id
         << " sname:" << sock.m_service_name
         << "\n";
 }
 
-void GameService::cbServiceDown(NLNET::TSockContext& sock)
+void GameService::cbServiceDown(nlnet::TSockContext& sock)
 {
     std::cout << "sock down. sid:" << sock.m_service_id
         << " sname:" << sock.m_service_name

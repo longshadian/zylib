@@ -7,62 +7,19 @@
 #include <unordered_map>
 
 #include "Types.h"
-#include "NetBase.h"
 #include "NetClient.h"
 #include "NetServer.h"
 
-namespace NLNET {
+namespace nlnet {
 
 class UnifiedNetwork;
 class TSockContext;
 
-class UnifiedConnection
+class TEndpoint;
+class NetworkMessageContext;
+
+class UnifiedConnection : public std::enable_shared_from_this<UnifiedConnection>
 {
-public:
-    struct TEndpoint
-    {
-        TEndpoint() 
-            : m_client()
-            , m_sock()
-            , m_remote_addr()
-        {
-        }
-
-        /// 已客户端的身份去连接
-        TEndpoint(NetClientPtr conn, CInetAddress addr)
-            : m_client(conn)
-            , m_sock(conn->getSock())
-            , m_remote_addr(std::move(addr))
-        {
-        }
-
-        /// 已服务器的身份,有新的连接到来
-        TEndpoint(TSockPtr sock)
-            : m_client()
-            , m_sock(sock)
-            , m_remote_addr()
-        {
-        }
-
-        bool empty() const
-        {
-            // TODO
-            return m_client == nullptr;
-        }
-
-        void shutdown()
-        {
-            // TODO
-        }
-
-        /// 是服务端的链接
-        NetClientPtr    m_client;
-        TSockPtr        m_sock;
-
-        // 当作客户端去连接服务端
-        CInetAddress m_remote_addr;
-    };
-
 public:
     enum class STATE 
     { 
@@ -72,8 +29,6 @@ public:
     UnifiedConnection(UnifiedNetwork& network, ServiceID service_id,
         std::string short_name,
         bool auto_retry = false);
-
-    void connect(const CInetAddress& addr);
 
     void update(DiffTime diff_time);
 
@@ -85,21 +40,29 @@ public:
     void setServiceID(ServiceID service_id);
     const ServiceID& getServiceID() const;
 
-    void addAcceptorEndpoint(NetServerPtr net_server);
-    void addServiceEndpoint(NetClientPtr net_client, const CInetAddress& addr);
+    void addServerEndpoint(NetServerPtr net_server);
+    void addClientEndpoint(NetClientPtr net_client, const CInetAddress& addr);
     bool hasServiceAddr(const CInetAddress& addr) const;
 
     bool sendMsg(const TSockPtr& sock, CMessage msg);
     bool sendMsg(const CInetAddress& addr, CMessage msg);
 
-    void onServerSockAccept(TSockPtr sock);
-    void onClientSockConnect(TSockPtr sock);
+    void cbServerAccept(TSockPtr sock);
+    void cbClientConnect(boost::system::error_code ec, NetClientPtr net_client);
 
-    TSockContext createSockContext(TSockPtr sock) const;
+    NetworkMessageContext createMsgContext(TSockPtr sock) const;
 private:
-    void onSockTimeout(TSockPtr sock);
-    void onSockClosed(TSockPtr sock);
-    void onReceivedMsg(NetWorkMessagePtr msg);
+    void cbSockTimeout(TSockPtr sock);
+    void cbSockClosed(TSockPtr sock);
+    void cbReceivedMsg(NetworkMessagePtr msg);
+
+    void processServerNewSocket();
+    void processSockTimeout();
+    void processSockClosed();
+    void processSockReceivedMsg();
+    void processClientAsyncConnectSuccess();
+    void processClientAsyncConnectFail();
+    void processClientAutoRetry();
 
     std::shared_ptr<TEndpoint> findEndpoint(const TSockPtr& sock);
     std::shared_ptr<TEndpoint> findEndpoint(const CInetAddress& addr);
@@ -107,6 +70,7 @@ private:
     std::shared_ptr<TEndpoint> findRetryEndpoint(const CInetAddress& addr);
 
     void eraseEndpoint(const TSockPtr& sock);
+    void sockBindCallback(TSockPtr sock);
 private:
     UnifiedNetwork&         m_network;
     std::string             m_service_name;
@@ -115,14 +79,18 @@ private:
     bool                    m_auto_retry;
     std::unordered_map<TSockPtr, std::shared_ptr<TEndpoint>> m_endpoints;
     std::unordered_map<TSockPtr, std::shared_ptr<TEndpoint>> m_retry_endpoints;
-    NetServerPtr            m_net_server;
-    std::vector<CInetAddress> m_service_addrs;
+    NetServerPtr            m_server;
+    std::vector<CInetAddress> m_client_addrs;
 
     std::mutex              m_mtx;
-    std::list<TSockPtr>     m_new_client_sock;
     std::list<TSockPtr>     m_closed_sock;
     std::list<TSockPtr>     m_timeout_sock;
-    std::list<NetWorkMessagePtr> m_new_msg;
+    std::list<NetworkMessagePtr> m_new_msg;
+
+    std::list<TSockPtr>     m_server_new_sock;
+
+    std::list<NetClientPtr> m_client_connect_success;
+    std::list<NetClientPtr> m_client_connect_fail;
 };
 
 

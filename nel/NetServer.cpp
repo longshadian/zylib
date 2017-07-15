@@ -4,7 +4,7 @@
 #include "TSock.h"
 #include "NetClient.h"
 
-namespace NLNET {
+namespace nlnet {
 
 NetServer::NetServer(boost::asio::io_service& io_service, const std::string& ip, int port)
     : m_io_service(io_service)
@@ -33,15 +33,15 @@ void NetServer::accept()
     m_acceptor.async_accept(m_socket,
         [this, self = shared_from_this()](const boost::system::error_code& ec)
         {
-            LOG_DEBUG << "start accept";
+            LOG(DEBUG) << "start accept";
             if (!ec) {
                 auto sock = std::make_shared<TSock>(std::move(m_socket));
                 if (m_accept_success_cb)
                     m_accept_success_cb(sock);
                 sock->start();
-                LOG_DEBUG << "new socket";
+                LOG(DEBUG) << "new socket";
             } else {
-                LOG_WARNING << "accept error. service will stop accept. reason:" 
+                LOG(WARNING) << "accept error. service will stop accept. reason:" 
                     << ec.value() << " "  << ec.message();
                 if (m_accept_fail_cb)
                     m_accept_fail_cb(ec);

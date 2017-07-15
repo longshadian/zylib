@@ -1,6 +1,6 @@
 #include "ServiceDefine.h"
 
-namespace NLNET {
+namespace nlnet {
 
 const std::string NamingServiceName = "ns";
 

@@ -27,9 +27,9 @@ public:
 
     GSCallbackManager& getCBMgr();
 
-    std::unique_ptr<NLNET::UnifiedNetwork> m_network;
+    std::unique_ptr<nlnet::UnifiedNetwork> m_network;
     std::unique_ptr<GSCallbackManager>     m_gs_cb_mgr;
 private:
-    void cbServiceUp(NLNET::TSockContext& sock);
-    void cbServiceDown(NLNET::TSockContext& sock);
+    void cbServiceUp(nlnet::TSockContext& sock);
+    void cbServiceDown(nlnet::TSockContext& sock);
 };

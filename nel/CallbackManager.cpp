@@ -2,8 +2,9 @@
 
 #include "Log.h"
 #include "TSock.h"
+#include "CMessage.h"
 
-namespace NLNET {
+namespace nlnet {
 CallbackManager::CallbackManager()
 {
 }
@@ -12,12 +13,12 @@ CallbackManager::~CallbackManager()
 {
 }
 
-void CallbackManager::setMsgCallbackArray(MsgCallbackArray msg_cb_array)
+void CallbackManager::setMsgCallbackArray(Msg_Callback_Array msg_cb_array)
 {
     m_msg_cb_array = std::move(msg_cb_array);
 }
 
-bool CallbackManager::callbackMsg(TSockContext& sock, CMessage& msg)
+bool CallbackManager::callbackMsg(NetworkMessageContext& sock, CMessage& msg)
 {
     auto it = m_msg_cb_array.find(msg.m_msg_name);
     if (it == m_msg_cb_array.end()) {
@@ -27,45 +28,45 @@ bool CallbackManager::callbackMsg(TSockContext& sock, CMessage& msg)
     return true;
 }
 
-void CallbackManager::callbackServiceUp(TSockContext& sock)
+void CallbackManager::callbackServiceConnect(NetworkMessageContext& sock)
 {
     auto* cb = findUpCallback(sock.m_service_name);
     if (cb)
         (*cb)(sock);
 }
 
-void CallbackManager::callbackServiceDown(TSockContext& sock)
+void CallbackManager::callbackServiceDisconnect(NetworkMessageContext& sock)
 {
     auto* cb = findDownCallback(sock.m_service_name);
     if (cb)
         (*cb)(sock);
 }
 
-bool CallbackManager::setServiceUpCallback(const std::string& service_name,
-    ServiceUpCallback cb)
+bool CallbackManager::setServiceConnectCallback(const std::string& service_name,
+    ServiceUp_Callback cb)
 {
     auto it = m_up_cbs.insert({service_name, std::move(cb)});
     return it.second;
 }
 
-bool CallbackManager::setServiceDownCallback(const std::string& service_name,
-    ServiceDownCallback cb)
+bool CallbackManager::setServiceDisconnectCallback(const std::string& service_name,
+    ServiceDown_Callback cb)
 {
     auto it = m_down_cbs.insert({service_name, std::move(cb)});
     return it.second;
 }
 
-void CallbackManager::removeServiceUpCallback(const std::string& service_name)
+void CallbackManager::removeServiceConnectCallback(const std::string& service_name)
 {
     m_up_cbs.erase(service_name);
 }
 
-void CallbackManager::removeServiceDownCallback(const std::string& service_name)
+void CallbackManager::removeServiceDisconnectCallback(const std::string& service_name)
 {
     m_down_cbs.erase(service_name);
 }
 
-ServiceUpCallback* CallbackManager::findUpCallback(const std::string& service_name)
+ServiceUp_Callback* CallbackManager::findUpCallback(const std::string& service_name)
 {
     auto it = m_up_cbs.find(service_name);
     if (it != m_up_cbs.end())
@@ -73,7 +74,7 @@ ServiceUpCallback* CallbackManager::findUpCallback(const std::string& service_na
     return nullptr;
 }
 
-ServiceDownCallback* CallbackManager::findDownCallback(const std::string& service_name)
+ServiceDown_Callback* CallbackManager::findDownCallback(const std::string& service_name)
 {
     auto it = m_down_cbs.find(service_name);
     if (it != m_down_cbs.end())

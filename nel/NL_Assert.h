@@ -2,4 +2,4 @@
 
 #include <boost/assert.hpp>
 
-#define GASSERT BOOST_ASSERT
+#define NL_ASSERT BOOST_ASSERT

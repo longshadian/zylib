@@ -23,7 +23,7 @@ do { \
     } \
 } while(0)
 
-void NamingService::reqService(NLNET::TSockContext sock, NLNET::CMessage& msg)
+void NamingService::reqService(nlnet::TSockContext sock, nlnet::CMessage& msg)
 {
     (void)sock;
     ::pt::req_service req{};
@@ -33,7 +33,7 @@ void NamingService::reqService(NLNET::TSockContext sock, NLNET::CMessage& msg)
     (void)rsp;
 }
 
-void NamingService::registerService(NLNET::TSockContext sock, NLNET::CMessage& msg)
+void NamingService::registerService(nlnet::TSockContext sock, nlnet::CMessage& msg)
 {
     (void)sock;
     ::pt::req_register_service req{};
@@ -83,9 +83,9 @@ NamingService::~NamingService()
 
 bool NamingService::start()
 {
-    m_network = std::make_unique<NLNET::UnifiedNetwork>();
+    m_network = std::make_unique<nlnet::UnifiedNetwork>();
 
-    NLNET::MsgCallbackArray call_array =
+    nlnet::Msg_Callback_Array call_array =
     {
         {"_req_service", std::bind(&NamingService::reqService, this, std::placeholders::_1, std::placeholders::_2)},
         {"req_register_service", std::bind(&NamingService::registerService, this, std::placeholders::_1, std::placeholders::_2)},
@@ -98,7 +98,7 @@ bool NamingService::start()
     return true;
 }
 
-const ServiceConf* NamingService::findServiceConf(NLNET::ServiceID sid) const
+const ServiceConf* NamingService::findServiceConf(nlnet::ServiceID sid) const
 {
     auto it = m_service_conf.find(sid);
     if (it != m_service_conf.end())
@@ -106,7 +106,7 @@ const ServiceConf* NamingService::findServiceConf(NLNET::ServiceID sid) const
     return nullptr;
 }
 
-ServiceStatus* NamingService::findServiceStatus(NLNET::ServiceID sid)
+ServiceStatus* NamingService::findServiceStatus(nlnet::ServiceID sid)
 {
     auto it = m_service_status.find(sid);
     if (it != m_service_status.end())
@@ -139,8 +139,8 @@ void NamingService::startConf()
 void NamingService::broadcastNewService(const ServiceStatus& s_status
     , const ::google::protobuf::Message& msg) const
 {
-    NLNET::CMessage bs_msg{};
-    NLNET::tools::protoToCMessage(msg, &bs_msg);
+    nlnet::CMessage bs_msg{};
+    nlnet::tools::protoToCMessage(msg, &bs_msg);
 
     for (const auto& it : m_service_status) {
         if (it.second.getServiceID() == s_status.getServiceID())

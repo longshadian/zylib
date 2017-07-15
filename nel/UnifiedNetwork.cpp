@@ -11,16 +11,15 @@
 #include "ServiceDefine.h"
 #include "CallbackManager.h"
 #include "TSock.h"
+#include "CMessage.h"
 
-namespace NLNET {
+namespace nlnet {
 
 UnifiedNetwork::UnifiedNetwork()
     : m_io_service()
     , m_io_work(m_io_service)
     , m_thread()
     , m_connections()
-    , m_conn_to_reset()
-    , m_used_conn()
     , m_self_service_name()
     , m_self_server_port()
     , m_self_conn()
@@ -70,14 +69,14 @@ bool UnifiedNetwork::init(ServiceID service_id
     try {
         server = std::make_shared<NetServer>(m_io_service, addr.m_ip, addr.m_port);
     } catch (const std::exception& e) {
-        LOG_WARNING << " netserver listen failed: " << addr.m_ip << ":" << addr.m_port;
+        LOG(WARNING) << " netserver listen failed: " << addr.m_ip << ":" << addr.m_port;
         return false;
     }
     server->setAcceptSuccessCallback(
-        std::bind(&UnifiedConnection::onServerSockAccept, conn,
-            std::placeholders::_1));
+        std::bind(&UnifiedConnection::cbServerAccept, conn, std::placeholders::_1));
     server->accept();
-    conn->addAcceptorEndpoint(std::move(server));
+    conn->addServerEndpoint(std::move(server));
+
     m_connections[conn->getServiceID()] = conn;
     m_self_conn = conn;
 
@@ -86,7 +85,7 @@ bool UnifiedNetwork::init(ServiceID service_id
         if (short_name != NamingServiceName) {
             CInetAddress naming_addr{};
             if (!m_naming_client->connect(naming_addr)) {
-                LOG_WARNING << "CUnifiedNetwork init failed: naming service connection failed"; 
+                LOG(WARNING) << "CUnifiedNetwork init failed: naming service connection failed"; 
                 return false;
             }
             // TODO 从NS拉取已经注册的服务器信息
@@ -98,7 +97,7 @@ bool UnifiedNetwork::init(ServiceID service_id
             try {
                 m_io_service.run();
             } catch (const std::exception& e) {
-                LOG_WARNING << " exception:" << e.what();
+                LOG(WARNING) << " exception:" << e.what();
             }
         }));
 
@@ -132,7 +131,7 @@ void UnifiedNetwork::addService(ServiceID service_id
 
 void UnifiedNetwork::addService(ServiceID service_id
     , const std::string& name
-    , const std::vector<CInetAddress>& addr
+    , const std::vector<CInetAddress>& addr_list
     , bool auto_retry)
 {
     auto conn = findConnection(service_id);
@@ -141,24 +140,19 @@ void UnifiedNetwork::addService(ServiceID service_id
         m_connections[conn->getServiceID()] = conn;
     }
 
-    for (size_t i = 0; i != addr.size(); ++i) {
+    for (size_t i = 0; i != addr_list.size(); ++i) {
         // 已经连上service
-        if (conn->hasServiceAddr(addr[i]))
+        if (conn->hasServiceAddr(addr_list[i]))
             continue;
+        auto cb = std::bind(&UnifiedConnection::cbClientConnect, conn, std::placeholders::_1, std::placeholders::_2);
         auto net_client = std::make_shared<NetClient>(m_io_service);
-        net_client->setConnectCallback(std::bind(
-            &UnifiedConnection::onClientSockConnect, conn,
-            std::placeholders::_1));
-        if (net_client->connect(addr[i])) {
-            auto sock = net_client->getSock();
-            conn->addServiceEndpoint(net_client, addr[i]);
-            auto sock_context = conn->createSockContext(std::move(sock));
-            m_cb_manager->callbackServiceUp(sock_context);
+        if (net_client->connect(addr_list[i], std::move(cb))) {
+            conn->addClientEndpoint(net_client, addr_list[i]);
         } else {
-            LOG_WARNING << "can't add service because no retry and can't connect";
+            LOG(WARNING) << "can't add service because no retry and can't connect";
         } 
     }
-    LOG_DEBUG << "addService was successful";
+    LOG(DEBUG) << "addService was successful";
 }
 
 void UnifiedNetwork::update(DiffTime diff_time)
@@ -173,7 +167,7 @@ bool UnifiedNetwork::send(ServiceID service_id, CMessage msg, const CInetAddress
 {
     auto conn = findConnection(service_id);
     if (!conn) {
-        LOG_WARNING << "can't send " << msg.getMsgName() << " to the service " << service_id << " because no connection available";
+        LOG(WARNING) << "can't send " << msg.getMsgName() << " to the service " << service_id << " because no connection available";
         return false;
     }
     return conn->sendMsg(addr, std::move(msg));

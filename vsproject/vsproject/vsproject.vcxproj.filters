@@ -11,12 +11,6 @@
     <Filter Include="mysqlcpp\test">
       <UniqueIdentifier>{60d6dc14-aa97-40d5-bbf4-9eed4d2e95e0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="rediscpp_ex">
-      <UniqueIdentifier>{3ebc11a4-1c6b-4b12-af70-332c442dc194}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="rediscpp_ex\test">
-      <UniqueIdentifier>{87fbd9cd-f87f-4bfd-9f91-922a24af8b61}</UniqueIdentifier>
-    </Filter>
     <Filter Include="test">
       <UniqueIdentifier>{9a7a55bc-fd80-41d2-a431-cb5539c6328b}</UniqueIdentifier>
     </Filter>
@@ -29,17 +23,11 @@
     <Filter Include="game_server">
       <UniqueIdentifier>{4d291235-0df3-4474-a281-3eaafa848030}</UniqueIdentifier>
     </Filter>
-    <Filter Include="zylib">
-      <UniqueIdentifier>{65477ba9-098d-4b8e-a46a-252c90456719}</UniqueIdentifier>
-    </Filter>
     <Filter Include="game_server\database">
       <UniqueIdentifier>{3601936a-d55e-4166-a641-78e70f75d5ec}</UniqueIdentifier>
     </Filter>
     <Filter Include="game_server\world">
       <UniqueIdentifier>{060bc611-a509-4c58-92a5-99d9365206ec}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="network">
-      <UniqueIdentifier>{dac64343-fcdc-4d68-8107-919228d4d365}</UniqueIdentifier>
     </Filter>
     <Filter Include="game_server\net">
       <UniqueIdentifier>{e01ffca5-821a-415b-ad93-60fcc0dc53be}</UniqueIdentifier>
@@ -47,17 +35,11 @@
     <Filter Include="test\boost\asio">
       <UniqueIdentifier>{ce242439-4736-4768-9d8c-984c94fa09f6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="shared">
-      <UniqueIdentifier>{05f7b7ff-eb4a-41da-a6ba-52774a2ca739}</UniqueIdentifier>
-    </Filter>
     <Filter Include="nel">
       <UniqueIdentifier>{a341d956-dfa4-4871-b34b-f218135bc3f8}</UniqueIdentifier>
     </Filter>
     <Filter Include="nel\test">
       <UniqueIdentifier>{9beec4a0-df2a-4015-9cad-27ffc3f5ec91}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="zylib\test">
-      <UniqueIdentifier>{b3f477a0-b295-48d9-a86e-fb2722bf3f15}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -103,42 +85,6 @@
     <ClInclude Include="..\..\mysqlcpp\test\AsyncTask.h">
       <Filter>mysqlcpp\test</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\rediscpp_ex\test\TestTool.h">
-      <Filter>rediscpp_ex\test</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\rediscpp_ex\Connection.h">
-      <Filter>rediscpp_ex</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\rediscpp_ex\Exception.h">
-      <Filter>rediscpp_ex</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\rediscpp_ex\RedisCpp.h">
-      <Filter>rediscpp_ex</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\rediscpp_ex\Script.h">
-      <Filter>rediscpp_ex</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\rediscpp_ex\Set.h">
-      <Filter>rediscpp_ex</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\rediscpp_ex\String.h">
-      <Filter>rediscpp_ex</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\rediscpp_ex\Utile.h">
-      <Filter>rediscpp_ex</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\rediscpp_ex\Zset.h">
-      <Filter>rediscpp_ex</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\rediscpp_ex\Buffer.h">
-      <Filter>rediscpp_ex</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\rediscpp_ex\Hash.h">
-      <Filter>rediscpp_ex</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\rediscpp_ex\List.h">
-      <Filter>rediscpp_ex</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\test\boost\log\Logger.h">
       <Filter>test\boost\log</Filter>
     </ClInclude>
@@ -157,50 +103,8 @@
     <ClInclude Include="..\..\game_server\ServerApp.h">
       <Filter>game_server</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\zylib\Algorithm.h">
-      <Filter>zylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\zylib\AsyncTask.h">
-      <Filter>zylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\zylib\Code.h">
-      <Filter>zylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\zylib\Future.h">
-      <Filter>zylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\zylib\Queue.h">
-      <Filter>zylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\zylib\Random.h">
-      <Filter>zylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\zylib\RateGenerator.h">
-      <Filter>zylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\zylib\Stack.h">
-      <Filter>zylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\zylib\ThreadPool.h">
-      <Filter>zylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\zylib\Timer.h">
-      <Filter>zylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\zylib\Tools.h">
-      <Filter>zylib</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\game_server\Log.h">
       <Filter>game_server</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\zylib\Logger.h">
-      <Filter>zylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\game_server\tinyxml2.h">
-      <Filter>zylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\zylib\String.h">
-      <Filter>zylib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\game_server\GameTools.h">
       <Filter>game_server</Filter>
@@ -241,18 +145,6 @@
     <ClInclude Include="..\..\game_server\net\ServerHandler.h">
       <Filter>game_server\net</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\network\AsyncServer.h">
-      <Filter>network</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\network\FakeLog.h">
-      <Filter>network</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\network\NetworkType.h">
-      <Filter>network</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\network\RWHandler.h">
-      <Filter>network</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\game_server\net\NetworkMsg.h">
       <Filter>game_server\net</Filter>
     </ClInclude>
@@ -261,12 +153,6 @@
     </ClInclude>
     <ClInclude Include="..\..\game_server\world\WorldMsgDispatcher.h">
       <Filter>game_server\world</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\network\AsyncClient.h">
-      <Filter>network</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\network\Message.h">
-      <Filter>network</Filter>
     </ClInclude>
     <ClInclude Include="..\..\nel\Log.h">
       <Filter>nel</Filter>
@@ -334,9 +220,6 @@
     <ClInclude Include="..\..\nel\Tools.h">
       <Filter>nel</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\zylib\TypeTraits.h">
-      <Filter>zylib</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\mysqlcpp\Connection.cpp">
@@ -377,57 +260,6 @@
     </ClCompile>
     <ClCompile Include="..\..\mysqlcpp\test\TestDBService.cpp">
       <Filter>mysqlcpp\test</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\rediscpp_ex\test\TestList.cpp">
-      <Filter>rediscpp_ex\test</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\rediscpp_ex\test\TestScript.cpp">
-      <Filter>rediscpp_ex\test</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\rediscpp_ex\test\TestSet.cpp">
-      <Filter>rediscpp_ex\test</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\rediscpp_ex\test\TestString.cpp">
-      <Filter>rediscpp_ex\test</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\rediscpp_ex\test\TestTool.cpp">
-      <Filter>rediscpp_ex\test</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\rediscpp_ex\test\TestZset.cpp">
-      <Filter>rediscpp_ex\test</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\rediscpp_ex\test\TestConn.cpp">
-      <Filter>rediscpp_ex\test</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\rediscpp_ex\Connection.cpp">
-      <Filter>rediscpp_ex</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\rediscpp_ex\Exception.cpp">
-      <Filter>rediscpp_ex</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\rediscpp_ex\Script.cpp">
-      <Filter>rediscpp_ex</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\rediscpp_ex\Set.cpp">
-      <Filter>rediscpp_ex</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\rediscpp_ex\String.cpp">
-      <Filter>rediscpp_ex</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\rediscpp_ex\Utile.cpp">
-      <Filter>rediscpp_ex</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\rediscpp_ex\Zset.cpp">
-      <Filter>rediscpp_ex</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\rediscpp_ex\Buffer.cpp">
-      <Filter>rediscpp_ex</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\rediscpp_ex\Hash.cpp">
-      <Filter>rediscpp_ex</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\rediscpp_ex\List.cpp">
-      <Filter>rediscpp_ex</Filter>
     </ClCompile>
     <ClCompile Include="..\..\test\boost\convert.cpp">
       <Filter>test\boost</Filter>
@@ -471,24 +303,6 @@
     <ClCompile Include="..\..\game_server\ServerApp.cpp">
       <Filter>game_server</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\zylib\Code.cpp">
-      <Filter>zylib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\zylib\Random.cpp">
-      <Filter>zylib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\zylib\Tools.cpp">
-      <Filter>zylib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\zylib\Logger.cpp">
-      <Filter>zylib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\game_server\tinyxml2.cpp">
-      <Filter>zylib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\zylib\String.cpp">
-      <Filter>zylib</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\game_server\GameTools.cpp">
       <Filter>game_server</Filter>
     </ClCompile>
@@ -516,15 +330,6 @@
     <ClCompile Include="..\..\game_server\net\ServerHandler.cpp">
       <Filter>game_server\net</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\network\AsyncServer.cpp">
-      <Filter>network</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\network\FakeLog.cpp">
-      <Filter>network</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\network\RWHandler.cpp">
-      <Filter>network</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\test\boost\asio\blocking_tcp_echo_client.cpp">
       <Filter>test\boost\asio</Filter>
     </ClCompile>
@@ -542,12 +347,6 @@
     </ClCompile>
     <ClCompile Include="..\..\game_server\world\WorldMsgDispatcher.cpp">
       <Filter>game_server\world</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\network\AsyncClient.cpp">
-      <Filter>network</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\network\Message.cpp">
-      <Filter>network</Filter>
     </ClCompile>
     <ClCompile Include="..\..\nel\NamingClient.cpp">
       <Filter>nel</Filter>
@@ -617,15 +416,6 @@
     </ClCompile>
     <ClCompile Include="..\..\mysqlcpp\test\TestTransaction.cpp">
       <Filter>mysqlcpp\test</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\zylib\test\TestSnowflake.cpp">
-      <Filter>zylib\test</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\zylib\test\TestLog.cpp">
-      <Filter>zylib\test</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\zylib\test\TestRandom.cpp">
-      <Filter>zylib\test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

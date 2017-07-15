@@ -22,6 +22,6 @@ public:
     void update(uint32_t diff);
 
 private:
-    std::unique_ptr<NLNET::UnifiedNetwork> m_network;
+    std::unique_ptr<nlnet::UnifiedNetwork> m_network;
 };
 

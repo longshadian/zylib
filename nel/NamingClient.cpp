@@ -4,8 +4,10 @@
 
 #include "Log.h"
 #include "TSock.h"
+#include "CMessage.h"
+#include "Address.h"
 
-namespace NLNET {
+namespace nlnet {
 
 NamingClient::NamingClient(boost::asio::io_service& io_service)
     : m_sock(std::make_shared<TSock>(boost::asio::ip::tcp::socket(io_service)))
@@ -51,7 +53,7 @@ bool NamingClient::syncConnect(const std::string& ip, int32_t port)
             p.set_value(true);
             m_sock->start();
         } catch (std::exception e) {
-            LOG_WARNING << "conn exception " << e.what();
+            LOG(WARNING) << "conn exception " << e.what();
             p.set_value(false);
         }
     });

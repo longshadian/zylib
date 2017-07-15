@@ -2,6 +2,6 @@
 
 #include "Log.h"
 
-namespace NLNET {
+namespace nlnet {
 
 }

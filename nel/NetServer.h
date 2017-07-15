@@ -6,7 +6,7 @@
 
 #include "Types.h"
 
-namespace NLNET {
+namespace nlnet {
 
 using AcceptFailCallback = std::function<void(boost::system::error_code)>;
 using AcceptSuccessCallback = std::function<void(TSockPtr)>;

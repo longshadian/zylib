@@ -12,7 +12,7 @@
 class GSCallbackManager
 {
 public:
-    using CBFun = std::function<void(NLNET::CMessage& msgin)>;
+    using CBFun = std::function<void(nlnet::CMessage& msgin)>;
 public:
     GSCallbackManager();
     ~GSCallbackManager();
@@ -22,7 +22,7 @@ public:
     GSCallbackManager& operator=(GSCallbackManager&& rhs) = delete;
 
     void regCBRspUserData(int32_t uid, CBFun cb);
-    void callback(int32_t uid, NLNET::CMessage& msg);
+    void callback(int32_t uid, nlnet::CMessage& msg);
 private:
     std::unordered_map<int32_t, CBFun> m_cb_slots;
 };

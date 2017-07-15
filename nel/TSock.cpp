@@ -7,8 +7,9 @@
 
 #include "Log.h"
 #include "UnifiedConnection.h"
+#include "CMessage.h"
 
-namespace NLNET {
+namespace nlnet {
 
 TSock::TSock(boost::asio::ip::tcp::socket socket)
     : m_socket(std::move(socket))
@@ -67,7 +68,7 @@ void TSock::doWrite()
         {
             (void)length;
             if (ec) {
-                LOG_WARNING << "RWHandlerBase::doWrite error: " << ec.value() << ":" << ec.message();
+                LOG(WARNING) << "RWHandlerBase::doWrite error: " << ec.value() << ":" << ec.message();
                 onClosed();
                 return;
             }
@@ -91,7 +92,7 @@ void TSock::doRead()
         (void)length;
         if (ec) {
             onClosed();
-            LOG_WARNING << "readBody error " << ec.message();
+            LOG(WARNING) << "readBody error " << ec.message();
             return;
         }
 
@@ -99,7 +100,7 @@ void TSock::doRead()
         std::memcpy(&len, m_read_head.data(), m_read_head.size());
         m_read_buffer.resize(len - 4);
 
-        LOG_DEBUG << "read head len :" << len;
+        LOG(DEBUG) << "read head len :" << len;
         doReadBody();
     });
 }
@@ -116,16 +117,16 @@ void TSock::doReadBody()
         (void)length;
         if (ec) {
             onClosed();
-            LOG_WARNING << "readBody error " << ec.message();
+            LOG(WARNING) << "readBody error " << ec.message();
             return;
         }
 
-        auto msg = std::make_shared<NetWorkMessage>();
+        auto msg = std::make_shared<NetworkMessage>();
         msg->m_sock_hdl = getSockHdl();
         msg->m_msg.parseFromArray(m_read_buffer);
         //m_received_msg_cb(msg, self->getConnectionHdl());
 
-        LOG_DEBUG << "read body: " <<  msg->m_msg.getMsgName() 
+        LOG(DEBUG) << "read body: " <<  msg->m_msg.getMsgName() 
             << " data:" << msg->m_msg.getData();
         m_received_msg_cb(std::move(msg));
 
@@ -157,7 +158,7 @@ void TSock::onClosed(CLOSED_TYPE type)
 {
     if (m_is_closed.exchange(true))
         return;
-    LOG_DEBUG << "closed type:" << int(type);
+    LOG(DEBUG) << "closed type:" << int(type);
     if (type == CLOSED_TYPE::NORMAL) {
         m_closed_cb(shared_from_this());
     } else if (type == CLOSED_TYPE::TIMEOUT) {
@@ -204,17 +205,17 @@ TSockHdl TSock::getConnectionHdl()
     return TSockHdl{shared_from_this()};
 }
 
-void TSock::setReceivedMsgCallback(ReceivedMsgCallback cb)
+void TSock::setReceivedMsgCallback(ReceivedMsg_Callback cb)
 {
     m_received_msg_cb = std::move(cb);
 }
 
-void TSock::setClosedCallback(ClosedCallback cb)
+void TSock::setClosedCallback(Closed_Callback cb)
 {
     m_closed_cb = std::move(cb);
 }
 
-void TSock::setTimeoutCallback(TimeoutCallback cb)
+void TSock::setTimeoutCallback(Timeout_Callback cb)
 {
     m_timeout_cb = std::move(cb);
 }
@@ -223,18 +224,6 @@ TSockHdl TSock::getSockHdl()
 {
     return TSockHdl{shared_from_this()};
 }
-
-/*
-const std::string& TSock::getServiceName() const
-{
-    return m_conn.getServiceName();
-}
-
-const ServiceID& TSock::getServiceID() const
-{
-    return m_conn.getServiceID();
-}
-*/
 
 boost::asio::io_service& TSock::getIOService()
 {

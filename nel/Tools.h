@@ -10,7 +10,7 @@
 
 #include "Types.h"
 
-namespace NLNET {
+namespace nlnet {
 
 class CMessage;
 

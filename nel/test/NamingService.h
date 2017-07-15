@@ -15,24 +15,24 @@
 
 struct ServiceConf
 {
-    NLNET::ServiceID    m_sid{};
+    nlnet::ServiceID    m_sid{};
     std::string         m_sname{};
-    NLNET::CInetAddress m_addr{};
-    NLNET::ServiceID    m_conn_sid{};
+    nlnet::CInetAddress m_addr{};
+    nlnet::ServiceID    m_conn_sid{};
 };
 
 struct ServiceStatus
 {
-    NLNET::ServiceID getServiceID() const { return m_conf->m_sid; }
+    nlnet::ServiceID getServiceID() const { return m_conf->m_sid; }
     std::string      getServiceName() const { return m_conf->m_sname; }
-    const NLNET::CInetAddress& getInetAddress() const { return m_conf->m_addr; }
+    const nlnet::CInetAddress& getInetAddress() const { return m_conf->m_addr; }
 
     bool isOnline() const
     {
         return m_conf != nullptr;
     }
 
-    NLNET::TSockPtr     m_conn;
+    nlnet::TSockPtr     m_conn;
     time_t              m_conn_tm;
     time_t              m_disconn_tm;
     time_t              m_ping_tm;
@@ -55,16 +55,16 @@ public:
 
     bool start();
 
-    void reqService(NLNET::TSockContext sock, NLNET::CMessage& msg);
-    void registerService(NLNET::TSockContext sock, NLNET::CMessage& msg);
+    void reqService(nlnet::TSockContext sock, nlnet::CMessage& msg);
+    void registerService(nlnet::TSockContext sock, nlnet::CMessage& msg);
 
-    const ServiceConf* findServiceConf(NLNET::ServiceID sid) const;
-    ServiceStatus* findServiceStatus(NLNET::ServiceID sid);
+    const ServiceConf* findServiceConf(nlnet::ServiceID sid) const;
+    ServiceStatus* findServiceStatus(nlnet::ServiceID sid);
 
-    std::unique_ptr<NLNET::UnifiedNetwork> m_network;
+    std::unique_ptr<nlnet::UnifiedNetwork> m_network;
 
-    std::unordered_map<NLNET::ServiceID, ServiceStatus>  m_service_status;
-    std::unordered_map<NLNET::ServiceID, ServiceConf>    m_service_conf;
+    std::unordered_map<nlnet::ServiceID, ServiceStatus>  m_service_status;
+    std::unordered_map<nlnet::ServiceID, ServiceConf>    m_service_conf;
 private:
     void startConf();
     void broadcastNewService(const ServiceStatus& s_status, const ::google::protobuf::Message& msg) const;

@@ -10,11 +10,13 @@
 
 #include "Types.h"
 
-namespace NLNET {
+namespace nlnet {
 
 class UnifiedConnection;
 class NamingClient;
 class CallbackManager;
+class CMessage;
+class CInetAddress;
 
 class UnifiedNetwork
 {
@@ -46,8 +48,6 @@ private:
     boost::asio::io_service::work                   m_io_work;
     std::thread                                     m_thread;
 	std::unordered_map<ServiceID, UnifiedConnectionPtr>  m_connections;
-    std::vector<ServiceID>                                m_conn_to_reset;
-	std::vector<ServiceID>                                m_used_conn;
 	std::string                                     m_self_service_name;
 	int16_t                                         m_self_server_port;
     UnifiedConnectionPtr                           m_self_conn;

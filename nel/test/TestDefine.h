@@ -2,17 +2,17 @@
 
 #include <string>
 
-#include "Types.h"
+#include "Nlnet.h"
 
 namespace def {
 
-extern const NLNET::ServiceID GS_SID;
+extern const nlnet::ServiceID GS_SID;
 extern const std::string GS_NAME;
-extern const NLNET::CInetAddress GS_ADDR;
+extern const nlnet::CInetAddress GS_ADDR;
 
-extern const NLNET::ServiceID DBS_SID;
+extern const nlnet::ServiceID DBS_SID;
 extern const std::string DBS_NAME;
-extern const NLNET::CInetAddress DBS_ADDR;
+extern const nlnet::CInetAddress DBS_ADDR;
 
 extern const std::string _REQ_TEST;
 extern const std::string _RSP_TEST;

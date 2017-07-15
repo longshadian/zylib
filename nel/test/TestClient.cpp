@@ -5,12 +5,13 @@
 #include <boost/asio.hpp>
 
 #include "Types.h"
+#include "Nlnet.h"
 
 using boost::asio::ip::tcp;
 
 enum { max_length = 1024 };
 
-std::vector<uint8_t> parseMsg(const NLNET::CMessage& msg)
+std::vector<uint8_t> parseMsg(const nlnet::CMessage& msg)
 {
     std::vector<uint8_t> all{};
     auto body = msg.serializeToArray();
@@ -45,7 +46,7 @@ int main(int argc, char* argv[])
             std::string req_content = request.data();
             auto send_tm = std::chrono::system_clock::now();
 
-            NLNET::CMessage req_msg{"_REQ_TEST", req_content};
+            nlnet::CMessage req_msg{"_REQ_TEST", req_content};
             auto req_binary = parseMsg(req_msg);
 
             std::cout << "req len:" << req_binary.size()
@@ -66,7 +67,7 @@ int main(int argc, char* argv[])
                 boost::asio::read(s,
                     boost::asio::buffer(rsp_body));
 
-                NLNET::CMessage rsp_msg{};
+                nlnet::CMessage rsp_msg{};
                 rsp_msg.parseFromArray(rsp_body);
 
                 std::cout << "received:" << rsp_msg.m_msg_name 
