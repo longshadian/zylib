@@ -8,13 +8,15 @@
 
 namespace nlnet {
 
+class CInetAddress;
+
 using AcceptFailCallback = std::function<void(boost::system::error_code)>;
 using AcceptSuccessCallback = std::function<void(TSockPtr)>;
 
 class NetServer : public std::enable_shared_from_this<NetServer>
 {
 public:
-    NetServer(boost::asio::io_service& io_service, const std::string& ip, int port);
+    NetServer(boost::asio::io_service& io_service, const CInetAddress& addr);
     ~NetServer();
 
     void stop();

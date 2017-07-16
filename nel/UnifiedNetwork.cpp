@@ -56,6 +56,9 @@ bool UnifiedNetwork::init(ServiceID service_id
     if (m_initialised)
         return false;
 
+    if (!getCallbackManager().getByteToMessageCallback())
+        return false;
+
     m_self_server_port = addr.m_port;
     m_self_service_name = short_name;
     m_use_naming_service = use_ns;
@@ -67,9 +70,9 @@ bool UnifiedNetwork::init(ServiceID service_id
     auto conn = std::make_shared<UnifiedConnection>(*this, service_id,
         std::move(short_name));
     try {
-        server = std::make_shared<NetServer>(m_io_service, addr.m_ip, addr.m_port);
+        server = std::make_shared<NetServer>(m_io_service, addr);
     } catch (const std::exception& e) {
-        LOG(WARNING) << " netserver listen failed: " << addr.m_ip << ":" << addr.m_port;
+        NL_LOG(WARNING) << " netserver listen failed: " << addr.m_ip << ":" << addr.m_port;
         return false;
     }
     server->setAcceptSuccessCallback(
@@ -85,7 +88,7 @@ bool UnifiedNetwork::init(ServiceID service_id
         if (short_name != NamingServiceName) {
             CInetAddress naming_addr{};
             if (!m_naming_client->connect(naming_addr)) {
-                LOG(WARNING) << "CUnifiedNetwork init failed: naming service connection failed"; 
+                NL_LOG(WARNING) << "CUnifiedNetwork init failed: naming service connection failed"; 
                 return false;
             }
             // TODO 从NS拉取已经注册的服务器信息
@@ -97,7 +100,7 @@ bool UnifiedNetwork::init(ServiceID service_id
             try {
                 m_io_service.run();
             } catch (const std::exception& e) {
-                LOG(WARNING) << " exception:" << e.what();
+                NL_LOG(WARNING) << " exception:" << e.what();
             }
         }));
 
@@ -149,10 +152,10 @@ void UnifiedNetwork::addService(ServiceID service_id
         if (net_client->connect(addr_list[i], std::move(cb))) {
             conn->addClientEndpoint(net_client, addr_list[i]);
         } else {
-            LOG(WARNING) << "can't add service because no retry and can't connect";
+            NL_LOG(WARNING) << "can't add service because no retry and can't connect";
         } 
     }
-    LOG(DEBUG) << "addService was successful";
+    NL_LOG(DEBUG) << "addService was successful";
 }
 
 void UnifiedNetwork::update(DiffTime diff_time)
@@ -163,11 +166,11 @@ void UnifiedNetwork::update(DiffTime diff_time)
     }
 }
 
-bool UnifiedNetwork::send(ServiceID service_id, CMessage msg, const CInetAddress& addr)
+bool UnifiedNetwork::send(ServiceID service_id, CMessagePtr msg, const CInetAddress& addr)
 {
     auto conn = findConnection(service_id);
     if (!conn) {
-        LOG(WARNING) << "can't send " << msg.getMsgName() << " to the service " << service_id << " because no connection available";
+        NL_LOG(WARNING) << "can't send " << msg->m_msg_id << " to the service " << service_id << " because no connection available";
         return false;
     }
     return conn->sendMsg(addr, std::move(msg));
@@ -200,6 +203,11 @@ UnifiedConnectionPtr UnifiedNetwork::findConnection(const ServiceID& service_id)
 CallbackManager& UnifiedNetwork::getCallbackManager()
 {
     return *m_cb_manager;
+}
+
+boost::asio::io_service& UnifiedNetwork::getIOService()
+{
+    return m_io_service;
 }
 
 void UnifiedNetwork::addConnection(UnifiedConnectionPtr conn)

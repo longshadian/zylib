@@ -15,4 +15,5 @@
 #include "UnifiedNetwork.h"
 #include "CMessage.h"
 #include "Address.h"
+#include "ByteBuf.h"
 

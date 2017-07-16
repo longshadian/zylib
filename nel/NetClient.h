@@ -22,7 +22,6 @@ public:
         DISCONNECT = 2,     // Î´Á¬½Ó
     };
 public:
-public:
     NetClient(boost::asio::io_service& io_service);
     ~NetClient();
 

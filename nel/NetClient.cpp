@@ -68,7 +68,7 @@ bool NetClient::syncConnect(const CInetAddress& addr)
             m_sock->start();
         }
         catch (std::exception e) {
-            LOG(WARNING) << "conn exception " << e.what();
+            NL_LOG(WARNING) << "conn exception " << e.what();
             p.set_value(false);
         }
     });
@@ -94,11 +94,11 @@ bool NetClient::asyncConnect(const CInetAddress& addr)
             [this, self = shared_from_this()](boost::system::error_code ec)
             {
                 if (!ec) {
-                    LOG(DEBUG) << "connect " << m_inet_addr.toString() << " success";
+                    NL_LOG(DEBUG) << "connect " << m_inet_addr.toString() << " success";
                     m_sock->start();
                     m_state = CONNECTED;
                 } else {
-                    LOG(WARNING) << "connect " << m_inet_addr.toString() << " fail " << ec.message();
+                    NL_LOG(WARNING) << "connect " << m_inet_addr.toString() << " fail " << ec.message();
                     m_state = DISCONNECT;
                 }
 
@@ -107,7 +107,7 @@ bool NetClient::asyncConnect(const CInetAddress& addr)
             });
             return true;
     } catch (std::exception e) {
-        LOG(WARNING) << "conn exception " << e.what();
+        NL_LOG(WARNING) << "conn exception " << e.what();
     }
     return false;
 }

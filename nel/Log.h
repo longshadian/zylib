@@ -78,5 +78,5 @@ private:
 
 } // nlnet
 
-#define LOG(S) FakeLog(nlnet::S,    __FILE__, __LINE__, __FUNCTION__).stream()
+#define NL_LOG(S) FakeLog(nlnet::S,    __FILE__, __LINE__, __FUNCTION__).stream()
 

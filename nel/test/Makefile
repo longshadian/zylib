@@ -25,9 +25,12 @@ OBJS += $(SRC_CC:%.cc=%.o)
 
 
 #OUTPUT = naming_service game_service test_client db_service
-OUTPUT = test_client
+OUTPUT = test_bytebuf
 
 all:$(OBJS) $(OUTPUT)
+
+test_bytebuf:$(OBJS) TestByteBuf.cpp
+	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
 
 naming_service:$(OBJS) NamingService.cpp TestDefine.cpp
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@

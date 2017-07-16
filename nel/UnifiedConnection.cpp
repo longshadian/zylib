@@ -150,7 +150,7 @@ void UnifiedConnection::processSockClosed()
             m_retry_endpoints[sock] = endpoint;
         }
 
-        LOG(DEBUG) << "closed sock:" << sock;
+        NL_LOG(DEBUG) << "closed sock:" << sock;
         auto sock_context = createMsgContext(std::move(sock));
         m_network.getCallbackManager().callbackServiceDisconnect(sock_context);
     }
@@ -169,13 +169,13 @@ void UnifiedConnection::processSockReceivedMsg()
         all_new_msg.pop_front();
         TSockPtr sock = msg->m_sock_hdl.lock();
         if (!sock) {
-            LOG(WARNING) << "sock is shutdown. discard msg_name:" << msg->m_msg.m_msg_name;
+            NL_LOG(WARNING) << "sock is shutdown. discard msg_name:" << msg->m_msg->m_msg_id;
         } else {
             // 调用回调函数
             auto sock_context = createMsgContext(std::move(sock));
             auto ret = m_network.getCallbackManager().callbackMsg(sock_context, msg->m_msg);
             if (!ret) {
-                LOG(WARNING) << "can't find callback function msg_name:" << msg->m_msg.m_msg_name;
+                NL_LOG(WARNING) << "can't find callback function msg_name:" << msg->m_msg->m_msg_id;
             }
         }
     }
@@ -219,7 +219,7 @@ void UnifiedConnection::processClientAsyncConnectFail()
 void UnifiedConnection::processClientAutoRetry()
 {
     // 处理需要重连的sock
-    LOG(DEBUG) << "retry true:" << m_retry_endpoints.size();
+    NL_LOG(DEBUG) << "retry true:" << m_retry_endpoints.size();
     for (auto it = m_retry_endpoints.begin(); it != m_retry_endpoints.end();) {
         auto& endpoint = it->second;
         // 客户端连接
@@ -229,12 +229,12 @@ void UnifiedConnection::processClientAutoRetry()
             m_endpoints[sock] = endpoint;
             it = m_retry_endpoints.erase(it);
 
-            LOG(DEBUG) << "reconn sock:" << sock;
+            NL_LOG(DEBUG) << "reconn sock:" << sock;
 
             auto sock_context = createMsgContext(endpoint->m_sock);
             m_network.getCallbackManager().callbackServiceConnect(sock_context);
         } else {
-            LOG(WARNING) << "retry faild. sid:" << getServiceID()
+            NL_LOG(WARNING) << "retry faild. sid:" << getServiceID()
                 << " service_name:" << getServiceName()
                 << " addr: " << endpoint->m_client->getAddress().toString();
             ++it;
@@ -288,7 +288,7 @@ bool UnifiedConnection::hasServiceAddr(const CInetAddress& addr) const
     return it != m_client_addrs.end();
 }
 
-bool UnifiedConnection::sendMsg(const TSockPtr& sock, CMessage msg)
+bool UnifiedConnection::sendMsg(const TSockPtr& sock, CMessagePtr msg)
 {
     auto endpoint = findEndpoint(sock);
     if (endpoint)
@@ -296,7 +296,7 @@ bool UnifiedConnection::sendMsg(const TSockPtr& sock, CMessage msg)
     return false;
 }
 
-bool UnifiedConnection::sendMsg(const CInetAddress& addr, CMessage msg)
+bool UnifiedConnection::sendMsg(const CInetAddress& addr, CMessagePtr msg)
 {
     auto endpoint = findEndpoint(addr);
     if (endpoint) {
@@ -357,6 +357,7 @@ void UnifiedConnection::sockBindCallback(TSockPtr sock)
     sock->setReceivedMsgCallback(std::bind(&UnifiedConnection::cbReceivedMsg, self, std::placeholders::_1));
     sock->setClosedCallback(std::bind(&UnifiedConnection::cbSockClosed, self, std::placeholders::_1));
     sock->setTimeoutCallback(std::bind(&UnifiedConnection::cbSockTimeout, self, std::placeholders::_1));
+    sock->setMessageDecodeCallback(m_network.getCallbackManager().getByteToMessageCallback());
 }
 
 } // NLNET

@@ -44,8 +44,8 @@ public:
     void addClientEndpoint(NetClientPtr net_client, const CInetAddress& addr);
     bool hasServiceAddr(const CInetAddress& addr) const;
 
-    bool sendMsg(const TSockPtr& sock, CMessage msg);
-    bool sendMsg(const CInetAddress& addr, CMessage msg);
+    bool sendMsg(const TSockPtr& sock, CMessagePtr msg);
+    bool sendMsg(const CInetAddress& addr, CMessagePtr msg);
 
     void cbServerAccept(TSockPtr sock);
     void cbClientConnect(boost::system::error_code ec, NetClientPtr net_client);

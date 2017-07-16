@@ -31,4 +31,9 @@ using NetServerPtr = std::shared_ptr<NetServer>;
 class NetClient;
 using NetClientPtr = std::shared_ptr<NetClient>;
 
+class ByteBuf;
+
+using ByteToMessage_Callback = std::function<void(ByteBuf in, std::vector<CMessagePtr>* msg)>;
+using MessageCreate_Callback = std::function<CMessagePtr()>;
+
 } // nelnet

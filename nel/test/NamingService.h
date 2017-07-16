@@ -6,12 +6,9 @@
 #include <string>
 #include <unordered_map>
 
-#include "Types.h"
-#include "UnifiedNetwork.h"
-#include "TSock.h"
+#include "Nlnet.h"
 
 #include "msg.pb.h"
-
 
 struct ServiceConf
 {

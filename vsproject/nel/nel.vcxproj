@@ -75,7 +75,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>Z:\gitpro\zylib\nel;..\..\..\vsinclude\boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\zylib\nel;..\..\zylib\zylib;..\..\zylib\;..\..\..\vsinclude\boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -112,6 +112,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\nel\ByteBuf.cpp" />
     <ClCompile Include="..\..\nel\CallbackManager.cpp" />
     <ClCompile Include="..\..\nel\CMessage.cpp" />
     <ClCompile Include="..\..\nel\Log.cpp" />
@@ -128,6 +129,8 @@
     <ClCompile Include="..\..\nel\test\main.cpp" />
     <ClCompile Include="..\..\nel\test\msg.pb.cc" />
     <ClCompile Include="..\..\nel\test\NamingService.cpp" />
+    <ClCompile Include="..\..\nel\test\Share.cpp" />
+    <ClCompile Include="..\..\nel\test\TestByteBuf.cpp" />
     <ClCompile Include="..\..\nel\test\TestClient.cpp" />
     <ClCompile Include="..\..\nel\test\TestDefine.cpp" />
     <ClCompile Include="..\..\nel\test\X.cpp" />
@@ -138,6 +141,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\nel\Address.h" />
+    <ClInclude Include="..\..\nel\ByteBuf.h" />
     <ClInclude Include="..\..\nel\CallbackManager.h" />
     <ClInclude Include="..\..\nel\CMessage.h" />
     <ClInclude Include="..\..\nel\NL_Assert.h" />
@@ -155,6 +159,7 @@
     <ClInclude Include="..\..\nel\test\GSCallbackManager.h" />
     <ClInclude Include="..\..\nel\test\msg.pb.h" />
     <ClInclude Include="..\..\nel\test\NamingService.h" />
+    <ClInclude Include="..\..\nel\test\Share.h" />
     <ClInclude Include="..\..\nel\test\TestDefine.h" />
     <ClInclude Include="..\..\nel\test\X.h" />
     <ClInclude Include="..\..\nel\Tools.h" />

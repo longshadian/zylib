@@ -8,6 +8,7 @@
 #include <boost/asio.hpp>
 
 #include "Types.h"
+#include "ByteBuf.h"
 
 namespace nlnet {
 
@@ -38,7 +39,7 @@ public:
 
     void start();
 
-    bool sendMsg(CMessage msg);
+    bool sendMsg(CMessagePtr msg);
     boost::asio::ip::tcp::socket& getSocket();
     boost::asio::io_service& getIoService();
     void shutdown();
@@ -47,6 +48,7 @@ public:
     void setReceivedMsgCallback(ReceivedMsg_Callback cb);
     void setClosedCallback(Closed_Callback cb);
     void setTimeoutCallback(Timeout_Callback cb);
+    void setMessageDecodeCallback(ByteToMessage_Callback cb);
 
     TSockHdl getSockHdl();
 private:
@@ -57,20 +59,19 @@ protected:
     void closeSocket();
     void doWrite();
     void doRead();
-    void doReadBody();
     std::shared_ptr<boost::asio::deadline_timer> setTimeoutTimer(int seconds);
     void timeoutCancel(std::shared_ptr<boost::asio::deadline_timer> timer);
 protected:
     boost::asio::ip::tcp::socket    m_socket;
-    std::list<std::vector<uint8_t>> m_write_buffer;
+    std::list<CMessagePtr>          m_write_buffer;
     std::atomic<bool>               m_is_closed;
     ReceivedMsg_Callback             m_received_msg_cb;
     Closed_Callback                  m_closed_cb;
     Timeout_Callback                 m_timeout_cb;
+    ByteToMessage_Callback          m_msg_decoder_cb;
     int32_t                         m_read_timeout_seconds;
-    std::array<uint8_t, 4>          m_read_head;
-    std::vector<uint8_t>            m_read_buffer;
-
+    std::array<uint8_t, 1024*4>     m_read_buffer;
+    ByteBuf                         m_byte_buf;
 };
 
 } // NLNET

@@ -53,7 +53,7 @@ bool NamingClient::syncConnect(const std::string& ip, int32_t port)
             p.set_value(true);
             m_sock->start();
         } catch (std::exception e) {
-            LOG(WARNING) << "conn exception " << e.what();
+            NL_LOG(WARNING) << "conn exception " << e.what();
             p.set_value(false);
         }
     });

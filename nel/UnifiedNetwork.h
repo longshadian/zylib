@@ -20,6 +20,7 @@ class CInetAddress;
 
 class UnifiedNetwork
 {
+
 public:
 	UnifiedNetwork();
 	~UnifiedNetwork();
@@ -34,11 +35,12 @@ public:
 	void addService(ServiceID service_id, const std::string& name, const std::vector<CInetAddress>& addr, bool auto_retry = false);
 
 	void update(DiffTime diff_time);
-	bool send(ServiceID service_id, CMessage msg, const CInetAddress& addr);
+	bool send(ServiceID service_id, CMessagePtr msg, const CInetAddress& addr);
 
 	//void sendAll(const CMessage& msg);
 
     CallbackManager& getCallbackManager();
+    boost::asio::io_service& getIOService();
 private:
     UnifiedConnectionPtr findConnection(const std::string& service_name);
     UnifiedConnectionPtr findConnection(const ServiceID& service_id);

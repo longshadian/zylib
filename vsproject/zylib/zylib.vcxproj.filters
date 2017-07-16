@@ -57,6 +57,9 @@
     <ClInclude Include="..\..\zylib\TypeTraits.h">
       <Filter>zylib</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\zylib\ZYLib.h">
+      <Filter>zylib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\zylib\Code.cpp">

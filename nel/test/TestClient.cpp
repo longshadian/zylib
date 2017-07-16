@@ -4,7 +4,6 @@
 #include <chrono>
 #include <boost/asio.hpp>
 
-#include "Types.h"
 #include "Nlnet.h"
 
 using boost::asio::ip::tcp;
