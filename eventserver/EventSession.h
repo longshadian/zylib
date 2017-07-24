@@ -23,6 +23,8 @@ struct EventSessionID
 
     int             m_fd;
     int             m_seq_id;
+
+    std::string     toString() const;
 private:
     void            copy(const EventSessionID& rhs);
 };
@@ -30,7 +32,7 @@ private:
 inline
 std::ostream&   operator<<(std::ostream& os, EventSessionID sid)
 {
-    os << "{" << sid.m_fd << "." << sid.m_seq_id << "}";
+    os << sid.toString();
     return os;
 }
 

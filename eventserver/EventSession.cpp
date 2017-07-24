@@ -2,6 +2,7 @@
 
 #include <cstring>
 #include <vector>
+#include <sstream>
 
 #include <event2/buffer.h>
 
@@ -61,6 +62,14 @@ void EventSessionID::copy(const EventSessionID& rhs)
     m_fd = rhs.m_fd;
     m_seq_id = rhs.m_seq_id;
 }
+
+std::string EventSessionID::toString() const
+{
+    std::ostringstream ostm{};
+    ostm << "{" << m_fd << "." << m_seq_id << "}";
+    return ostm.str();
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 

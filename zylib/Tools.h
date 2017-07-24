@@ -80,13 +80,6 @@ void linear_random_shuffle(RandomAccessIterator first, RandomAccessIterator last
 }
 
 template <typename T>
-inline
-std::unique_ptr<T> make_unique()
-{
-    return std::unique_ptr<T>{ new T() };
-}
-
-template <typename T>
 void bzero(T* t)
 {
     static_assert(std::is_pod<T>::value, "T must be pod!");

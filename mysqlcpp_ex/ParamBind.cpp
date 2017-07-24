@@ -117,9 +117,13 @@ void ParamBind::setDouble(uint32 index, double value)
 
 void ParamBind::setString(uint32 index, const std::string& value)
 {
-    const uint8* pos = (const uint8*)value.data();
-    std::vector<uint8> buffer{ pos, pos + value.size() };
-    setBinary(index, std::move(buffer), true);
+    if (value.empty()) {
+        setBinary(index, {}, true);
+    } else {
+        const uint8* pos = (const uint8*)value.c_str();
+        std::vector<uint8> buffer{ pos, pos + value.size() };
+        setBinary(index, std::move(buffer), true);
+    }
 }
 
 void ParamBind::setString(uint32 index, const char* value)
@@ -138,7 +142,10 @@ void ParamBind::setBinary(uint32 index, std::vector<uint8> value, bool is_string
     unsigned long value_len = static_cast<unsigned long>(value.size());
     m_bind_buffer[index] = std::move(value);
     MYSQL_BIND* param = &m_bind[index];
-    param->buffer = m_bind_buffer[index].data();
+    if (m_bind_buffer[index].empty())
+        param->buffer = nullptr;
+    else
+        param->buffer = m_bind_buffer[index].data();
     param->buffer_type = MYSQL_TYPE_BLOB;
     param->buffer_length = value_len;
     if (is_string) {
