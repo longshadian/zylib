@@ -36,6 +36,11 @@ void TSock::start()
     doRead();
 }
 
+bool TSock::isClosed() const
+{
+    return m_is_closed;
+}
+
 bool TSock::sendMsg(CMessagePtr msg)
 {
     if (m_is_closed)

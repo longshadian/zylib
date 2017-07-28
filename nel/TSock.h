@@ -39,6 +39,7 @@ public:
 
     void start();
 
+    bool isClosed() const;
     bool sendMsg(CMessagePtr msg);
     boost::asio::ip::tcp::socket& getSocket();
     boost::asio::io_service& getIoService();

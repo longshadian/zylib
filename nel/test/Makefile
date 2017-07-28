@@ -12,13 +12,21 @@ LDFLAGS = -Wl,--no-as-needed -lprotobuf
 
 .PHONY:all install clean
 
-SRC_DIR	= ..
-SRC_CPP = $(wildcard $(SRC_DIR)/*.cpp)
-SRC_CC = $(wildcard $(SRC_DIR)/*.cc)
-INC += -I$(SRC_DIR)
+SRC_DIR	= ../..
 
+ZYLIB_DIR = $(SRC_DIR)/zylib
+NEL_DIR = $(SRC_DIR)/nel
+
+SRC_CPP += $(wildcard $(ZYLIB_DIR)/*.cpp)
+INC += -I$(ZYLIB_DIR)
+
+SRC_CPP += $(wildcard $(NEL_DIR)/*.cpp)
+INC += -I$(NEL_DIR)
+
+#SRC_CPP += $(wildcard ./*.cpp)
 SRC_CC += $(wildcard ./*.cc)
 
+INC += -I$(SRC_DIR)
 
 OBJS = $(SRC_CPP:%.cpp=%.o)
 OBJS += $(SRC_CC:%.cc=%.o)

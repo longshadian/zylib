@@ -26,6 +26,9 @@ public:
 
     //删除一个或多个哈希字段
     long long HDEL(Buffer key, Buffer mkey);
+
+    long long HLEN(Buffer key);
+
 private:
     Connection& m_conn;
 };

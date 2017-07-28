@@ -104,4 +104,20 @@ long long Hash::HDEL(Buffer key, Buffer mkey)
     return r->integer;
 }
 
+long long Hash::HLEN(Buffer key)
+{
+    Reply reply{ reinterpret_cast<redisReply*>(
+        ::redisCommand(m_conn.getRedisContext(),"HLEN %b", key.getData(), key.getLen())
+        )
+    };
+    redisReply* r = reply.getRedisReply();
+    if (!r)
+        throw ConnectionException("HLEN reply null");
+    if (r->type == REDIS_REPLY_ERROR)
+        throw ReplyErrorException(r->str);
+    if (r->type != REDIS_REPLY_INTEGER)
+        throw ReplyTypeException("HLEN type REDIS_REPLY_INTEGER");
+    return r->integer;
+}
+
 }

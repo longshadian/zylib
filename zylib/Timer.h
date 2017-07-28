@@ -16,7 +16,8 @@ struct BasicTimer
 
 	template <typename D>
 	BasicTimer(D d)
-		: m_start()
+		: m_valid(true)
+        , m_start()
 		, m_expire(d)
 	{
 	}
@@ -41,6 +42,9 @@ struct BasicTimer
 		return m_expire - m_start;
 	}
 
+    bool valid() const { return m_valid; }
+
+    bool     m_valid;
 	Duration m_start;
 	Duration m_expire;
 };
