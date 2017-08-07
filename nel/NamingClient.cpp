@@ -104,7 +104,7 @@ bool NamingClient::asyncConnect(const CInetAddress& addr)
         {
             if (!ec) {
                 NL_LOG(DEBUG) << "connect " << m_inet_addr.toString() << " success";
-                m_sock->start();
+                startRead();
                 cbConnectNameService();
             } else {
                 NL_LOG(WARNING) << "connect " << m_inet_addr.toString() << " fail " << ec.message();
@@ -138,4 +138,83 @@ void NamingClient::cbConnectSuccess()
     // TODO ·¢ËÍ×¢²áÐÅÏ¢
 }
 
-} // NLNET
+void NamingClient::cbReadMessageFail()
+{
+
+}
+
+void NamingClient::doRead()
+{
+    std::shared_ptr<boost::asio::deadline_timer> timer;
+    if (m_read_timeout_seconds > 0)
+        timer = setTimeoutTimer(m_read_timeout_seconds);
+    auto self(shared_from_this());
+    boost::asio::async_read(m_socket, boost::asio::buffer(m_read_head),
+        [this, self, timer](boost::system::error_code ec, size_t length)
+    {
+        timeoutCancel(timer);
+
+        (void)length;
+        if (ec) {
+            onClosed();
+            NL_LOG(WARNING) << "readHead error:" << ec.value() << ":" << ec.message();
+            return;
+        }
+
+        int32_t body_len = 0;
+        std::memcpy(&body_len, m_read_head.data(), 4);
+        if (body_len < 4) {
+            cbReadMessageFail();
+            onClosed();
+            return;
+        }
+        m_read_head.fill(0);
+        if (body_len == 4) {
+            doRead();
+        } else {
+            m_read_body.resize(body_len - 4);
+            doReadBody();
+        }
+    });
+}
+
+std::shared_ptr<boost::asio::deadline_timer> NamingClient::setTimeoutTimer(int seconds)
+{
+    auto timer = std::make_shared<boost::asio::deadline_timer>(getIoService());
+    timer->expires_from_now(boost::posix_time::seconds(seconds));
+
+    auto self(shared_from_this());
+    timer->async_wait([self](const boost::system::error_code& ec) {
+        if (!ec) {
+            self->onClosed(CLOSED_TYPE::TIMEOUT);
+        }
+    });
+    return timer;
+}
+
+void NamingClient::onClosed()
+{
+    if (m_is_closed.exchange(true))
+        return;
+    closeSocket();
+}
+
+void NamingClient::closeSocket()
+{
+    boost::system::error_code ec;
+    m_socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
+    m_socket.close(ec);
+}
+
+void NamingClient::shutdown()
+{
+    if (m_is_closed)
+        return;
+    auto self(shared_from_this());
+    getIoService().post([this, self]()
+    {
+        self->onClosed();
+    });
+}
+
+} // nlnet

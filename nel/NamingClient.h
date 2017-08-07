@@ -4,6 +4,7 @@
 #include <string>
 
 #include "Types.h"
+#include "zylib/Timer.h"
 
 #include <boost/asio.hpp>
 
@@ -20,6 +21,7 @@ class NamingClient
         CONNECTED  = 1, // 已经链接上了
         DISCONNECT = 2, // 断开链接
     };
+
 public:
     NamingClient(boost::asio::io_service& io_service);
     ~NamingClient();
@@ -37,14 +39,30 @@ private:
 
     void cbConnectFail();
     void cbConnectSuccess();
+    void cbReadMessageFail();
+
+    void doRead();
+    void doReadBody();
+
+    std::shared_ptr<boost::asio::deadline_timer> setTimeoutTimer(int seconds);
+    void onClosed();
+
+    void closeSocket();
+    void shutdown();
 
 private:
-    TSockPtr                 m_sock;
     std::vector<ServiceAddr> m_online_service;
     zylib::TimingWheel       m_timer;
     std::mutex               m_mtx;
     STATE                    m_state;
     CInetAddress             m_addr;
+
+    boost::asio::ip::tcp::socket    m_socket;
+    std::list<CMessagePtr>          m_write_buffer;
+    std::atomic<bool>               m_is_closed;
+    int32_t                         m_read_timeout_seconds;
+    std::array<uint8_t, 4>          m_read_head;
+    std::vector<uint8_t>            m_read_body;
 };
 
 } // NLNET

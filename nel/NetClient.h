@@ -8,6 +8,8 @@
 #include "Types.h"
 #include "Address.h"
 
+#include "zylib/Timer.h"
+
 namespace nlnet {
 
 using Connect_Callback = std::function<void(boost::system::error_code, NetClientPtr)>;

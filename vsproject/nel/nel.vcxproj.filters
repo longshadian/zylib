@@ -87,6 +87,9 @@
     <ClCompile Include="..\..\nel\test\Share.cpp">
       <Filter>nel\test</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\nel\Detail.cpp">
+      <Filter>nel</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\nel\CallbackManager.h">
@@ -169,6 +172,9 @@
     </ClInclude>
     <ClInclude Include="..\..\nel\test\Share.h">
       <Filter>nel\test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\nel\Detail.h">
+      <Filter>nel</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

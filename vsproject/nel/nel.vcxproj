@@ -115,6 +115,7 @@
     <ClCompile Include="..\..\nel\ByteBuf.cpp" />
     <ClCompile Include="..\..\nel\CallbackManager.cpp" />
     <ClCompile Include="..\..\nel\CMessage.cpp" />
+    <ClCompile Include="..\..\nel\Detail.cpp" />
     <ClCompile Include="..\..\nel\Log.cpp" />
     <ClCompile Include="..\..\nel\NamingClient.cpp" />
     <ClCompile Include="..\..\nel\NetClient.cpp" />
@@ -144,6 +145,7 @@
     <ClInclude Include="..\..\nel\ByteBuf.h" />
     <ClInclude Include="..\..\nel\CallbackManager.h" />
     <ClInclude Include="..\..\nel\CMessage.h" />
+    <ClInclude Include="..\..\nel\Detail.h" />
     <ClInclude Include="..\..\nel\NL_Assert.h" />
     <ClInclude Include="..\..\nel\Log.h" />
     <ClInclude Include="..\..\nel\NamingClient.h" />
