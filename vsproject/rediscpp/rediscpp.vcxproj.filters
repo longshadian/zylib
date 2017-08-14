@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="rediscpp">
+      <UniqueIdentifier>{ecfb8871-60c3-4a41-bfc6-9fb834c8a6f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rediscpp\test">
+      <UniqueIdentifier>{83943c21-e2f9-4bdb-b708-fbffba277914}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\rediscpp_ex\Buffer.cpp">
+      <Filter>rediscpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\Connection.cpp">
+      <Filter>rediscpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\Exception.cpp">
+      <Filter>rediscpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\Hash.cpp">
+      <Filter>rediscpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\List.cpp">
+      <Filter>rediscpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\Script.cpp">
+      <Filter>rediscpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\Set.cpp">
+      <Filter>rediscpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\String.cpp">
+      <Filter>rediscpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\Utile.cpp">
+      <Filter>rediscpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\Zset.cpp">
+      <Filter>rediscpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\test\bigdata.pb.cc">
+      <Filter>rediscpp\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\test\TestBigData.cpp">
+      <Filter>rediscpp\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\test\TestConn.cpp">
+      <Filter>rediscpp\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\test\TestList.cpp">
+      <Filter>rediscpp\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\test\TestScript.cpp">
+      <Filter>rediscpp\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\test\TestSet.cpp">
+      <Filter>rediscpp\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\test\TestString.cpp">
+      <Filter>rediscpp\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\test\TestTool.cpp">
+      <Filter>rediscpp\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\test\TestZset.cpp">
+      <Filter>rediscpp\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\ConnectionPool.cpp">
+      <Filter>rediscpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rediscpp_ex\test\TestPool.cpp">
+      <Filter>rediscpp\test</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\rediscpp_ex\Buffer.h">
+      <Filter>rediscpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\rediscpp_ex\Connection.h">
+      <Filter>rediscpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\rediscpp_ex\Convert.h">
+      <Filter>rediscpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\rediscpp_ex\Exception.h">
+      <Filter>rediscpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\rediscpp_ex\Hash.h">
+      <Filter>rediscpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\rediscpp_ex\Hiredis.h">
+      <Filter>rediscpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\rediscpp_ex\List.h">
+      <Filter>rediscpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\rediscpp_ex\RedisCpp.h">
+      <Filter>rediscpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\rediscpp_ex\Script.h">
+      <Filter>rediscpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\rediscpp_ex\Set.h">
+      <Filter>rediscpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\rediscpp_ex\String.h">
+      <Filter>rediscpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\rediscpp_ex\Utile.h">
+      <Filter>rediscpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\rediscpp_ex\Zset.h">
+      <Filter>rediscpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\rediscpp_ex\test\bigdata.pb.h">
+      <Filter>rediscpp\test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\rediscpp_ex\test\TestTool.h">
+      <Filter>rediscpp\test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\rediscpp_ex\ConnectionPool.h">
+      <Filter>rediscpp</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\rediscpp_ex\test\main.cpp_">
+      <Filter>rediscpp\test</Filter>
+    </None>
+    <None Include="..\..\rediscpp_ex\test\test_evalsha.lua">
+      <Filter>rediscpp\test</Filter>
+    </None>
+    <None Include="..\..\rediscpp_ex\test\bigdata.proto">
+      <Filter>rediscpp\test</Filter>
+    </None>
+    <None Include="..\..\rediscpp_ex\test\Makefile">
+      <Filter>rediscpp\test</Filter>
+    </None>
+  </ItemGroup>
+</Project>

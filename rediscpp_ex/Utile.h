@@ -15,8 +15,8 @@ class Reply;
 class Buffer;
 class BufferArray;
 
-Connection redisConnect(std::string ip, int port);
-Connection redisConnectWithTimeout(std::string ip, int port, struct timeval tv);
+Connection redisConnect(const std::string& ip, int port);
+Connection redisConnectWithTimeout(const std::string& ip, int port, struct timeval tv);
 int redisGetReply(redisContext* context, Reply* guard);
 
 std::string replyToString(const void* p);
@@ -38,4 +38,8 @@ long long DEL(Connection& conn, std::vector<Buffer> keys);
 std::vector<Buffer> KEYS(Connection& conn, Buffer key);
 
 std::string catFile(std::string path);
+
+std::string PING(Connection& conn);
+std::string PING(Connection& conn, std::string str);
+
 }

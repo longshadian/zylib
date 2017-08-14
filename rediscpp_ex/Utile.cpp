@@ -9,12 +9,12 @@
 
 namespace rediscpp {
 
-Connection redisConnect(std::string ip, int port)
+Connection redisConnect(const std::string& ip, int port)
 {
     return Connection{::redisConnect(ip.c_str(), port)};
 }
 
-Connection redisConnectWithTimeout(std::string ip, int port, timeval tv)
+Connection redisConnectWithTimeout(const std::string& ip, int port, timeval tv)
 {
     return Connection{::redisConnectWithTimeout(ip.c_str(), port, tv)};
 }
@@ -161,6 +161,38 @@ std::vector<Buffer> KEYS(Connection& conn, Buffer key)
     if (r->type != REDIS_REPLY_ARRAY)
         throw ReplyTypeException("KEYS type REDIS_REPLY_ARRAY");
     return replyArrayToBuffer(r, r->elements);
+}
+
+std::string PING(Connection& conn)
+{
+    Reply reply{ reinterpret_cast<redisReply*>(
+        ::redisCommand(conn.getRedisContext(), "PING")
+        )
+    };
+    redisReply* r = reply.getRedisReply();
+    if (!r)
+        throw ConnectionException("KEYS reply null");
+    if (r->type == REDIS_REPLY_ERROR)
+        throw ReplyErrorException(r->str);
+    if (r->type != REDIS_REPLY_STATUS)
+        throw ReplyTypeException("KEYS type REDIS_REPLY_STRING");
+    return r->str;
+}
+
+std::string PING(Connection& conn, std::string str) 
+{
+    Reply reply{ reinterpret_cast<redisReply*>(
+        ::redisCommand(conn.getRedisContext(), "PING %s", str.c_str())
+        )
+    };
+    redisReply* r = reply.getRedisReply();
+    if (!r)
+        throw ConnectionException("KEYS reply null");
+    if (r->type == REDIS_REPLY_ERROR)
+        throw ReplyErrorException(r->str);
+    if (r->type != REDIS_REPLY_STRING)
+        throw ReplyTypeException("KEYS type REDIS_REPLY_STRING");
+    return r->str;
 }
 
 }

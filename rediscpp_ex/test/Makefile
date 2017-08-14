@@ -25,7 +25,7 @@ OBJS += $(CURRENT_OBJS:%.cpp=%.o)
 OBJS = $(SRC_CPP:%.cpp=%.o)
 OBJS += $(SRC_CC:%.cc=%.o)
 
-OUTPUT = tstring tlist tzset tscript tset tconn tbigdata
+OUTPUT = tstring tlist tzset tscript tconn tbigdata tpool
 
 all:$(OBJS) $(OUTPUT)
 
@@ -47,6 +47,9 @@ tconn:$(OBJS) TestConn.cpp TestTool.cpp
         
 tbigdata:$(OBJS) TestBigData.cpp bigdata.pb.cc
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@    
+    
+tpool:$(OBJS) TestPool.cpp TestTool.cpp
+	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@ 
 
 .cpp.o:
 	@echo [  $(shell expr $(shell echo $(OBJS)|sed 's#$@.*$$#$@#'|wc -w) \* 100 / $(words $(OBJS)))%] $(CC) -c $< -o $@ 

@@ -40,14 +40,17 @@ public:
 
     Connection(Connection&& rhs);
     Connection& operator=(Connection&& rhs);
-  
+
 public:
     operator bool() const;
     redisContext* getRedisContext();
     bool reconnection();
+    bool keepAlive();
     void shutdown();
 private:
     redisContext* m_redis_context;
 };
+
+using ConnectionPtr = std::shared_ptr<Connection>;
 
 }

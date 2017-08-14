@@ -9,7 +9,7 @@
 #include "TestTool.h"
 
 std::string ip = "127.0.0.1";
-int port = 6379;
+int port = 21015;
 
 using namespace rediscpp;
 
@@ -57,6 +57,18 @@ bool test_INCR_INCRBY()
     }
 }
 
+bool test_PING()
+{
+    try {
+        auto s = rediscpp::PING(g_context, "    ");
+        std::cout << s << "\n";
+        return true;
+    } catch (const Exception& e) {
+        std::cout << "RedisException:" << __LINE__ << ":" << __FUNCTION__ << ":" << e.what() << "\n";
+        return false;
+    }
+}
+
 int main()
 {
     auto context = rediscpp::redisConnect(ip, port);
@@ -66,7 +78,8 @@ int main()
     }
     g_context = std::move(context);
 
-    test_SET_GET();
-    test_INCR_INCRBY();
+    //test_SET_GET();
+    //test_INCR_INCRBY();
+    test_PING();
     return 0;
 }

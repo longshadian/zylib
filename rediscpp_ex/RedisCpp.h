@@ -11,3 +11,4 @@
 #include "Script.h"
 #include "Utile.h"
 #include "Buffer.h"
+#include "ConnectionPool.h"

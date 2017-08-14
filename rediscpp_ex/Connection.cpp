@@ -1,5 +1,10 @@
 #include "Connection.h"
 
+#include <cstring>
+
+#include "Utile.h"
+#include "Exception.h"
+
 namespace rediscpp {
 
 Reply::Reply() : Reply(nullptr) {}
@@ -77,7 +82,9 @@ redisContext* Connection::getRedisContext()
 
 bool Connection::reconnection()
 {
-    return ::redisReconnect(m_redis_context) == REDIS_OK;
+    if (::redisReconnect(m_redis_context) != REDIS_OK)
+        return false;
+    return keepAlive();
 }
 
 void Connection::shutdown()
@@ -85,6 +92,19 @@ void Connection::shutdown()
     if (m_redis_context)
         ::redisFree(m_redis_context);
     m_redis_context = nullptr;
+}
+
+bool Connection::keepAlive()
+{
+    try {
+        auto str = PING(*this);
+        if (str.empty())
+            return false;
+        return std::strcmp(str.c_str(), "PONG") == 0;
+    } catch (const Exception& e) {
+        (void)e;
+        return false;
+    }
 }
 
 }
