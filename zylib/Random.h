@@ -44,21 +44,5 @@ private:
 
 using DefaultRandom = Random<std::default_random_engine>;
 
-/*
-template <class RandomAccessIterator>
-inline
-void random_shuffle(RandomAccessIterator first, RandomAccessIterator last)
-{
-    typename std::iterator_traits<RandomAccessIterator>::difference_type n = (last - first);
-    if (n <= 0)
-        return;
-    while (--n) {
-        auto k = rand()%(n+1);
-        if (n != k)
-            std::swap(first[n], first[k]);
-    }
-}
-*/
-
 //////////////////////////////////////////////////////////////////////////
 }

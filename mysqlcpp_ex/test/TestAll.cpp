@@ -200,6 +200,21 @@ void testBasic(mysqlcpp::ConnectionGuard& conn)
         assert(row["fchar"]->getString() == "aaa");
         assert(row["fvarchar"]->getString() == "bbb");
         assert(row["ftext"]->getString() == "qwertyuiop");
+
+        /*
+        std::cout << "===================\n";
+        auto ftext = row["ftext"]->getString();
+        for (size_t i = 0; i != ftext.size(); ++i) {
+            std::cout << ftext[i] << " ";
+        }
+        std::cout << "\n";
+        const auto& internal_buff = row["ftext"]->getInternalBuffer();
+        std::cout << "capacity " << internal_buff.getCapacity() << "\n";
+        std::cout << "length   " << internal_buff.getLength() << "\n";
+        std::cout << "bin size " << internal_buff.getBinary().size() << "\n";
+        std::cout << "cstring  " << internal_buff.getCString() << "\n";
+        std::cout << "===================\n";
+        */
     }
 
     {
@@ -400,13 +415,13 @@ int main()
 {
     std::srand((unsigned int)std::time(nullptr));
 
-    std::cout << std::numeric_limits<int16_t>::max() << "\n";
-    std::cout << std::numeric_limits<int32_t>::max() << "\n";
-    std::cout << std::numeric_limits<int64_t>::max() << "\n";
+    std::cout << "int16_t  max " << std::numeric_limits<int16_t>::max() << "\n";
+    std::cout << "int32_t  max " << std::numeric_limits<int32_t>::max() << "\n";
+    std::cout << "int64_t  max " << std::numeric_limits<int64_t>::max() << "\n";
 
-    std::cout << std::numeric_limits<uint16_t>::max() << "\n";
-    std::cout << std::numeric_limits<uint32_t>::max() << "\n";
-    std::cout << std::numeric_limits<uint64_t>::max() << "\n";
+    std::cout << "uint16_t max " << std::numeric_limits<uint16_t>::max() << "\n";
+    std::cout << "uint32_t max " << std::numeric_limits<uint32_t>::max() << "\n";
+    std::cout << "uint64_t max " << std::numeric_limits<uint64_t>::max() << "\n";
 
     mysqlcpp::initLog(std::make_unique<mysqlcpp::LogStreamConsole>());
     auto pool = initPool();
@@ -424,11 +439,6 @@ int main()
     testUpdate(conn);
     mysqlcpp::ConnectionGuard conn_1{ *pool };
     testTransaction(conn_1);
-
-    //test();
-    //testDateTimeStmt();
-    //std::cout << "==================\n";
-    //testDateTime();
 
     return 0;
 }

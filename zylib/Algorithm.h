@@ -94,6 +94,7 @@ void permutation(const T* src, size_t src_len, std::vector<std::vector<T>>* out)
 }
 
 //œ¥≈∆À„∑®
+/*
 template <typename RAIterator>
 void randomShuffle(RAIterator first, RAIterator last)
 {
@@ -104,5 +105,4 @@ void randomShuffle(RAIterator first, RAIterator last)
         std::swap(first[n], first[rand() % (n + 1)]);
     }
 }
-
-
+*/

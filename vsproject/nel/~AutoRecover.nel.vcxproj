@@ -130,7 +130,6 @@
     <ClCompile Include="..\..\nel\test\main.cpp" />
     <ClCompile Include="..\..\nel\test\msg.pb.cc" />
     <ClCompile Include="..\..\nel\test\NamingService.cpp" />
-    <ClCompile Include="..\..\nel\test\Share.cpp" />
     <ClCompile Include="..\..\nel\test\TestByteBuf.cpp" />
     <ClCompile Include="..\..\nel\test\TestClient.cpp" />
     <ClCompile Include="..\..\nel\test\TestDefine.cpp" />
@@ -161,7 +160,6 @@
     <ClInclude Include="..\..\nel\test\GSCallbackManager.h" />
     <ClInclude Include="..\..\nel\test\msg.pb.h" />
     <ClInclude Include="..\..\nel\test\NamingService.h" />
-    <ClInclude Include="..\..\nel\test\Share.h" />
     <ClInclude Include="..\..\nel\test\TestDefine.h" />
     <ClInclude Include="..\..\nel\test\X.h" />
     <ClInclude Include="..\..\nel\Tools.h" />

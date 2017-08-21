@@ -11,5 +11,7 @@
 #include "PreparedStatement.h"
 #include "Statement.h"
 #include "ResultSet.h"
+#include "SafeString.h"
+#include "Convert.h"
 
 #endif

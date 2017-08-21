@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "Types.h"
+#include "SafeString.h"
 
 /**
 	MYSQL查询结果对应类型
@@ -71,10 +72,10 @@ public:
     void setBinaryValue(enum_field_types type, void* src, unsigned long src_len, bool raw_bytes);
     void setNullValue(enum_field_types type);
 
+    const detail::SafeString& getInternalBuffer() const { return m_buffer; }
 private:
     enum_field_types    m_type;
-    std::vector<uint8>  m_buffer;
-    uint64              m_length;
+    detail::SafeString  m_buffer;
     bool                m_is_binary;
     bool                m_is_null;
 };

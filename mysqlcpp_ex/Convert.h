@@ -6,7 +6,7 @@
 #include <boost/convert.hpp>
 #include <boost/convert/stream.hpp>
 
-namespace rediscpp {
+namespace mysqlcpp {
 namespace detail {
 
 template <typename T>
@@ -44,4 +44,4 @@ struct Convert
 };
 
 } // detail
-} // rediscpp
+} // mysqlcpp

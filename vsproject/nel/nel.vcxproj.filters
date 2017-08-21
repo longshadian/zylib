@@ -84,9 +84,6 @@
     <ClCompile Include="..\..\nel\test\TestByteBuf.cpp">
       <Filter>nel\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\nel\test\Share.cpp">
-      <Filter>nel\test</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\nel\Detail.cpp">
       <Filter>nel</Filter>
     </ClCompile>
@@ -169,9 +166,6 @@
     </ClInclude>
     <ClInclude Include="..\..\nel\ByteBuf.h">
       <Filter>nel</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\nel\test\Share.h">
-      <Filter>nel\test</Filter>
     </ClInclude>
     <ClInclude Include="..\..\nel\Detail.h">
       <Filter>nel</Filter>

@@ -6,13 +6,13 @@
 #include "DateTime.h"
 #include "Utils.h"
 #include "MysqlcppAssert.h"
+#include "Convert.h"
 
 namespace mysqlcpp {
 
 Field::Field()
     : m_type(MYSQL_TYPE_DECIMAL)
     , m_buffer()
-    , m_length()
     , m_is_binary()
     , m_is_null()
 {
@@ -25,7 +25,6 @@ Field::~Field()
 Field::Field(const Field& rhs)
     : m_type(rhs.m_type)
     , m_buffer(rhs.m_buffer)
-    , m_length(rhs.m_length)
     , m_is_binary(rhs.m_is_binary)
     , m_is_null(rhs.m_is_null)
 {
@@ -36,7 +35,6 @@ Field& Field::operator=(const Field& rhs)
     if (this != &rhs) {
         m_type = rhs.m_type;
         m_buffer = rhs.m_buffer;
-        m_length = rhs.m_length;
         m_is_binary = rhs.m_is_binary;
         m_is_null = rhs.m_is_null;
     }
@@ -46,7 +44,6 @@ Field& Field::operator=(const Field& rhs)
 Field::Field(Field&& rhs)
     : m_type(std::move(rhs.m_type))
     , m_buffer(std::move(rhs.m_buffer))
-    , m_length(std::move(rhs.m_length))
     , m_is_binary(std::move(rhs.m_is_binary))
     , m_is_null(std::move(rhs.m_is_null))
 {
@@ -57,7 +54,6 @@ Field& Field::operator=(Field&& rhs)
     if (this != &rhs) {
         m_type = std::move(rhs.m_type);
         m_buffer = std::move(rhs.m_buffer);
-        m_length = std::move(rhs.m_length);
         m_is_binary = std::move(rhs.m_is_binary);
         m_is_null = std::move(rhs.m_is_null);
     }
@@ -70,11 +66,9 @@ void Field::setBinaryValue(enum_field_types type, void* src, unsigned long src_l
     m_is_binary = raw_bytes;
     if (src) {
         m_buffer.resize(src_len);
-        m_length = src_len;
-        std::memcpy(m_buffer.data(), src, src_len);
+        std::memcpy(m_buffer.getPtr(), src, src_len);
     } else {
         m_buffer.clear();
-        m_length = 0;
     }
 }
 
@@ -103,10 +97,10 @@ uint8 Field::getUInt8() const
 
     if (m_is_binary) {
         uint8 val = 0;
-        std::memcpy(&val, m_buffer.data(), sizeof(val));
+        std::memcpy(&val, m_buffer.getPtr(), sizeof(val));
         return val;
     }
-    return static_cast<uint8>(std::strtoul((char*)m_buffer.data(), nullptr, 10));
+    return detail::Convert<uint8>::cvt_noexcept(m_buffer.getCString());
 }
 
 int8 Field::getInt8() const
@@ -123,10 +117,10 @@ int8 Field::getInt8() const
 
     if (m_is_binary) {
         int8 val = 0;
-        std::memcpy(&val, m_buffer.data(), sizeof(val));
+        std::memcpy(&val, m_buffer.getPtr(), sizeof(val));
         return val;
     }
-    return static_cast<int8>(std::strtol((char*)m_buffer.data(), NULL, 10));
+    return detail::Convert<int8>::cvt_noexcept(m_buffer.getCString());
 }
 
 uint16 Field::getUInt16() const
@@ -143,10 +137,10 @@ uint16 Field::getUInt16() const
 
     if (m_is_binary) {
         uint16 val = 0;
-        std::memcpy(&val, m_buffer.data(), sizeof(val));
+        std::memcpy(&val, m_buffer.getPtr(), sizeof(val));
         return val;
     }
-    return static_cast<uint16>(std::strtoul((char*)m_buffer.data(), nullptr, 10));
+    return detail::Convert<uint16>::cvt_noexcept(m_buffer.getCString());
 }
 
 int16 Field::getInt16() const
@@ -163,10 +157,10 @@ int16 Field::getInt16() const
 
     if (m_is_binary) {
         int16 val = 0;
-        std::memcpy(&val, m_buffer.data(), sizeof(val));
+        std::memcpy(&val, m_buffer.getPtr(), sizeof(val));
         return val;
     }
-    return static_cast<int16>(std::strtol((char*)m_buffer.data(), NULL, 10));
+    return detail::Convert<int16>::cvt_noexcept(m_buffer.getCString());
 }
 
 uint32 Field::getUInt32() const
@@ -183,10 +177,10 @@ uint32 Field::getUInt32() const
 
     if (m_is_binary) {
         uint32 val = 0;
-        std::memcpy(&val, m_buffer.data(), sizeof(val));
+        std::memcpy(&val, m_buffer.getPtr(), sizeof(val));
         return val;
     }
-    return static_cast<uint32>(std::strtoul((char*)m_buffer.data(), nullptr, 10));
+    return detail::Convert<uint32>::cvt_noexcept(m_buffer.getCString());
 }
 
 int32 Field::getInt32() const
@@ -203,10 +197,10 @@ int32 Field::getInt32() const
 
     if (m_is_binary) {
         int32 val = 0;
-        std::memcpy(&val, m_buffer.data(), sizeof(val));
+        std::memcpy(&val, m_buffer.getPtr(), sizeof(val));
         return val;
     }
-    return static_cast<int32>(std::strtol((char*)m_buffer.data(), NULL, 10));
+    return detail::Convert<int32>::cvt_noexcept(m_buffer.getCString());
 }
 
 uint64 Field::getUInt64() const
@@ -223,10 +217,10 @@ uint64 Field::getUInt64() const
 
     if (m_is_binary) {
         uint64 val = 0;
-        std::memcpy(&val, m_buffer.data(), sizeof(val));
+        std::memcpy(&val, m_buffer.getPtr(), sizeof(val));
         return val;
     }
-    return static_cast<uint64>(std::strtoull((char*)m_buffer.data(), nullptr, 10));
+    return detail::Convert<uint64>::cvt_noexcept(m_buffer.getCString());
 }
 
 int64 Field::getInt64() const
@@ -243,10 +237,10 @@ int64 Field::getInt64() const
 
     if (m_is_binary) {
         int64 val = 0;
-        std::memcpy(&val, m_buffer.data(), sizeof(val));
+        std::memcpy(&val, m_buffer.getPtr(), sizeof(val));
         return val;
     }
-    return static_cast<int64>(std::strtoll((char*)m_buffer.data(), NULL, 10));
+    return detail::Convert<int64>::cvt_noexcept(m_buffer.getCString());
 }
 
 float Field::getFloat() const
@@ -263,10 +257,10 @@ float Field::getFloat() const
 
     if (m_is_binary) {
         float val = 0;
-        std::memcpy(&val, m_buffer.data(), sizeof(val));
+        std::memcpy(&val, m_buffer.getPtr(), sizeof(val));
         return val;
     }
-    return static_cast<float>(std::strtof((char*)m_buffer.data(), nullptr));
+    return detail::Convert<float>::cvt_noexcept(m_buffer.getCString());
 }
 
 double Field::getDouble() const
@@ -283,10 +277,10 @@ double Field::getDouble() const
 
     if (m_is_binary) {
         double val = 0;
-        std::memcpy(&val, m_buffer.data(), sizeof(val));
+        std::memcpy(&val, m_buffer.getPtr(), sizeof(val));
         return val;
     }
-    return std::strtod((char*)m_buffer.data(), nullptr);
+    return detail::Convert<double>::cvt_noexcept(m_buffer.getCString());
 }
 
 long double Field::getLongDouble() const
@@ -302,10 +296,10 @@ long double Field::getLongDouble() const
 
     if (m_is_binary) {
         long double val = 0;
-        std::memcpy(&val, m_buffer.data(), sizeof(val));
+        std::memcpy(&val, m_buffer.getPtr(), sizeof(val));
         return val;
     }
-    return std::strtold((char*)m_buffer.data(), nullptr);
+    return detail::Convert<long double>::cvt_noexcept(m_buffer.getCString());
 }
 
 /*
@@ -334,15 +328,14 @@ std::string Field::getString() const
 {
     if (isNull())
         return "";
-    const char* p = (const char*)m_buffer.data();
-    return std::string(p, p + m_length);
+    return std::string(m_buffer.getCString(), m_buffer.getCString() + m_buffer.getLength());
 }
 
 std::vector<uint8> Field::getBinary() const
 {
     if (isNull())
         return {};
-    return std::vector<uint8>(m_buffer.data(), m_buffer.data() + m_length);
+    return m_buffer.getBinary();
 }
 
 bool Field::isNull() const
@@ -357,7 +350,7 @@ DateTime Field::getDateTime() const
     if (m_is_binary){
         MYSQL_TIME mysql_time{};
         std::memset(&mysql_time, 0, sizeof(mysql_time));
-        std::memcpy(&mysql_time, m_buffer.data(), m_length);
+        std::memcpy(&mysql_time, m_buffer.getPtr(), m_buffer.getLength());
         return DateTime(mysql_time);
     }
     DateTime tm{};

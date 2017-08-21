@@ -128,10 +128,14 @@ void ParamBind::setString(uint32 index, const std::string& value)
 
 void ParamBind::setString(uint32 index, const char* value)
 {
-    const uint8* pos = (const uint8*)value;
     auto len = std::strlen(value);
-    std::vector<uint8> buffer{ pos, pos + len };
-    setBinary(index, std::move(buffer), true);
+    if (len == 0) {
+        setBinary(index, {}, true);
+    } else {
+        const uint8* pos = (const uint8*)value;
+        std::vector<uint8> buffer{ pos, pos + len };
+        setBinary(index, std::move(buffer), true);
+    }
 }
 
 void ParamBind::setBinary(uint32 index, std::vector<uint8> value, bool is_string)

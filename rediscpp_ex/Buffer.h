@@ -6,6 +6,8 @@
 #include <vector>
 #include <memory>
 
+#include "Convert.h"
+
 namespace rediscpp {
 
 class Buffer
@@ -64,11 +66,10 @@ private:
     template <typename T>
     T asIntDetail() const
     {
-        static_assert(std::is_integral<T>::value, "T must be Integeral!");
         auto s = asString();
         if (s.empty())
-            return T();
-        return static_cast<T>(std::atoll(s.c_str()));
+            return T{};
+        return detail::Convert<T>::cvt_noexcept(s);
     }
 private:
     std::vector<uint8_t>    m_data;
