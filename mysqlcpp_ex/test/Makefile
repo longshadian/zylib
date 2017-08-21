@@ -21,7 +21,7 @@ INC += -I$(SRC_DIR)
 OBJS = $(SRC_CPP:%.cpp=%.o)
 OBJS += $(SRC_CC:%.cc=%.o)
 
-OUTPUT = test_xx2 test_all test_threads test_safe_string test_convert
+OUTPUT = test_xx2 test_all test_threads test_safe_string test_convert test_big_table
 
 all:$(OBJS) $(OUTPUT)
 
@@ -38,6 +38,9 @@ test_safe_string:$(OBJS) TestSafeString.cpp
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
 
 test_convert:$(OBJS) TestConvert.cpp
+	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
+    
+test_big_table:$(OBJS) TestBigTable.cpp
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
     
 
