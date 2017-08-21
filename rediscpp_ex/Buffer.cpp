@@ -207,7 +207,8 @@ void Buffer::clearBuffer()
 
 void Buffer::append(std::string s)
 {
-    append(s.data(), s.size());
+    if (!s.empty())
+        append(s.data(), s.size());
 }
 
 void Buffer::append(const void* data, size_t len)
