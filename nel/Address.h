@@ -29,8 +29,16 @@ struct CInetAddress
         ostm << m_ip << ':' << m_port;
         return ostm.str();
     }
+
+    friend std::ostream& operator<<(std::ostream& ostm, const CInetAddress& addr);
 };
 
+inline
+std::ostream& operator<<(std::ostream& ostm, const CInetAddress& addr)
+{
+    ostm << addr.m_ip << ':' << addr.m_port;
+    return ostm;
+}
 
 
 struct ServiceAddr

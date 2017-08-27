@@ -1,12 +1,18 @@
 
 INC =	-I./
 
-LIB	=  -L/usr/local/mysql/lib	-lmysqlclient -lboost_system -lpthread
+LIB	=  -L/usr/local/mysql/lib
 		
 CC      = g++
-CFLAGS  = -g -Wall -Werror -Wshadow -Wunreachable-code -Wextra -Wconversion -std=c++14
+CFLAGS  = -g -Wall -Werror -Wextra -Wshadow -Wconversion \
+	  -std=c++14 -DBOOST_LOG_DYN_LINK
+
 CCFLAGS  = -g -Wall -Werror -std=c++14
-LDFLAGS = -Wl,--no-as-needed -lprotobuf
+
+LDFLAGS = -Wl,--no-as-needed -lprotobuf \
+	-lboost_log -lboost_system -lboost_thread \
+	-lpthread
+
 
 .SUFFIXES:  .o .cpp .cc
 
@@ -16,12 +22,16 @@ SRC_DIR	= ../..
 
 ZYLIB_DIR = $(SRC_DIR)/zylib
 NEL_DIR = $(SRC_DIR)/nel
+NEL_NS_DIR = $(NEL_DIR)/ns
 
 SRC_CPP += $(wildcard $(ZYLIB_DIR)/*.cpp)
 INC += -I$(ZYLIB_DIR)
 
 SRC_CPP += $(wildcard $(NEL_DIR)/*.cpp)
 INC += -I$(NEL_DIR)
+
+SRC_CPP += $(wildcard $(NEL_NS_DIR)/*.cpp)
+INC += -I$(NEL_NS_DIR)
 
 #SRC_CPP += $(wildcard ./*.cpp)
 SRC_CC += $(wildcard ./*.cc)
