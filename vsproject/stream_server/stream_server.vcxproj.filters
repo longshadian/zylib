@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="stream_server">
+      <UniqueIdentifier>{d4050b1f-1a2b-41ba-8f0f-f56c5e417e27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="stream_server\test">
+      <UniqueIdentifier>{81911510-a8eb-47fd-b0d1-e19e7aa11cb0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\stream_server\FakeLog.cpp">
+      <Filter>stream_server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\stream_server\Message.cpp">
+      <Filter>stream_server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\stream_server\RWHandler.cpp">
+      <Filter>stream_server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\stream_server\test\client.cpp">
+      <Filter>stream_server\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\stream_server\test\server.cpp">
+      <Filter>stream_server\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\stream_server\StreamServer.cpp">
+      <Filter>stream_server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\stream_server\ByteBuffer.cpp">
+      <Filter>stream_server</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\stream_server\FakeLog.h">
+      <Filter>stream_server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\stream_server\Message.h">
+      <Filter>stream_server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\stream_server\NetworkType.h">
+      <Filter>stream_server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\stream_server\RWHandler.h">
+      <Filter>stream_server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\stream_server\StreamServer.h">
+      <Filter>stream_server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\stream_server\ByteBuffer.h">
+      <Filter>stream_server</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
