@@ -25,7 +25,7 @@ OBJS += $(CURRENT_OBJS:%.cpp=%.o)
 OBJS = $(SRC_CPP:%.cpp=%.o)
 OBJS += $(SRC_CC:%.cc=%.o)
 
-OUTPUT = tstring tlist tzset tscript tconn tbigdata tpool
+OUTPUT = tstring tlist tzset tscript tconn tbigdata tpool tperformance treplication
 
 all:$(OBJS) $(OUTPUT)
 
@@ -49,6 +49,12 @@ tbigdata:$(OBJS) TestBigData.cpp bigdata.pb.cc
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@    
     
 tpool:$(OBJS) TestPool.cpp TestTool.cpp
+	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@ 
+    
+tperformance:$(OBJS) TestPerformance.cpp TestTool.cpp
+	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@ 
+
+treplication:$(OBJS) TestReplication.cpp TestTool.cpp
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@ 
 
 .cpp.o:
