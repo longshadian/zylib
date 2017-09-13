@@ -5,7 +5,7 @@
 #include <vector>
 #include <type_traits>
 
-#include "RedisCpp.h"
+#include "rediscpp.h"
 
 #define TEST assert
 
