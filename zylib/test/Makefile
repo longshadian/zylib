@@ -20,7 +20,7 @@ INC += -I../../
 OBJS = $(SRC_CPP:%.cpp=%.o)
 OBJS += $(SRC_CC:%.cc=%.o)
 
-OUTPUT = test_snowflake test_log test_random
+OUTPUT = test_log test_random test_string
 
 all:$(OBJS) $(OUTPUT)
 #all:$(OUTPUT)
@@ -32,6 +32,9 @@ test_log: $(OBJS) TestLog.cpp
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
 
 test_random: $(OBJS) TestRandom.cpp
+	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
+    
+test_string: $(OBJS) TestString.cpp
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
 
 .cpp.o:

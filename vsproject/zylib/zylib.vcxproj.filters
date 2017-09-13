@@ -9,77 +9,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\zylib\Algorithm.h">
-      <Filter>zylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\zylib\AsyncTask.h">
-      <Filter>zylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\zylib\Code.h">
-      <Filter>zylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\zylib\DateTime.h">
-      <Filter>zylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\zylib\Future.h">
-      <Filter>zylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\zylib\Logger.h">
-      <Filter>zylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\zylib\Queue.h">
-      <Filter>zylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\zylib\Random.h">
-      <Filter>zylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\zylib\RateGenerator.h">
-      <Filter>zylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\zylib\Snowflake.h">
-      <Filter>zylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\zylib\Stack.h">
-      <Filter>zylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\zylib\String.h">
-      <Filter>zylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\zylib\ThreadPool.h">
-      <Filter>zylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\zylib\Timer.h">
-      <Filter>zylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\zylib\Tools.h">
-      <Filter>zylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\zylib\TypeTraits.h">
-      <Filter>zylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\zylib\ZYLib.h">
-      <Filter>zylib</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\zylib\Code.cpp">
-      <Filter>zylib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\zylib\DateTime.cpp">
-      <Filter>zylib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\zylib\Logger.cpp">
-      <Filter>zylib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\zylib\Random.cpp">
-      <Filter>zylib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\zylib\String.cpp">
-      <Filter>zylib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\zylib\Tools.cpp">
-      <Filter>zylib</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\zylib\test\test.cc">
       <Filter>zylib\test</Filter>
     </ClCompile>
@@ -95,13 +24,72 @@
     <ClCompile Include="..\..\zylib\test\TestUtf8.cpp">
       <Filter>zylib\test</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\zylib\BoostPTime.cpp">
+      <Filter>zylib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\zylib\Code.cpp">
+      <Filter>zylib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\zylib\Logger.cpp">
+      <Filter>zylib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\zylib\Random.cpp">
+      <Filter>zylib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\zylib\String.cpp">
+      <Filter>zylib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\zylib\Tools.cpp">
+      <Filter>zylib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\zylib\test\TestString.cpp">
+      <Filter>zylib\test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\zylib\Makefile">
-      <Filter>zylib</Filter>
-    </None>
     <None Include="..\..\zylib\test\Makefile">
       <Filter>zylib\test</Filter>
     </None>
+    <None Include="..\..\zylib\Makefile">
+      <Filter>zylib</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\zylib\AsyncTask.h">
+      <Filter>zylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\zylib\BoostPTime.h">
+      <Filter>zylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\zylib\Code.h">
+      <Filter>zylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\zylib\Convert.h">
+      <Filter>zylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\zylib\Future.h">
+      <Filter>zylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\zylib\Logger.h">
+      <Filter>zylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\zylib\Queue.h">
+      <Filter>zylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\zylib\Random.h">
+      <Filter>zylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\zylib\String.h">
+      <Filter>zylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\zylib\Timer.h">
+      <Filter>zylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\zylib\Tools.h">
+      <Filter>zylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\zylib\zylib.h">
+      <Filter>zylib</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

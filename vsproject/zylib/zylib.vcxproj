@@ -112,27 +112,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\zylib\Algorithm.h" />
-    <ClInclude Include="..\..\zylib\AsyncTask.h" />
-    <ClInclude Include="..\..\zylib\Code.h" />
-    <ClInclude Include="..\..\zylib\DateTime.h" />
-    <ClInclude Include="..\..\zylib\Future.h" />
-    <ClInclude Include="..\..\zylib\Logger.h" />
-    <ClInclude Include="..\..\zylib\Queue.h" />
-    <ClInclude Include="..\..\zylib\Random.h" />
-    <ClInclude Include="..\..\zylib\RateGenerator.h" />
-    <ClInclude Include="..\..\zylib\Snowflake.h" />
-    <ClInclude Include="..\..\zylib\Stack.h" />
-    <ClInclude Include="..\..\zylib\String.h" />
-    <ClInclude Include="..\..\zylib\ThreadPool.h" />
-    <ClInclude Include="..\..\zylib\Timer.h" />
-    <ClInclude Include="..\..\zylib\Tools.h" />
-    <ClInclude Include="..\..\zylib\TypeTraits.h" />
-    <ClInclude Include="..\..\zylib\ZYLib.h" />
-  </ItemGroup>
-  <ItemGroup>
+    <ClCompile Include="..\..\zylib\BoostPTime.cpp" />
     <ClCompile Include="..\..\zylib\Code.cpp" />
-    <ClCompile Include="..\..\zylib\DateTime.cpp" />
     <ClCompile Include="..\..\zylib\Logger.cpp" />
     <ClCompile Include="..\..\zylib\Random.cpp" />
     <ClCompile Include="..\..\zylib\String.cpp" />
@@ -140,12 +121,27 @@
     <ClCompile Include="..\..\zylib\test\TestLog.cpp" />
     <ClCompile Include="..\..\zylib\test\TestRandom.cpp" />
     <ClCompile Include="..\..\zylib\test\TestSnowflake.cpp" />
+    <ClCompile Include="..\..\zylib\test\TestString.cpp" />
     <ClCompile Include="..\..\zylib\test\TestUtf8.cpp" />
     <ClCompile Include="..\..\zylib\Tools.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\zylib\Makefile" />
     <None Include="..\..\zylib\test\Makefile" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\zylib\AsyncTask.h" />
+    <ClInclude Include="..\..\zylib\BoostPTime.h" />
+    <ClInclude Include="..\..\zylib\Code.h" />
+    <ClInclude Include="..\..\zylib\Convert.h" />
+    <ClInclude Include="..\..\zylib\Future.h" />
+    <ClInclude Include="..\..\zylib\Logger.h" />
+    <ClInclude Include="..\..\zylib\Queue.h" />
+    <ClInclude Include="..\..\zylib\Random.h" />
+    <ClInclude Include="..\..\zylib\String.h" />
+    <ClInclude Include="..\..\zylib\Timer.h" />
+    <ClInclude Include="..\..\zylib\Tools.h" />
+    <ClInclude Include="..\..\zylib\zylib.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
