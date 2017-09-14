@@ -4,8 +4,8 @@
 
 int main()
 {
-    using UUID_String = zylib::ArrayString<12>;
-    using UUID_String_Ex = zylib::ArrayString<13>;
+    using UUID_String = zylib::FixedString<12>;
+    using UUID_String_Ex = zylib::FixedString<13>;
 
     UUID_String s1;
     zylib::bzero(&s1);

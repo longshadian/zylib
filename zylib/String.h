@@ -35,8 +35,10 @@ std::string concat(Args&&... arg)
 }
 
 template <size_t L>
-struct ArrayString
+struct FixedString
 {
+    using ClassType = FixedString;
+
     enum { MAX_LEN = L };
     std::array<char, L + 1> m_data;
 
@@ -90,24 +92,24 @@ struct ArrayString
         return true;
     }
 
-    bool operator==(const ArrayString& rhs) const
+    bool operator==(const ClassType& rhs) const
     {
         return m_data == rhs.m_data;
     }
 
-    bool operator!=(const ArrayString& rhs) const
+    bool operator!=(const ClassType& rhs) const
     {
         return !(*this == rhs);
     }
 
-    friend std::ostream& operator<<(std::ostream& ostm, const ArrayString& rhs)
+    friend std::ostream& operator<<(std::ostream& ostm, const ClassType& rhs)
     {
         ostm << rhs.getString();
         return ostm;
     }
 };
 
-static_assert(std::is_pod<ArrayString<0>>::value, "ArrayString must be POD!");
+static_assert(std::is_pod<FixedString<0>>::value, "FixedString must be POD!");
 
 
 } /// zylib
