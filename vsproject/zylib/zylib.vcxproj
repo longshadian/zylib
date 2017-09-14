@@ -119,6 +119,7 @@
     <ClCompile Include="..\..\zylib\String.cpp" />
     <ClCompile Include="..\..\zylib\test\test.cc" />
     <ClCompile Include="..\..\zylib\test\TestLog.cpp" />
+    <ClCompile Include="..\..\zylib\test\TestPersistentContainer.cpp" />
     <ClCompile Include="..\..\zylib\test\TestRandom.cpp" />
     <ClCompile Include="..\..\zylib\test\TestSnowflake.cpp" />
     <ClCompile Include="..\..\zylib\test\TestString.cpp" />
@@ -141,6 +142,7 @@
     <ClInclude Include="..\..\zylib\String.h" />
     <ClInclude Include="..\..\zylib\Timer.h" />
     <ClInclude Include="..\..\zylib\Tools.h" />
+    <ClInclude Include="..\..\zylib\PersistentContainer.h" />
     <ClInclude Include="..\..\zylib\zylib.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

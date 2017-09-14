@@ -45,6 +45,9 @@
     <ClCompile Include="..\..\zylib\test\TestString.cpp">
       <Filter>zylib\test</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\zylib\test\TestPersistentContainer.cpp">
+      <Filter>zylib\test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\zylib\test\Makefile">
@@ -89,6 +92,9 @@
       <Filter>zylib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\zylib\zylib.h">
+      <Filter>zylib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\zylib\PersistentContainer.h">
       <Filter>zylib</Filter>
     </ClInclude>
   </ItemGroup>
