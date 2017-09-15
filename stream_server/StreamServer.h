@@ -20,16 +20,17 @@ struct ServerOption
     size_t m_timeout_seconds{0};       //0:never timeout
 };
 
-using CBConnectionOverflow = std::function<void()>;
-using CBConnectionAccept = std::function<void(ConnectionHdl)>;
-using CBConnectionClosed = std::function<void(ConnectionHdl)>;
-using CBConnectionTimeout = std::function<void(ConnectionHdl)>;
-using CBMessageDecode = std::function<void(ConnectionHdl, ByteBuffer& buffer, std::vector<MessagePtr>*)>;
-using CBReceivedMessage = std::function<void(ConnectionHdl, std::vector<MessagePtr>)>;
-
 class AsyncServer
 {
     friend class RWHandler;
+public:
+    using CBConnectionOverflow = std::function<void()>;
+    using CBConnectionAccept = std::function<void(ConnectionHdl)>;
+    using CBConnectionClosed = std::function<void(ConnectionHdl)>;
+    using CBConnectionTimeout = std::function<void(ConnectionHdl)>;
+    using CBMessageDecode = std::function<void(ConnectionHdl, ByteBuffer& buffer, std::vector<MessagePtr>*)>;
+    using CBReceivedMessage = std::function<void(ConnectionHdl, std::vector<MessagePtr>)>;
+
 public:
     AsyncServer(boost::asio::io_service& io_service, short port, const ServerOption& optin);
     ~AsyncServer() = default;

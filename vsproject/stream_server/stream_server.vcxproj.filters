@@ -30,6 +30,9 @@
     <ClCompile Include="..\..\stream_server\ByteBuffer.cpp">
       <Filter>stream_server</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\stream_server\CallbackServer.cpp">
+      <Filter>stream_server</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\stream_server\FakeLog.h">
@@ -48,6 +51,12 @@
       <Filter>stream_server</Filter>
     </ClInclude>
     <ClInclude Include="..\..\stream_server\ByteBuffer.h">
+      <Filter>stream_server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\stream_server\CallbackServer.h">
+      <Filter>stream_server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\stream_server\MessageContext.h">
       <Filter>stream_server</Filter>
     </ClInclude>
   </ItemGroup>
