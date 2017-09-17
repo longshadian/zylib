@@ -13,22 +13,15 @@
 namespace network {
 
 class RWHandler;
-class AsyncServer;
 
-struct ConnectionInfo
+struct HandlerOption
 {
-    size_t m_timeout_seconds;
-    std::string m_ip;
-    std::string m_port;
+    size_t m_read_timeout_seconds;
 };
 
 class RWHandler : public std::enable_shared_from_this<RWHandler>
 {
 public:
-    using ConnectionAccept = std::function<void(ConnectionHdl, const ConnectionInfo)>;
-    using ConnectionClosed = std::function<void(ConnectionHdl)>;
-    using ConnectionTimeout = std::function<void(ConnectionHdl)>;
-
     enum class CLOSED_TYPE : int
     {
         NORMAL   = 0,    //Õý³£¹Ø±Õ
@@ -37,10 +30,8 @@ public:
     };
 
 public:
-    RWHandler(AsyncServer& async_server, boost::asio::ip::tcp::socket socket);
+    RWHandler(boost::asio::ip::tcp::socket socket, const HandlerOption& opt);
     ~RWHandler();
-
-    void start();
 
     void sendMessage(MessagePtr msg);
     boost::asio::ip::tcp::socket& getSocket();
@@ -48,7 +39,12 @@ public:
     void shutdown();
 
     ConnectionHdl getHdl();
-protected:
+
+    void setCBReceiveMsg(CBReceivedMessage cb);
+    void setCBTimeout(CBHandlerTimeout cb);
+    void setCBClosed(CBHandlerClosed cb);
+    void setCBDecode(CBMessageDecode cb);
+private:
     void cbClosed();
     void cbTimeout();
     bool cbMsgDecode(std::vector<MessagePtr>* out);
@@ -59,15 +55,20 @@ protected:
     void doRead();
     std::shared_ptr<boost::asio::deadline_timer> setTimeoutTimer(size_t seconds);
     void timeoutCancel(std::shared_ptr<boost::asio::deadline_timer> timer);
-protected:
-    AsyncServer&                    m_server;
-    boost::asio::io_service&        m_io_service;
+
+private:
     boost::asio::ip::tcp::socket    m_socket;
-    std::list<MessagePtr>           m_write_buffer;
+    HandlerOption                   m_handler_opt;                      
     std::atomic<bool>               m_is_closed;
-    ConnectionInfo                  m_conn_info;                      
+
+    std::list<MessagePtr>           m_write_buffer;
     std::array<uint8_t, 1024>       m_read_fix_buffer;
     ByteBuffer                      m_read_buffer;
+
+    CBHandlerClosed     m_cb_closed;
+    CBHandlerTimeout    m_cb_timeout;
+    CBReceivedMessage   m_cb_receive_mgs;
+    CBMessageDecode     m_cb_decode;
 };
 
 }

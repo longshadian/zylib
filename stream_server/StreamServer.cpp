@@ -18,12 +18,13 @@ AsyncServer::AsyncServer(boost::asio::io_service& io_service, short port, const 
     , m_cb_msg_decorde()
     , m_cb_received_msg()
 {
-    m_cb_overflow = std::bind(&AsyncServer::defaultOverflow, this);
-    m_cb_accept = std::bind(&AsyncServer::defaultAccept, this, std::placeholders::_1);
-    m_cb_closed = std::bind(&AsyncServer::defaultClosed, this, std::placeholders::_1);
-    m_cb_timeout = std::bind(&AsyncServer::defaultTimeout, this, std::placeholders::_1);
-    m_cb_msg_decorde = std::bind(&AsyncServer::defaultMessageDecode, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
-    m_cb_received_msg = std::bind(&AsyncServer::defaultReceivedMsg, this, std::placeholders::_1, std::placeholders::_2);
+    // TODO self?? 
+    setCBConnectOverflow(std::bind(&AsyncServer::defaultOverflow, this));
+    setCBConnectAccept(std::bind(&AsyncServer::defaultAccept, this, std::placeholders::_1));
+    setCBConnectClosed(std::bind(&AsyncServer::defaultClosed, this, std::placeholders::_1));
+    setCBConnectTimeout(std::bind(&AsyncServer::defaultTimeout, this, std::placeholders::_1));
+    setCBMessageDecoder(std::bind(&AsyncServer::defaultMessageDecode, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    setCBReceivedMessage(std::bind(&AsyncServer::defaultReceivedMsg, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 void AsyncServer::accept()
@@ -33,10 +34,7 @@ void AsyncServer::accept()
         {
             if (!ec) {
                 auto handler = createHandler();
-                if (handler) {
-                    m_handlers.insert(handler);
-                    handler->start();
-                } else {
+                if (!handler) {
                     refuseAccept(std::move(m_socket));
                 }
                 LOG(DEBUG) << "current handler:" << m_handlers.size();
@@ -81,12 +79,23 @@ std::shared_ptr<RWHandler> AsyncServer::createHandler()
         cbOverflow();
         return nullptr;
     }
-    return std::make_shared<RWHandler>(*this, std::move(m_socket));
+    HandlerOption opt{};
+    opt.m_read_timeout_seconds = m_option.m_timeout_seconds;
+    auto handler = std::make_shared<RWHandler>(std::move(m_socket), opt);
+
+    handler->setCBTimeout(m_cb_timeout);
+    handler->setCBClosed(m_cb_closed);
+    handler->setCBDecode(m_cb_msg_decorde);
+    handler->setCBReceiveMsg(m_cb_received_msg);
+    m_handlers.insert(handler);
+    return handler;
 }
 
-void AsyncServer::stopHandler(const RWHandlerPtr& conn)
+void AsyncServer::stopHandler(const ConnectionHdl& hdl)
 {
-    m_handlers.erase(conn);
+    auto conn = hdl.lock();
+    if (conn)
+        m_handlers.erase(conn);
     LOG(DEBUG) << "current connect count:" << m_handlers.size();
 }
 
@@ -100,29 +109,42 @@ const ServerOption& AsyncServer::getOption() const
     return m_option;
 }
 
-void AsyncServer::setCBConnectOverflow(CBConnectionOverflow cb)
+void AsyncServer::setCBConnectOverflow(CBAcceptOverflow cb)
 {
     m_cb_overflow = std::move(cb);
 }
 
-void AsyncServer::setCBConnectAccept(CBConnectionAccept cb)
+void AsyncServer::setCBConnectAccept(CBAccept cb)
 {
     m_cb_accept = std::move(cb);
 }
 
-void AsyncServer::setCBConnectClosed(CBConnectionClosed cb)
+void AsyncServer::setCBConnectClosed(CBHandlerClosed cb)
 {
-    m_cb_closed = std::move(cb);
+    m_cb_closed = [this, cb_ex = std::move(cb)](ConnectionHdl hdl)
+    {
+        cb_ex(hdl);
+        stopHandler(hdl);
+    };
 }
 
-void AsyncServer::setCBConnectTimeout(CBConnectionTimeout cb)
+void AsyncServer::setCBConnectTimeout(CBHandlerTimeout cb)
 {
-    m_cb_timeout = std::move(cb);
+    m_cb_timeout = [this, cb_ex = std::move(cb)](ConnectionHdl hdl)
+    {
+        cb_ex(hdl);
+        stopHandler(hdl);
+    };
 }
 
 void AsyncServer::setCBMessageDecoder(CBMessageDecode cb)
 {
     m_cb_msg_decorde = std::move(cb);
+}
+
+void AsyncServer::setCBReceivedMessage(CBReceivedMessage cb)
+{
+    m_cb_received_msg = std::move(cb);
 }
 
 void AsyncServer::cbAccecpt(ConnectionHdl hdl)
@@ -161,7 +183,7 @@ void AsyncServer::cbReceivedMsg(ConnectionHdl hdl, std::vector<MessagePtr> messa
         m_cb_received_msg(hdl, std::move(messages));
 }
 
-void AsyncServer::defaultOverflow() const
+void AsyncServer::defaultOverflow()
 {
     LOG(DEBUG) << "refuse accept: too much connection " << m_handlers.size() << "/" << m_option.m_max_connection;
 }

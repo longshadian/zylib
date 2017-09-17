@@ -24,12 +24,6 @@ class AsyncServer
 {
     friend class RWHandler;
 public:
-    using CBConnectionOverflow = std::function<void()>;
-    using CBConnectionAccept = std::function<void(ConnectionHdl)>;
-    using CBConnectionClosed = std::function<void(ConnectionHdl)>;
-    using CBConnectionTimeout = std::function<void(ConnectionHdl)>;
-    using CBMessageDecode = std::function<void(ConnectionHdl, ByteBuffer& buffer, std::vector<MessagePtr>*)>;
-    using CBReceivedMessage = std::function<void(ConnectionHdl, std::vector<MessagePtr>)>;
 
 public:
     AsyncServer(boost::asio::io_service& io_service, short port, const ServerOption& optin);
@@ -46,13 +40,14 @@ public:
     boost::asio::io_service& getIOService();
     const ServerOption& getOption() const;
 
-    void setCBConnectOverflow(CBConnectionOverflow cb);
-    void setCBConnectAccept(CBConnectionAccept cb);
-    void setCBConnectClosed(CBConnectionClosed cb);
-    void setCBConnectTimeout(CBConnectionTimeout cb);
+    void setCBConnectOverflow(CBAcceptOverflow cb);
+    void setCBConnectAccept(CBAccept cb);
+    void setCBConnectClosed(CBHandlerClosed cb);
+    void setCBConnectTimeout(CBHandlerTimeout cb);
     void setCBMessageDecoder(CBMessageDecode cb);
+    void setCBReceivedMessage(CBReceivedMessage cb);
 private:
-    void stopHandler(const RWHandlerPtr& conn);
+    void stopHandler(const ConnectionHdl& hdl);
     void handleAcceptError(const boost::system::error_code& ec);
     void stopAccept();
     RWHandlerPtr createHandler();
@@ -66,7 +61,7 @@ private:
     void cbMessageDecode(ConnectionHdl hdl, ByteBuffer& buffer, std::vector<MessagePtr>* out);
     void cbReceivedMsg(ConnectionHdl hdl, std::vector<MessagePtr> messages);
 
-    void defaultOverflow() const;
+    void defaultOverflow();
     void defaultAccept(ConnectionHdl hdl);
     void defaultClosed(ConnectionHdl hdl);
     void defaultTimeout(ConnectionHdl hdl);
@@ -79,10 +74,10 @@ private:
     std::unordered_set<RWHandlerPtr>    m_handlers;
     ServerOption                        m_option;
 
-    CBConnectionOverflow                m_cb_overflow;
-    CBConnectionAccept                  m_cb_accept;
-    CBConnectionClosed                  m_cb_closed;
-    CBConnectionTimeout                 m_cb_timeout;
+    CBAcceptOverflow                m_cb_overflow;
+    CBAccept                  m_cb_accept;
+    CBHandlerClosed                  m_cb_closed;
+    CBHandlerTimeout                 m_cb_timeout;
     CBMessageDecode                     m_cb_msg_decorde;
     CBReceivedMessage                   m_cb_received_msg;
 };

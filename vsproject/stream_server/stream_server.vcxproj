@@ -114,17 +114,19 @@
   <ItemGroup>
     <ClCompile Include="..\..\stream_server\ByteBuffer.cpp" />
     <ClCompile Include="..\..\stream_server\CallbackServer.cpp" />
+    <ClCompile Include="..\..\stream_server\StreamClient.cpp" />
     <ClCompile Include="..\..\stream_server\StreamServer.cpp" />
     <ClCompile Include="..\..\stream_server\FakeLog.cpp" />
     <ClCompile Include="..\..\stream_server\Message.cpp" />
     <ClCompile Include="..\..\stream_server\RWHandler.cpp" />
     <ClCompile Include="..\..\stream_server\test\client.cpp" />
-    <ClCompile Include="..\..\stream_server\test\server.cpp" />
+    <ClCompile Include="..\..\stream_server\test\Server.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\stream_server\ByteBuffer.h" />
     <ClInclude Include="..\..\stream_server\CallbackServer.h" />
     <ClInclude Include="..\..\stream_server\MessageContext.h" />
+    <ClInclude Include="..\..\stream_server\StreamClient.h" />
     <ClInclude Include="..\..\stream_server\StreamServer.h" />
     <ClInclude Include="..\..\stream_server\FakeLog.h" />
     <ClInclude Include="..\..\stream_server\Message.h" />
