@@ -113,7 +113,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\stream_server\ByteBuffer.cpp" />
+    <ClCompile Include="..\..\stream_server\CallbackClient.cpp" />
+    <ClCompile Include="..\..\stream_server\CallbackUtility.cpp" />
     <ClCompile Include="..\..\stream_server\CallbackServer.cpp" />
+    <ClCompile Include="..\..\stream_server\CallbackMessage.cpp" />
     <ClCompile Include="..\..\stream_server\StreamClient.cpp" />
     <ClCompile Include="..\..\stream_server\StreamServer.cpp" />
     <ClCompile Include="..\..\stream_server\FakeLog.cpp" />
@@ -124,7 +127,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\stream_server\ByteBuffer.h" />
+    <ClInclude Include="..\..\stream_server\CallbackClient.h" />
+    <ClInclude Include="..\..\stream_server\CallbackUtility.h" />
     <ClInclude Include="..\..\stream_server\CallbackServer.h" />
+    <ClInclude Include="..\..\stream_server\CallbackMessage.h" />
     <ClInclude Include="..\..\stream_server\MessageContext.h" />
     <ClInclude Include="..\..\stream_server\StreamClient.h" />
     <ClInclude Include="..\..\stream_server\StreamServer.h" />

@@ -11,41 +11,16 @@
 #include "StreamServer.h"
 #include "Message.h"
 #include "NetworkType.h"
+#include "CallbackMessage.h"
 
 namespace network {
 
 class AsyncServer;
 
-struct SMessage : public Message
-{
-    SMessage();
-    virtual ~SMessage();
-
-    virtual const void* data() const override;
-    virtual size_t size() const override;
-
-    int32_t m_msg_id{};
-    std::vector<uint8_t> m_data{};
-};
-
-using SMessagePtr = std::shared_ptr<SMessage>;
-
-struct SMessagePkg
-{
-    ConnectionHdl m_hdl{};
-    std::chrono::system_clock::time_point m_tm{};
-    std::vector<std::shared_ptr<SMessage>> m_msg_list{};
-};
-
-struct MessageContext
-{
-    ConnectionHdl m_hdl{};
-};
-
 class CallbackServer
 {
 public:
-    using CBReceivedMsg = std::function<void(MessageContext&, SMessagePtr)>;
+    using CBReceivedMsg = std::function<void(CallbackMessageContext&, CallbackMessagePtr)>;
     using CBReceivedMsgArray = std::unordered_map<int32_t, CBReceivedMsg>;
 
     using CBAccept  = std::function<void(ConnectionHdl)>;
@@ -77,13 +52,12 @@ private:
     void processClosed();
     void processAccept();
 
-    void cbAsyncMessageDecoder(ConnectionHdl hdl, ByteBuffer& buffer, std::vector<MessagePtr>* out);
     void cbAsyncReceivedMsg(ConnectionHdl hdl, std::vector<MessagePtr> msg_list);
     void cbAsyncTimeout(ConnectionHdl hdl);
     void cbAsyncClosed(ConnectionHdl hdl);
     void cbAsyncAccept(ConnectionHdl hdl);
 
-    bool msgCallback(MessageContext& context, SMessagePtr msg);
+    bool msgCallback(CallbackMessageContext& context, CallbackMessagePtr msg);
 
 private:
     boost::asio::io_service         m_io_service;
@@ -99,7 +73,7 @@ private:
     std::queue<ConnectionHdl>       m_hdl_accept;
     std::queue<ConnectionHdl>       m_hdl_closed;
     std::queue<ConnectionHdl>       m_hdl_timeout;
-    std::queue<std::unique_ptr<SMessagePkg>> m_received_msg;
+    std::queue<CallbackMessagePkgPtr> m_received_msg;
 };
 
 } // network

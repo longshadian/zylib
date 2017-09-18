@@ -7,7 +7,7 @@
 
 namespace network {
 
-StreamClient::StreamClient(boost::asio::io_service& io_service, ClientOption opt)
+StreamClient::StreamClient(boost::asio::io_service& io_service, const ClientOption& opt)
     : m_io_service(io_service)
     , m_socket(m_io_service)
     , m_ip()
@@ -18,7 +18,7 @@ StreamClient::StreamClient(boost::asio::io_service& io_service, ClientOption opt
     , m_cb_closed()
     , m_cb_timeout()
     , m_cb_receive_mgs()
-    , m_cb_decode()
+    , m_cb_msg_decode()
 {
 }
 
@@ -45,6 +45,11 @@ void StreamClient::setCBReceiveMsg(CBReceivedMessage cb)
     m_cb_receive_mgs = std::move(cb);
 }
 
+void StreamClient::setCBMessageDecode(CBMessageDecode cb)
+{
+    m_cb_msg_decode = std::move(cb);
+}
+
 void StreamClient::setCBTimeout(CBHandlerTimeout cb)
 {
     m_cb_timeout = std::move(cb);
@@ -55,9 +60,9 @@ void StreamClient::setCBClosed(CBHandlerClosed cb)
     m_cb_closed = std::move(cb);
 }
 
-void StreamClient::setCBDecode(CBMessageDecode cb)
+ConnectionHdl StreamClient::getHdl()
 {
-    m_cb_decode = std::move(cb);
+    return m_handler->getHdl();
 }
 
 bool StreamClient::asyncConnect()
@@ -77,7 +82,7 @@ bool StreamClient::asyncConnect()
                     m_handler = std::make_shared<RWHandler>(std::move(m_socket), opt);
                     m_handler->setCBClosed(m_cb_closed);
                     m_handler->setCBTimeout(m_cb_timeout);
-                    m_handler->setCBDecode(m_cb_decode);
+                    m_handler->setCBDecode(m_cb_msg_decode);
                     m_handler->setCBReceiveMsg(m_cb_receive_mgs);
                 } else {
                     LOG(WARNING) << "connect " << m_ip << " " << m_port << " fail " << ec.value() << ":" << ec.message();

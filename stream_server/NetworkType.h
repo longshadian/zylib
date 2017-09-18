@@ -8,7 +8,9 @@
 namespace network {
 
 class ByteBuffer;
+
 class StreamClient;
+using StreamClientPtr = std::shared_ptr<StreamClient>;
 
 class RWHandler;
 using RWHandlerPtr = std::shared_ptr<RWHandler>;

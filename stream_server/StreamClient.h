@@ -19,16 +19,17 @@ struct ClientOption
 class StreamClient : public std::enable_shared_from_this<StreamClient>
 {
 public:
-    StreamClient(boost::asio::io_service& io_service, ClientOption opt);
+    StreamClient(boost::asio::io_service& io_service, const ClientOption& opt);
     ~StreamClient();
 
     bool connect(std::string ip, uint16_t port, CBConnect cb);
     void sendMessage(MessagePtr msg);
 
     void setCBReceiveMsg(CBReceivedMessage cb);
+    void setCBMessageDecode(CBMessageDecode cb);
     void setCBTimeout(CBHandlerTimeout cb);
     void setCBClosed(CBHandlerClosed cb);
-    void setCBDecode(CBMessageDecode cb);
+    ConnectionHdl getHdl();
 
 private:
     bool asyncConnect();
@@ -45,7 +46,7 @@ private:
     CBHandlerClosed     m_cb_closed;
     CBHandlerTimeout    m_cb_timeout;
     CBReceivedMessage   m_cb_receive_mgs;
-    CBMessageDecode     m_cb_decode;
+    CBMessageDecode     m_cb_msg_decode;
 };
 
 } // network
