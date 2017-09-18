@@ -6,7 +6,6 @@
 
 #include "StreamServer.h"
 #include "NetworkType.h"
-#include "MessageContext.h"
 #include "ByteBuffer.h"
 #include "CallbackUtility.h"
 
@@ -59,7 +58,8 @@ bool CallbackClient::reconnect()
 
 void CallbackClient::stop()
 {
-    // TODO
+    if (m_client)
+        m_client->shutdown();
 }
 
 void CallbackClient::update(DiffTime diff_time)
@@ -122,7 +122,7 @@ void CallbackClient::syncTimeout()
     }
 
     if (all_timeout && m_cb_sync_timeout) {
-        m_cb_sync_timeout(m_client->getHdl());
+        m_cb_sync_timeout(*this);
     }
 }
 
@@ -134,7 +134,7 @@ void CallbackClient::syncClosed()
         all_closed = std::move(m_async_closed);
     }
     if (all_closed && m_cb_sync_closed) {
-        m_cb_sync_closed(m_client->getHdl());
+        m_cb_sync_closed(*this);
     }
 }
 

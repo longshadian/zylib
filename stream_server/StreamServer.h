@@ -20,19 +20,16 @@ struct ServerOption
     size_t m_timeout_seconds{0};       //0:never timeout
 };
 
-class AsyncServer
+class StreamServer
 {
-    friend class RWHandler;
 public:
+    StreamServer(boost::asio::io_service& io_service, short port, const ServerOption& optin);
+    ~StreamServer() = default;
 
-public:
-    AsyncServer(boost::asio::io_service& io_service, short port, const ServerOption& optin);
-    ~AsyncServer() = default;
-
-    AsyncServer(const AsyncServer& rhs) = delete;
-    AsyncServer& operator=(const AsyncServer& rhs) = delete;
-    AsyncServer(AsyncServer&& rhs) = delete;
-    AsyncServer& operator=(AsyncServer&& rhs) = delete;
+    StreamServer(const StreamServer& rhs) = delete;
+    StreamServer& operator=(const StreamServer& rhs) = delete;
+    StreamServer(StreamServer&& rhs) = delete;
+    StreamServer& operator=(StreamServer&& rhs) = delete;
 
     void accept();
     void stop();
@@ -40,12 +37,12 @@ public:
     boost::asio::io_service& getIOService();
     const ServerOption& getOption() const;
 
-    void setCBConnectOverflow(CBAcceptOverflow cb);
-    void setCBConnectAccept(CBAccept cb);
-    void setCBConnectClosed(CBHandlerClosed cb);
-    void setCBConnectTimeout(CBHandlerTimeout cb);
-    void setCBMessageDecoder(CBMessageDecode cb);
-    void setCBReceivedMessage(CBReceivedMessage cb);
+    void setCB_ConnectOverflow(CBAcceptOverflow cb);
+    void setCB_ConnectAccept(CBAccept cb);
+    void setCB_ConnectClosed(CBHandlerClosed cb);
+    void setCB_ConnectTimeout(CBHandlerTimeout cb);
+    void setCB_MessageDecoder(CBMessageDecode cb);
+    void setCB_ReceivedMessage(CBReceivedMessage cb);
 private:
     void stopHandler(const ConnectionHdl& hdl);
     void handleAcceptError(const boost::system::error_code& ec);
@@ -54,19 +51,19 @@ private:
 
     static void refuseAccept(boost::asio::ip::tcp::socket socket);
 
-    void cbAccecpt(ConnectionHdl hdl);
-    void cbOverflow();
-    void cbTimeout(ConnectionHdl hdl);
-    void cbClosed(ConnectionHdl hdl);
-    void cbMessageDecode(ConnectionHdl hdl, ByteBuffer& buffer, std::vector<MessagePtr>* out);
-    void cbReceivedMsg(ConnectionHdl hdl, std::vector<MessagePtr> messages);
+    void asyncAccecpt(ConnectionHdl hdl);
+    void asyncOverflow();
+    void asyncTimeout(ConnectionHdl hdl);
+    void asyncClosed(ConnectionHdl hdl);
+    void asyncMessageDecode(ConnectionHdl hdl, ByteBuffer& buffer, std::vector<MessagePtr>* out);
+    void asyncReceivedMsg(ConnectionHdl hdl, std::vector<MessagePtr> messages);
 
-    void defaultOverflow();
-    void defaultAccept(ConnectionHdl hdl);
-    void defaultClosed(ConnectionHdl hdl);
-    void defaultTimeout(ConnectionHdl hdl);
-    void defaultMessageDecode(ConnectionHdl hdl, ByteBuffer& buffer, std::vector<MessagePtr>* out);
-    void defaultReceivedMsg(ConnectionHdl hdl, std::vector<MessagePtr> messages);
+    void asyncOverflow_Default();
+    void asyncAccept_Default(ConnectionHdl hdl);
+    void asyncClosed_default(ConnectionHdl hdl);
+    void asyncTimeout_Default(ConnectionHdl hdl);
+    void asyncMessageDecode_Default(ConnectionHdl hdl, ByteBuffer& buffer, std::vector<MessagePtr>* out);
+    void asyncReceivedMsg_Default(ConnectionHdl hdl, std::vector<MessagePtr> messages);
 private:
     boost::asio::io_service&            m_io_service;
     boost::asio::ip::tcp::acceptor      m_acceptor;
@@ -74,10 +71,10 @@ private:
     std::unordered_set<RWHandlerPtr>    m_handlers;
     ServerOption                        m_option;
 
-    CBAcceptOverflow                m_cb_overflow;
-    CBAccept                  m_cb_accept;
-    CBHandlerClosed                  m_cb_closed;
-    CBHandlerTimeout                 m_cb_timeout;
+    CBAcceptOverflow                    m_cb_overflow;
+    CBAccept                            m_cb_accept;
+    CBHandlerClosed                     m_cb_closed;
+    CBHandlerTimeout                    m_cb_timeout;
     CBMessageDecode                     m_cb_msg_decorde;
     CBReceivedMessage                   m_cb_received_msg;
 };

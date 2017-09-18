@@ -24,6 +24,7 @@ public:
 
     bool connect(std::string ip, uint16_t port, CBConnect cb);
     void sendMessage(MessagePtr msg);
+    void shutdown();
 
     void setCBReceiveMsg(CBReceivedMessage cb);
     void setCBMessageDecode(CBMessageDecode cb);

@@ -14,8 +14,6 @@
 
 namespace network {
 
-class AsyncServer;
-
 class CallbackClient
 {
 public:
@@ -23,9 +21,8 @@ public:
     using CBReceivedMsgArray = std::unordered_map<int32_t, CBReceivedMsg>;
 
     using CBConnect = std::function<void(CallbackClient&)>;
-
-    using CBTimeout = std::function<void(ConnectionHdl)>;
-    using CBClosed  = std::function<void(ConnectionHdl)>;
+    using CBTimeout = std::function<void(CallbackClient&)>;
+    using CBClosed  = std::function<void(CallbackClient&)>;
 
 public:
     CallbackClient(boost::asio::io_service& io_service);
@@ -36,7 +33,7 @@ public:
     CallbackClient(CallbackClient&& rhs) = delete;
     CallbackClient& operator=(CallbackClient&& rhs) = delete;
 
-    bool connect(const std::string& ip, uint16_t port, std::time_t timeout_seconds);
+    bool connect(const std::string& ip, uint16_t port, std::time_t timeout_seconds = 0);
     bool reconnect();
     void stop();
     void update(DiffTime diff_time);

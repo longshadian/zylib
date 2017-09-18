@@ -6,7 +6,6 @@
 
 #include "StreamServer.h"
 #include "NetworkType.h"
-#include "MessageContext.h"
 #include "ByteBuffer.h"
 
 namespace network {
@@ -27,7 +26,7 @@ CallbackServer::CallbackServer(const std::string& ip, short port)
     , m_received_msg()
 {
     network::ServerOption opt{};
-    m_server = std::make_unique<network::AsyncServer>(m_io_service, port, opt);
+    m_server = std::make_unique<network::StreamServer>(m_io_service, port, opt);
     // TODO listen local ip
     (void)ip;
 }

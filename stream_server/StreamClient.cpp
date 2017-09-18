@@ -40,6 +40,12 @@ void StreamClient::sendMessage(MessagePtr msg)
         m_handler->sendMessage(std::move(msg));
 }
 
+void StreamClient::shutdown()
+{
+    if (m_handler)
+        m_handler->shutdown();
+}
+
 void StreamClient::setCBReceiveMsg(CBReceivedMessage cb)
 {
     m_cb_receive_mgs = std::move(cb);

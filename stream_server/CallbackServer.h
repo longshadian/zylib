@@ -15,7 +15,7 @@
 
 namespace network {
 
-class AsyncServer;
+class StreamServer;
 
 class CallbackServer
 {
@@ -63,7 +63,7 @@ private:
     boost::asio::io_service         m_io_service;
     boost::asio::io_service::work   m_work;
     std::thread                     m_thread;
-    std::unique_ptr<AsyncServer>    m_server;
+    std::unique_ptr<StreamServer>   m_server;
     CBReceivedMsgArray              m_cb_sync_received_msg_array;
     CBAccept                        m_cb_sync_accept;
     CBTimeout                       m_cb_sync_timeout;
