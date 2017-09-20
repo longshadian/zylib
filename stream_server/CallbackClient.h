@@ -29,7 +29,7 @@ public:
     CallbackClient(CallbackClient&& rhs) = delete;
     CallbackClient& operator=(CallbackClient&& rhs) = delete;
 
-    bool connect(const std::string& ip, uint16_t port, std::time_t timeout_seconds = 0);
+    bool connect(const std::string& ip, uint16_t port, size_t timeout_seconds = 0);
     bool reconnect();
     void stop();
     void update(DiffTime diff_time);
@@ -58,6 +58,9 @@ private:
 private:
     boost::asio::io_service&        m_io_service;
     boost::asio::io_service::work   m_work;
+    std::string                     m_ip;
+    uint16_t                        m_port;
+    size_t                          m_read_timeout_seconds;
     StreamClientPtr                 m_async_client;
     CB_SyncReceivedMsgArray              m_sync_received_msg_array;
     CB_SyncTimeout                       m_sync_timeout;

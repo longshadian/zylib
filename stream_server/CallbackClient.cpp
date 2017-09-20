@@ -14,6 +14,8 @@ namespace network {
 CallbackClient::CallbackClient(boost::asio::io_service& io_service)
     : m_io_service(io_service)
     , m_work(m_io_service)
+    , m_ip()
+    , m_port()
     , m_async_client()
     , m_sync_received_msg_array()
     , m_sync_timeout()
@@ -34,10 +36,13 @@ CallbackClient::~CallbackClient()
     stop();
 }
 
-bool CallbackClient::connect(const std::string& ip, uint16_t port, std::time_t timeout_seconds)
+bool CallbackClient::connect(const std::string& ip, uint16_t port, size_t timeout_seconds)
 {
     if (m_async_client)
         return false;
+    m_ip = ip;
+    m_port = port;
+    m_read_timeout_seconds = timeout_seconds;
 
     ClientOption opt{};
     opt.m_read_timeout_seconds = timeout_seconds;
@@ -62,9 +67,8 @@ bool CallbackClient::reconnect()
      *       而且RWHandler关闭时确保closed或者timeout回掉只会发生一次。确保使用者提供的回掉函数只会别调用一次
      *       
      */
-    if (!m_async_client)
-        return false;
-    return m_async_client->reconnect();
+    m_async_client = nullptr;
+    return connect(m_ip, m_port, m_read_timeout_seconds);
 }
 
 void CallbackClient::stop()

@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <cmath>
 
-#include <exception>
+#include <stdexcept>
 #include <string>
 #include <vector>
 #include <type_traits>
