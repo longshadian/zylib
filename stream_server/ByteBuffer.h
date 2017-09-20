@@ -1,17 +1,13 @@
 #pragma once
 
-#include <exception>
-#include <list>
-#include <map>
-#include <string>
-#include <vector>
 #include <cstring>
 #include <cstdint>
-#include <time.h>
 #include <cmath>
+
+#include <exception>
+#include <string>
+#include <vector>
 #include <type_traits>
-#include <cassert>
-#include <iostream>
 
 namespace network {
 

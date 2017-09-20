@@ -24,7 +24,7 @@ using CallbackMessagePtr = std::shared_ptr<CallbackMessage>;
 
 struct CallbackMessagePkg
 {
-    ConnectionHdl m_hdl{};
+    Hdl m_hdl{};
     std::chrono::system_clock::time_point   m_tm{};
     std::vector<CallbackMessagePtr>         m_msg_list{};
 };
@@ -32,7 +32,7 @@ using CallbackMessagePkgPtr = std::shared_ptr<CallbackMessagePkg>;
 
 struct CallbackMessageContext
 {
-    ConnectionHdl m_hdl{};
+    Hdl m_hdl{};
 };
 
 } // network

@@ -27,12 +27,6 @@
     <ClCompile Include="..\..\stream_server\CallbackServer.cpp">
       <Filter>stream_server</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\stream_server\test\client.cpp">
-      <Filter>stream_server\test</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\stream_server\test\Server.cpp">
-      <Filter>stream_server\test</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\stream_server\StreamClient.cpp">
       <Filter>stream_server</Filter>
     </ClCompile>
@@ -44,6 +38,12 @@
     </ClCompile>
     <ClCompile Include="..\..\stream_server\CallbackMessage.cpp">
       <Filter>stream_server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\stream_server\test\TestClient.cpp">
+      <Filter>stream_server\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\stream_server\test\TestServer.cpp">
+      <Filter>stream_server\test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -78,6 +78,12 @@
       <Filter>stream_server</Filter>
     </ClInclude>
     <ClInclude Include="..\..\stream_server\CallbackMessage.h">
+      <Filter>stream_server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\stream_server\test\TestTool.h">
+      <Filter>stream_server\test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\stream_server\stream_server.h">
       <Filter>stream_server</Filter>
     </ClInclude>
   </ItemGroup>

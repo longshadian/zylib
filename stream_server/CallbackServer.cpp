@@ -7,6 +7,7 @@
 #include "StreamServer.h"
 #include "NetworkType.h"
 #include "ByteBuffer.h"
+#include "CallbackUtility.h"
 
 namespace network {
 
@@ -15,10 +16,10 @@ CallbackServer::CallbackServer(const std::string& ip, short port)
     , m_work(m_io_service)
     , m_thread()
     , m_server()
-    , m_cb_sync_received_msg_array()
-    , m_cb_sync_accept()
-    , m_cb_sync_timeout()
-    , m_cb_sync_closed()
+    , m_sync_received_msg_array()
+    , m_sync_accept()
+    , m_sync_timeout()
+    , m_sync_closed()
     , m_mtx()
     , m_hdl_accept()
     , m_hdl_closed()
@@ -27,6 +28,13 @@ CallbackServer::CallbackServer(const std::string& ip, short port)
 {
     network::ServerOption opt{};
     m_server = std::make_unique<network::StreamServer>(m_io_service, port, opt);
+
+    m_server->setCB_MessageDecoder(std::bind(&callbackMessageDecoder, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    m_server->setCB_ReceivedMessage(std::bind(&CallbackServer::asyncReceivedMsg, this, std::placeholders::_1, std::placeholders::_2));
+    m_server->setCB_HandlerTimeout(std::bind(&CallbackServer::asyncTimeout, this, std::placeholders::_1));
+    m_server->setCB_HandlerClosed(std::bind(&CallbackServer::asyncClosed, this, std::placeholders::_1));
+    m_server->setCB_Accept(std::bind(&CallbackServer::asyncAccept, this, std::placeholders::_1));
+
     // TODO listen local ip
     (void)ip;
 }
@@ -57,28 +65,33 @@ void CallbackServer::waitThreadExit()
 void CallbackServer::update(DiffTime diff_time)
 {
     (void)diff_time;
-    processAccept();
-    processTimeout();
-    processClosed();
-    processReceivedMsg();
+    syncAccept();
+    syncTimeout();
+    syncClosed();
+    syncReceivedMsg();
 }
 
-void CallbackServer::setCBAccept(CBAccept cb)
+void CallbackServer::setCB_SyncAccept(CB_SyncAccept cb)
 {
-    m_cb_sync_accept = std::move(cb);
+    m_sync_accept = std::move(cb);
 }
 
-void CallbackServer::setCBTimeout(CBTimeout cb)
+void CallbackServer::setCB_SyncTimeout(CB_SyncTimeout cb)
 {
-    m_cb_sync_timeout = std::move(cb);
+    m_sync_timeout = std::move(cb);
 }
 
-void CallbackServer::setCBClosed(CBClosed cb)
+void CallbackServer::setCB_SyncClosed(CB_SyncClosed cb)
 {
-    m_cb_sync_closed = std::move(cb);
+    m_sync_closed = std::move(cb);
 }
 
-void CallbackServer::processReceivedMsg()
+void CallbackServer::setCB_SyncReceivedMessage(CB_SyncReceivedMsgArray arr)
+{
+    m_sync_received_msg_array = std::move(arr);
+}
+
+void CallbackServer::syncReceivedMsg()
 {
     decltype(m_received_msg) all_msg{};
     {
@@ -88,6 +101,7 @@ void CallbackServer::processReceivedMsg()
 
     while (!all_msg.empty()) {
         auto msg_pkg = std::move(all_msg.front());
+        all_msg.pop();
         CallbackMessageContext context{};
         context.m_hdl = msg_pkg->m_hdl;
         for (auto& msg : msg_pkg->m_msg_list) {
@@ -99,7 +113,7 @@ void CallbackServer::processReceivedMsg()
     }
 }
 
-void CallbackServer::processTimeout()
+void CallbackServer::syncTimeout()
 {
     decltype(m_hdl_timeout) all_timeout{};
     {
@@ -107,16 +121,16 @@ void CallbackServer::processTimeout()
         all_timeout = std::move(m_hdl_timeout);
     }
 
-    if (m_cb_sync_timeout) {
+    if (m_sync_timeout) {
         while (!all_timeout.empty()) {
             auto hdl = std::move(all_timeout.front());
             all_timeout.pop();
-            m_cb_sync_timeout(hdl);
+            m_sync_timeout(hdl);
         }
     }
 }
 
-void CallbackServer::processClosed()
+void CallbackServer::syncClosed()
 {
     decltype(m_hdl_closed) all_closed{};
     {
@@ -124,16 +138,16 @@ void CallbackServer::processClosed()
         all_closed = std::move(m_hdl_closed);
     }
     
-    if (m_cb_sync_closed) {
+    if (m_sync_closed) {
         while (!all_closed.empty()) {
             auto hdl = std::move(all_closed.front());
             all_closed.pop();
-            m_cb_sync_closed(hdl);
+            m_sync_closed(hdl);
         }
     }
 }
 
-void CallbackServer::processAccept()
+void CallbackServer::syncAccept()
 {
     decltype(m_hdl_accept) all_accept{};
     {
@@ -141,16 +155,16 @@ void CallbackServer::processAccept()
         all_accept = std::move(m_hdl_accept);
     }
     
-    if (m_cb_sync_accept) {
+    if (m_sync_accept) {
         while (!all_accept.empty()) {
             auto hdl = std::move(all_accept.front());
             all_accept.pop();
-            m_cb_sync_accept(hdl);
+            m_sync_accept(hdl);
         }
     }
 }
 
-void CallbackServer::cbAsyncReceivedMsg(ConnectionHdl hdl, std::vector<MessagePtr> msg_list)
+void CallbackServer::asyncReceivedMsg(Hdl hdl, std::vector<MessagePtr> msg_list)
 {
     auto msg_pkg = std::make_shared<CallbackMessagePkg>();
     msg_pkg->m_hdl = hdl;
@@ -163,19 +177,19 @@ void CallbackServer::cbAsyncReceivedMsg(ConnectionHdl hdl, std::vector<MessagePt
     m_received_msg.push(std::move(msg_pkg));
 }
 
-void CallbackServer::cbAsyncTimeout(ConnectionHdl hdl)
+void CallbackServer::asyncTimeout(Hdl hdl)
 {
     std::lock_guard<std::mutex> lk{ m_mtx };
     m_hdl_timeout.push(std::move(hdl));
 }
 
-void CallbackServer::cbAsyncClosed(ConnectionHdl hdl)
+void CallbackServer::asyncClosed(Hdl hdl)
 {
     std::lock_guard<std::mutex> lk{ m_mtx };
     m_hdl_closed.push(std::move(hdl));
 }
 
-void CallbackServer::cbAsyncAccept(ConnectionHdl hdl)
+void CallbackServer::asyncAccept(Hdl hdl)
 {
     std::lock_guard<std::mutex> lk{ m_mtx };
     m_hdl_accept.push(std::move(hdl));
@@ -183,8 +197,8 @@ void CallbackServer::cbAsyncAccept(ConnectionHdl hdl)
 
 bool CallbackServer::msgCallback(CallbackMessageContext& context, CallbackMessagePtr msg)
 {
-    auto it = m_cb_sync_received_msg_array.find(msg->m_msg_id);
-    if (it == m_cb_sync_received_msg_array.end())
+    auto it = m_sync_received_msg_array.find(msg->m_msg_id);
+    if (it == m_sync_received_msg_array.end())
         return false;
     it->second(context, msg);
     return true;

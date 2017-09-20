@@ -122,8 +122,8 @@
     <ClCompile Include="..\..\stream_server\FakeLog.cpp" />
     <ClCompile Include="..\..\stream_server\Message.cpp" />
     <ClCompile Include="..\..\stream_server\RWHandler.cpp" />
-    <ClCompile Include="..\..\stream_server\test\client.cpp" />
-    <ClCompile Include="..\..\stream_server\test\Server.cpp" />
+    <ClCompile Include="..\..\stream_server\test\TestClient.cpp" />
+    <ClCompile Include="..\..\stream_server\test\TestServer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\stream_server\ByteBuffer.h" />
@@ -137,6 +137,8 @@
     <ClInclude Include="..\..\stream_server\Message.h" />
     <ClInclude Include="..\..\stream_server\NetworkType.h" />
     <ClInclude Include="..\..\stream_server\RWHandler.h" />
+    <ClInclude Include="..\..\stream_server\stream_server.h" />
+    <ClInclude Include="..\..\stream_server\test\TestTool.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

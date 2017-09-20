@@ -36,11 +36,14 @@ OBJS += $(SRC_CC:%.cc=%.o)
 
 
 ###########################################################################
-OUTPUT = test_server
+OUTPUT = test_server test_client
 
 all:$(OBJS) $(OUTPUT)
 
 test_server:$(OBJS) TestServer.cpp
+	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
+
+test_client:$(OBJS) TestClient.cpp
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
 
 proto:

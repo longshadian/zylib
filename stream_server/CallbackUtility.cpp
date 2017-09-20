@@ -8,7 +8,7 @@
 
 namespace network {
 
-void callbackMessageDecoder(ConnectionHdl hdl, ByteBuffer& buffer, std::vector<MessagePtr>* out)
+void callbackMessageDecoder(Hdl hdl, ByteBuffer& buffer, std::vector<MessagePtr>* out)
 {
     (void)hdl;
     while (true) {

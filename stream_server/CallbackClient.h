@@ -1,7 +1,5 @@
 #pragma once
 
-#include <thread>
-#include <atomic>
 #include <memory>
 #include <mutex>
 #include <queue>
@@ -17,17 +15,15 @@ namespace network {
 class CallbackClient
 {
 public:
-    using CBReceivedMsg = std::function<void(CallbackMessageContext&, CallbackMessagePtr)>;
-    using CBReceivedMsgArray = std::unordered_map<int32_t, CBReceivedMsg>;
-
-    using CBConnect = std::function<void(CallbackClient&)>;
-    using CBTimeout = std::function<void(CallbackClient&)>;
-    using CBClosed  = std::function<void(CallbackClient&)>;
+    using CB_SyncReceivedMsg = std::function<void(CallbackMessageContext&, CallbackMessagePtr)>;
+    using CB_SyncReceivedMsgArray = std::unordered_map<int32_t, CB_SyncReceivedMsg>;
+    using CB_SyncConnect = std::function<void(CallbackClient&)>;
+    using CB_SyncTimeout = std::function<void(CallbackClient&)>;
+    using CB_SyncClosed  = std::function<void(CallbackClient&)>;
 
 public:
     CallbackClient(boost::asio::io_service& io_service);
     ~CallbackClient();
-
     CallbackClient(const CallbackClient& rhs) = delete;
     CallbackClient& operator=(const CallbackClient& rhs) = delete;
     CallbackClient(CallbackClient&& rhs) = delete;
@@ -37,11 +33,13 @@ public:
     bool reconnect();
     void stop();
     void update(DiffTime diff_time);
+    void sendMessage(CallbackMessagePtr msg);
 
-    void setCBTimeout(CBTimeout cb);
-    void setCBClosed(CBClosed cb);
-    void setConnectSuccess(CBConnect cb);
-    void setConnectFail(CBConnect cb);
+    void setCB_SyncTimeout(CB_SyncTimeout cb);
+    void setCB_SyncClosed(CB_SyncClosed cb);
+    void setCB_SyncConnectSuccess(CB_SyncConnect cb);
+    void setCB_SyncConnectFail(CB_SyncConnect cb);
+    void setCB_SyncReceivedMessage(CB_SyncReceivedMsgArray arr);
 
 private:
     void syncReceivedMsg();
@@ -50,9 +48,9 @@ private:
     void syncConnectSuccess();
     void syncConnectFail();
 
-    void asyncReceivedMsg(ConnectionHdl hdl, std::vector<MessagePtr> msg_list);
-    void asyncTimeout(ConnectionHdl hdl);
-    void asyncClosed(ConnectionHdl hdl);
+    void asyncReceivedMsg(Hdl hdl, std::vector<MessagePtr> msg_list);
+    void asyncTimeout(Hdl hdl);
+    void asyncClosed(Hdl hdl);
     void asyncConnect(boost::system::error_code, StreamClient&);
 
     bool msgCallback(CallbackMessageContext& context, CallbackMessagePtr msg);
@@ -60,12 +58,12 @@ private:
 private:
     boost::asio::io_service&        m_io_service;
     boost::asio::io_service::work   m_work;
-    StreamClientPtr                 m_client;
-    CBReceivedMsgArray              m_cb_sync_received_msg_array;
-    CBTimeout                       m_cb_sync_timeout;
-    CBClosed                        m_cb_sync_closed;
-    CBConnect                       m_cb_sync_connect_success;
-    CBConnect                       m_cb_sync_connect_fail;
+    StreamClientPtr                 m_async_client;
+    CB_SyncReceivedMsgArray              m_sync_received_msg_array;
+    CB_SyncTimeout                       m_sync_timeout;
+    CB_SyncClosed                        m_sync_closed;
+    CB_SyncConnect                       m_sync_connect_success;
+    CB_SyncConnect                       m_sync_connect_fail;
 
     std::mutex                      m_mtx;
     StreamClientPtr                 m_async_connect_success;
