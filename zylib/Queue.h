@@ -5,6 +5,8 @@
 #include <queue>
 #include <memory>
 
+namespace zylib {
+
 template <typename T>
 class ThreadSafeQueue
 {
@@ -71,3 +73,5 @@ private:
     std::condition_variable m_cond;
     std::queue<T>           m_queue;
 };
+
+}

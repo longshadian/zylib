@@ -64,40 +64,4 @@ private:
     std::chrono::system_clock::time_point m_start_time;
 };
 
-/*
-template<>
-class Future<void>
-{
-public:
-    Future() = default;
-    ~Future() = default;
-    Future(std::future<void>&& f)
-    {
-        m_future = std::move(f);
-    }
-
-    Future(Future&& rhs)
-    {
-        m_future = std::move(rhs.m_future);
-    }
-
-    Future& operator=(Future&& rhs)
-    {
-        if (this != &rhs) {
-            m_future = std::move(rhs.m_future);
-        }
-        return *this;
-    }
-
-    void getValue() {}
-    bool isValid() const { return m_future.valid(); }
-    bool isReady() const
-    {
-        return m_future.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready;
-    }
-private:
-    std::future<void> m_future{};
-};
-*/
-//////////////////////////////////////////////////////////////////////////
-}
+} // zylib

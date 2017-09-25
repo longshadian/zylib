@@ -14,9 +14,6 @@
     BOOST_LOG_SEV(zylib::logger::Logger::instance().m_s, zylib::logger::SEVERITY::S) \
         << __FILE__ << ':' << __LINE__ << ':' << __FUNCTION__ << "] "
 
-#define LOG_FMT(S, format, ...) \
-    logFormat(zylib::logger::SEVERITY::S, "%s:%d:%s] " format, __FILE__, __LINE__, __FUNCTION__, ##__VA_ARGS__)
-
 namespace zylib {
 namespace logger {
 
@@ -44,14 +41,6 @@ inline std::basic_ostream< CharT, TraitsT >& operator<< (
         strm << static_cast<int>(lvl);
     return strm;
 }
-
-#ifdef WIN32
- void logFormat(SEVERITY s, const char* format, ...);
-#else
- void logFormat(SEVERITY s, const char* format, ...) __attribute__((format(printf, 2, 3)));
-#endif // WIN32
-
-typedef boost::log::sinks::asynchronous_sink<boost::log::sinks::text_file_backend> FileSink;
 
 struct FileOptional
 {
@@ -114,5 +103,6 @@ public:
 };
 
 
-}
-}
+} /// logger
+
+} /// zylib

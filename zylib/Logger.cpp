@@ -15,16 +15,6 @@ namespace logger {
 
 BOOST_LOG_ATTRIBUTE_KEYWORD(severity, "Severity", SEVERITY)
 
-void logFormat(SEVERITY s, const char* format, ...)
-{
-    char buff[1024] = {0};
-    va_list vl;
-    va_start(vl, format);
-    ::vsnprintf(buff, sizeof(buff), format, vl);
-    va_end(vl);
-    BOOST_LOG_SEV(logger::Logger::instance().m_s, s) << buff;
-}
-
 void initAsyncFile(const FileOptional& opt, SEVERITY s)
 {
     Logger::instance().initAsyncFile(opt, s);
