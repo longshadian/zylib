@@ -17,6 +17,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "rediscpp", "rediscpp\redisc
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "stream_server", "stream_server\stream_server.vcxproj", "{8E6AAD2E-9149-4509-AA87-42CACD827D2F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mysqlcpp_v2", "mysqlcpp_v2\mysqlcpp_v2.vcxproj", "{342C7480-7994-4E14-AC25-27774D991669}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -81,6 +83,14 @@ Global
 		{8E6AAD2E-9149-4509-AA87-42CACD827D2F}.Release|x64.Build.0 = Release|x64
 		{8E6AAD2E-9149-4509-AA87-42CACD827D2F}.Release|x86.ActiveCfg = Release|Win32
 		{8E6AAD2E-9149-4509-AA87-42CACD827D2F}.Release|x86.Build.0 = Release|Win32
+		{342C7480-7994-4E14-AC25-27774D991669}.Debug|x64.ActiveCfg = Debug|x64
+		{342C7480-7994-4E14-AC25-27774D991669}.Debug|x64.Build.0 = Debug|x64
+		{342C7480-7994-4E14-AC25-27774D991669}.Debug|x86.ActiveCfg = Debug|Win32
+		{342C7480-7994-4E14-AC25-27774D991669}.Debug|x86.Build.0 = Debug|Win32
+		{342C7480-7994-4E14-AC25-27774D991669}.Release|x64.ActiveCfg = Release|x64
+		{342C7480-7994-4E14-AC25-27774D991669}.Release|x64.Build.0 = Release|x64
+		{342C7480-7994-4E14-AC25-27774D991669}.Release|x86.ActiveCfg = Release|Win32
+		{342C7480-7994-4E14-AC25-27774D991669}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

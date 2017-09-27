@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{1e2f1993-1d01-400a-bb7b-d64ee5864290}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\test">
+      <UniqueIdentifier>{281c1d09-c4e9-448a-b653-f939f18ce130}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\mysqlcpp_v2\Connection.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_v2\ConnectionPool.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_v2\DateTime.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_v2\FakeLog.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_v2\Field.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_v2\FieldMeta.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_v2\ParamBind.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_v2\PreparedStatement.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_v2\ResultBind.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_v2\ResultSet.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_v2\Statement.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_v2\Transaction.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_v2\Utils.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_v2\test\TestAll.cpp">
+      <Filter>src\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_v2\test\TestBigTable.cpp">
+      <Filter>src\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_v2\test\TestConvert.cpp">
+      <Filter>src\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_v2\test\TestSafeString.cpp">
+      <Filter>src\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_v2\test\TestThreads.cpp">
+      <Filter>src\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_v2\test\TestXX.cpp">
+      <Filter>src\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp_v2\test\TestXX2.cpp">
+      <Filter>src\test</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\mysqlcpp_v2\Connection.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp_v2\ConnectionPool.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp_v2\Convert.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp_v2\DateTime.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp_v2\FakeLog.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp_v2\Field.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp_v2\FieldMeta.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp_v2\MysqlcppAssert.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp_v2\ParamBind.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp_v2\PreparedStatement.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp_v2\ResultBind.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp_v2\ResultSet.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp_v2\SafeString.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp_v2\Statement.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp_v2\Transaction.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp_v2\Types.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp_v2\Utils.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp_v2\test\AsyncTask.h">
+      <Filter>src\test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp_v2\mysqlcpp.h">
+      <Filter>src</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\mysqlcpp_v2\test\Makefile">
+      <Filter>src\test</Filter>
+    </None>
+  </ItemGroup>
+</Project>

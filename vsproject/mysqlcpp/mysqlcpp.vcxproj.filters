@@ -9,113 +9,128 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\mysqlcpp_ex\Connection.cpp">
+    <ClCompile Include="..\..\mysqlcpp\Connection.cpp">
       <Filter>mysqlcpp</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mysqlcpp_ex\ConnectionPool.cpp">
+    <ClCompile Include="..\..\mysqlcpp\ConnectionPool.cpp">
       <Filter>mysqlcpp</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mysqlcpp_ex\DateTime.cpp">
+    <ClCompile Include="..\..\mysqlcpp\DateTime.cpp">
       <Filter>mysqlcpp</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mysqlcpp_ex\FakeLog.cpp">
+    <ClCompile Include="..\..\mysqlcpp\FakeLog.cpp">
       <Filter>mysqlcpp</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mysqlcpp_ex\Field.cpp">
+    <ClCompile Include="..\..\mysqlcpp\Field.cpp">
       <Filter>mysqlcpp</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mysqlcpp_ex\FieldMeta.cpp">
+    <ClCompile Include="..\..\mysqlcpp\FieldMeta.cpp">
       <Filter>mysqlcpp</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mysqlcpp_ex\ParamBind.cpp">
+    <ClCompile Include="..\..\mysqlcpp\ParamBind.cpp">
       <Filter>mysqlcpp</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mysqlcpp_ex\PreparedStatement.cpp">
+    <ClCompile Include="..\..\mysqlcpp\PreparedStatement.cpp">
       <Filter>mysqlcpp</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mysqlcpp_ex\ResultBind.cpp">
+    <ClCompile Include="..\..\mysqlcpp\ResultBind.cpp">
       <Filter>mysqlcpp</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mysqlcpp_ex\ResultSet.cpp">
+    <ClCompile Include="..\..\mysqlcpp\ResultSet.cpp">
       <Filter>mysqlcpp</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mysqlcpp_ex\Statement.cpp">
+    <ClCompile Include="..\..\mysqlcpp\Statement.cpp">
       <Filter>mysqlcpp</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mysqlcpp_ex\Transaction.cpp">
+    <ClCompile Include="..\..\mysqlcpp\Transaction.cpp">
       <Filter>mysqlcpp</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mysqlcpp_ex\Utils.cpp">
+    <ClCompile Include="..\..\mysqlcpp\Utils.cpp">
       <Filter>mysqlcpp</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mysqlcpp_ex\test\TestAll.cpp">
+    <ClCompile Include="..\..\mysqlcpp\test\TestAll.cpp">
       <Filter>mysqlcpp\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mysqlcpp_ex\test\TestThreads.cpp">
+    <ClCompile Include="..\..\mysqlcpp\test\TestBigTable.cpp">
       <Filter>mysqlcpp\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mysqlcpp_ex\test\TestXX.cpp">
+    <ClCompile Include="..\..\mysqlcpp\test\TestConvert.cpp">
       <Filter>mysqlcpp\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mysqlcpp_ex\test\TestXX2.cpp">
+    <ClCompile Include="..\..\mysqlcpp\test\TestSafeString.cpp">
+      <Filter>mysqlcpp\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp\test\TestThreads.cpp">
+      <Filter>mysqlcpp\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp\test\TestXX.cpp">
+      <Filter>mysqlcpp\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mysqlcpp\test\TestXX2.cpp">
       <Filter>mysqlcpp\test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\mysqlcpp_ex\Connection.h">
+    <ClInclude Include="..\..\mysqlcpp\Connection.h">
       <Filter>mysqlcpp</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mysqlcpp_ex\ConnectionPool.h">
+    <ClInclude Include="..\..\mysqlcpp\ConnectionPool.h">
       <Filter>mysqlcpp</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mysqlcpp_ex\DateTime.h">
+    <ClInclude Include="..\..\mysqlcpp\Convert.h">
       <Filter>mysqlcpp</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mysqlcpp_ex\FakeLog.h">
+    <ClInclude Include="..\..\mysqlcpp\DateTime.h">
       <Filter>mysqlcpp</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mysqlcpp_ex\Field.h">
+    <ClInclude Include="..\..\mysqlcpp\FakeLog.h">
       <Filter>mysqlcpp</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mysqlcpp_ex\FieldMeta.h">
+    <ClInclude Include="..\..\mysqlcpp\Field.h">
       <Filter>mysqlcpp</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mysqlcpp_ex\MySqlCpp.h">
+    <ClInclude Include="..\..\mysqlcpp\FieldMeta.h">
       <Filter>mysqlcpp</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mysqlcpp_ex\MysqlcppAssert.h">
+    <ClInclude Include="..\..\mysqlcpp\MySqlCpp.h">
       <Filter>mysqlcpp</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mysqlcpp_ex\ParamBind.h">
+    <ClInclude Include="..\..\mysqlcpp\MysqlcppAssert.h">
       <Filter>mysqlcpp</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mysqlcpp_ex\PreparedStatement.h">
+    <ClInclude Include="..\..\mysqlcpp\ParamBind.h">
       <Filter>mysqlcpp</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mysqlcpp_ex\ResultBind.h">
+    <ClInclude Include="..\..\mysqlcpp\PreparedStatement.h">
       <Filter>mysqlcpp</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mysqlcpp_ex\ResultSet.h">
+    <ClInclude Include="..\..\mysqlcpp\ResultBind.h">
       <Filter>mysqlcpp</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mysqlcpp_ex\Statement.h">
+    <ClInclude Include="..\..\mysqlcpp\ResultSet.h">
       <Filter>mysqlcpp</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mysqlcpp_ex\Transaction.h">
+    <ClInclude Include="..\..\mysqlcpp\SafeString.h">
       <Filter>mysqlcpp</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mysqlcpp_ex\Types.h">
+    <ClInclude Include="..\..\mysqlcpp\Statement.h">
       <Filter>mysqlcpp</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mysqlcpp_ex\Utils.h">
+    <ClInclude Include="..\..\mysqlcpp\Transaction.h">
       <Filter>mysqlcpp</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mysqlcpp_ex\test\AsyncTask.h">
+    <ClInclude Include="..\..\mysqlcpp\Types.h">
+      <Filter>mysqlcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp\Utils.h">
+      <Filter>mysqlcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mysqlcpp\test\AsyncTask.h">
       <Filter>mysqlcpp\test</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\mysqlcpp_ex\test\Makefile">
+    <None Include="..\..\mysqlcpp\test\Makefile">
       <Filter>mysqlcpp\test</Filter>
     </None>
   </ItemGroup>

@@ -20,9 +20,9 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{0324F65F-1767-4851-9A8B-B4D6851CA050}</ProjectGuid>
-    <RootNamespace>mysqlcpp</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
+    <ProjectGuid>{342C7480-7994-4E14-AC25-27774D991669}</ProjectGuid>
+    <RootNamespace>mysqlcpp_v2</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -75,7 +75,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\vsinclude\mysql-connector-c\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\vsinclude\mysql-connector-c-6.1.9-src\include;..\..\..\vsinclude\boost_1_64_0\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -112,50 +112,50 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\mysqlcpp\Connection.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\ConnectionPool.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\DateTime.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\FakeLog.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\Field.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\FieldMeta.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\ParamBind.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\PreparedStatement.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\ResultBind.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\ResultSet.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\Statement.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\test\TestAll.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\test\TestBigTable.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\test\TestConvert.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\test\TestSafeString.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\test\TestThreads.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\test\TestXX.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\test\TestXX2.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\Transaction.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\Utils.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_v2\Connection.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_v2\ConnectionPool.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_v2\DateTime.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_v2\FakeLog.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_v2\Field.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_v2\FieldMeta.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_v2\ParamBind.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_v2\PreparedStatement.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_v2\ResultBind.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_v2\ResultSet.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_v2\Statement.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_v2\test\TestAll.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_v2\test\TestBigTable.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_v2\test\TestConvert.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_v2\test\TestSafeString.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_v2\test\TestThreads.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_v2\test\TestXX.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_v2\test\TestXX2.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_v2\Transaction.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_v2\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\mysqlcpp\Connection.h" />
-    <ClInclude Include="..\..\mysqlcpp\ConnectionPool.h" />
-    <ClInclude Include="..\..\mysqlcpp\Convert.h" />
-    <ClInclude Include="..\..\mysqlcpp\DateTime.h" />
-    <ClInclude Include="..\..\mysqlcpp\FakeLog.h" />
-    <ClInclude Include="..\..\mysqlcpp\Field.h" />
-    <ClInclude Include="..\..\mysqlcpp\FieldMeta.h" />
-    <ClInclude Include="..\..\mysqlcpp\MySqlCpp.h" />
-    <ClInclude Include="..\..\mysqlcpp\MysqlcppAssert.h" />
-    <ClInclude Include="..\..\mysqlcpp\ParamBind.h" />
-    <ClInclude Include="..\..\mysqlcpp\PreparedStatement.h" />
-    <ClInclude Include="..\..\mysqlcpp\ResultBind.h" />
-    <ClInclude Include="..\..\mysqlcpp\ResultSet.h" />
-    <ClInclude Include="..\..\mysqlcpp\SafeString.h" />
-    <ClInclude Include="..\..\mysqlcpp\Statement.h" />
-    <ClInclude Include="..\..\mysqlcpp\test\AsyncTask.h" />
-    <ClInclude Include="..\..\mysqlcpp\Transaction.h" />
-    <ClInclude Include="..\..\mysqlcpp\Types.h" />
-    <ClInclude Include="..\..\mysqlcpp\Utils.h" />
+    <ClInclude Include="..\..\mysqlcpp_v2\Connection.h" />
+    <ClInclude Include="..\..\mysqlcpp_v2\ConnectionPool.h" />
+    <ClInclude Include="..\..\mysqlcpp_v2\Convert.h" />
+    <ClInclude Include="..\..\mysqlcpp_v2\DateTime.h" />
+    <ClInclude Include="..\..\mysqlcpp_v2\FakeLog.h" />
+    <ClInclude Include="..\..\mysqlcpp_v2\Field.h" />
+    <ClInclude Include="..\..\mysqlcpp_v2\FieldMeta.h" />
+    <ClInclude Include="..\..\mysqlcpp_v2\mysqlcpp.h" />
+    <ClInclude Include="..\..\mysqlcpp_v2\MysqlcppAssert.h" />
+    <ClInclude Include="..\..\mysqlcpp_v2\ParamBind.h" />
+    <ClInclude Include="..\..\mysqlcpp_v2\PreparedStatement.h" />
+    <ClInclude Include="..\..\mysqlcpp_v2\ResultBind.h" />
+    <ClInclude Include="..\..\mysqlcpp_v2\ResultSet.h" />
+    <ClInclude Include="..\..\mysqlcpp_v2\SafeString.h" />
+    <ClInclude Include="..\..\mysqlcpp_v2\Statement.h" />
+    <ClInclude Include="..\..\mysqlcpp_v2\test\AsyncTask.h" />
+    <ClInclude Include="..\..\mysqlcpp_v2\Transaction.h" />
+    <ClInclude Include="..\..\mysqlcpp_v2\Types.h" />
+    <ClInclude Include="..\..\mysqlcpp_v2\Utils.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\mysqlcpp\test\Makefile" />
+    <None Include="..\..\mysqlcpp_v2\test\Makefile" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
