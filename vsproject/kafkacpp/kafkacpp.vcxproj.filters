@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="kafkacpp">
+      <UniqueIdentifier>{65bba90c-9a24-498b-9976-f836cda8b047}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kafkacpp\test">
+      <UniqueIdentifier>{8552be49-19f9-402a-967d-87b761665d43}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\kafkacpp\Kafkacpp.h">
+      <Filter>kafkacpp</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\kafkacpp\Conf.cpp">
+      <Filter>kafkacpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\kafkacpp\Consumer.cpp">
+      <Filter>kafkacpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\kafkacpp\Producer.cpp">
+      <Filter>kafkacpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\kafkacpp\Topic.cpp">
+      <Filter>kafkacpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\kafkacpp\test\consumer.cpp">
+      <Filter>kafkacpp\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\kafkacpp\test\producer.cpp">
+      <Filter>kafkacpp\test</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

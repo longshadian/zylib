@@ -1,13 +1,17 @@
 
-INC =	-I/usr/local/mysql/include		\
-		-I./
 
-LIB	=  -L/usr/local/mysql/lib	-lmysqlclient
+LIBRDKAFKA_INCLUDE=/home/cgy/libs/librdkafka/src
+LIBRDKAFKA_LIB=/home/cgy/libs/librdkafka/src
+
+INC =	-I./ \
+        -I$(LIBRDKAFKA_INCLUDE)
+
+LIB	=  -L$(LIBRDKAFKA_LIB) -lrdkafka
 		
 CC      = g++
 CFLAGS  = -g -Wall -Werror -std=c++14
 #  -Wshadow -Wunreachable-code -Wextra -Wconversion
-LDFLAGS = -Wl,--no-as-needed,-rpath=/usr/local/mysql/lib -lpthread
+LDFLAGS = -Wl,--no-as-needed,-rpath=$(LIBRDKAFKA_LIB) -lpthread
 
 .SUFFIXES:  .o .cpp .cc
 
@@ -21,28 +25,15 @@ INC += -I$(SRC_DIR)
 OBJS = $(SRC_CPP:%.cpp=%.o)
 OBJS += $(SRC_CC:%.cc=%.o)
 
-OUTPUT = test_xx2 test_all test_threads test_safe_string test_convert test_big_table
+OUTPUT = test test_ex
 
 all:$(OBJS) $(OUTPUT)
 
-test_xx2:$(OBJS) TestXX2.cpp
+test:$(OBJS) producer.cpp
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
 
-test_all:$(OBJS) TestAll.cpp
+test_ex:$(OBJS) consumer.cpp
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
-
-test_threads:$(OBJS) TestThreads.cpp
-	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
-
-test_safe_string:$(OBJS) TestSafeString.cpp
-	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
-
-test_convert:$(OBJS) TestConvert.cpp
-	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
-    
-test_big_table:$(OBJS) TestBigTable.cpp
-	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
-    
 
 .cpp.o:
 	@echo [  $(shell expr $(shell echo $(OBJS)|sed 's#$@.*$$#$@#'|wc -w) \* 100 / $(words $(OBJS)))%] $(CC) -c $< -o $@ 
