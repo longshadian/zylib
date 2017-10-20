@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="rdkafkacpp">
+      <UniqueIdentifier>{60a0f61b-40ac-46bd-a25b-7b156402adfc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rdkafkacpp\test">
+      <UniqueIdentifier>{ac5d4ac9-8e16-4601-95d8-2bb94c174501}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestConsumer.cpp">
+      <Filter>rdkafkacpp\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestProducer.cpp">
+      <Filter>rdkafkacpp\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rdkafkacpp\test_ex\Utility.cpp">
+      <Filter>rdkafkacpp\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestPingConsumer.cpp">
+      <Filter>rdkafkacpp\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestPingProducer.cpp">
+      <Filter>rdkafkacpp\test</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\rdkafkacpp\test_ex\Utility.h">
+      <Filter>rdkafkacpp\test</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

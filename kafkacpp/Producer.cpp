@@ -1,15 +1,15 @@
-#include "Kafkacpp.h"
+#include "Producer.h"
 
 #include <array>
 #include <iostream>
 
-//#include "rdkafka_msg.h"
-//#include "rd.h"
+#include "Kafkacpp.h"
 
 namespace kafkacpp {
 
-Producer::Producer(rd_kafka_t* t)
-    : m_rd_kafka(t)
+Producer::Producer(ConfUPtr conf)
+    : m_conf(std::move(conf))
+    , m_rd_kafka()
     , m_topic_collection()
 {
 
@@ -19,6 +19,24 @@ Producer::~Producer()
 {
     if (m_rd_kafka)
         ::rd_kafka_destroy(m_rd_kafka);
+}
+
+bool Producer::init(std::string* err_str)
+{
+    ErrStr es{};
+    ::rd_kafka_conf_set_dr_msg_cb(rd_kafka_conf(), &Producer::cbDrMsg);
+    m_rd_kafka = ::rd_kafka_new(RD_KAFKA_PRODUCER, rd_kafka_conf(), es.getPtr(), es.getLen());
+    releaseConf();
+    if (err_str)
+        *err_str = es.getPtr();
+    if (m_rd_kafka)
+        return true;
+    return false;
+}
+
+rd_kafka_conf_t* Producer::rd_kafka_conf()
+{
+    return m_conf ? m_conf->rd_kafka_conf() : nullptr;
 }
 
 rd_kafka_t* Producer::rd_kafka()
@@ -56,12 +74,9 @@ int32_t Producer::poll(int32_t ms)
 
 void Producer::cbDrMsg(rd_kafka_t* rk, const rd_kafka_message_t* rkmessage, void* opaque)
 {
-    std::cout << "cb ptr: " << rkmessage->_private << "\n";
     if (!rkmessage->_private) {
-        std::cout << "opaque null\n";
         return;
     }
-
     auto* pd = reinterpret_cast<ProduceDelegate*>(rkmessage->_private);
     pd->m_cb(rk, rkmessage);
     delete pd;
@@ -78,14 +93,21 @@ bool Producer::produceInternal(Topic& topic
         pd->m_cb = std::move(dr_msg_cb);
     }
 
-    std::cout << "send ptr: " << pd << "\n";
-
-    auto succ = ::rd_kafka_produce(
-        topic.rd_kafka_topic(), RD_KAFKA_PARTITION_UA, RD_KAFKA_MSG_F_COPY,
+    auto ret = ::rd_kafka_produce(
+        topic.rd_kafka_topic(), 0, RD_KAFKA_MSG_F_COPY,
         const_cast<void*>(payload), len,
         key, key_len,
-        pd) == 0;
-    return succ;
+        pd);
+    return ret == 0;
+}
+
+void Producer::releaseConf()
+{
+    // ÏÈreset
+    if (m_conf) {
+        m_conf->reset();
+    }
+    m_conf = nullptr;
 }
 
 }

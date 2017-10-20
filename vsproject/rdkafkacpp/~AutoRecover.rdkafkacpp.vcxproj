@@ -18,28 +18,10 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\kafkacpp\Conf.h" />
-    <ClInclude Include="..\..\kafkacpp\Consumer.h" />
-    <ClInclude Include="..\..\kafkacpp\Kafkacpp.h" />
-    <ClInclude Include="..\..\kafkacpp\Producer.h" />
-    <ClInclude Include="..\..\kafkacpp\Topic.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\kafkacpp\Conf.cpp" />
-    <ClCompile Include="..\..\kafkacpp\Consumer.cpp" />
-    <ClCompile Include="..\..\kafkacpp\Kafkacpp.cpp" />
-    <ClCompile Include="..\..\kafkacpp\Producer.cpp" />
-    <ClCompile Include="..\..\kafkacpp\test\TestConsumer.cpp" />
-    <ClCompile Include="..\..\kafkacpp\test\TestProducer.cpp" />
-    <ClCompile Include="..\..\kafkacpp\test_ex\TestConsumer.cpp" />
-    <ClCompile Include="..\..\kafkacpp\test_ex\TestProducer.cpp" />
-    <ClCompile Include="..\..\kafkacpp\Topic.cpp" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{A4E2FBFB-07ED-4A63-BD56-C3144D751C61}</ProjectGuid>
-    <RootNamespace>kafkacpp</RootNamespace>
+    <ProjectGuid>{6E231AE5-6A2B-41DF-A8CB-D6418E6A8AB5}</ProjectGuid>
+    <RootNamespace>rdkafkacpp</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -129,6 +111,16 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestConsumer.cpp" />
+    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestPingConsumer.cpp" />
+    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestPingProducer.cpp" />
+    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestProducer.cpp" />
+    <ClCompile Include="..\..\rdkafkacpp\test_ex\Utility.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\rdkafkacpp\test_ex\Utility.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

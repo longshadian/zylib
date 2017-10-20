@@ -7,9 +7,24 @@
     <Filter Include="kafkacpp\test">
       <UniqueIdentifier>{8552be49-19f9-402a-967d-87b761665d43}</UniqueIdentifier>
     </Filter>
+    <Filter Include="kafkacpp\test_ex">
+      <UniqueIdentifier>{bac08141-90e1-4ac0-a3a2-5195dfc3a206}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\kafkacpp\Kafkacpp.h">
+      <Filter>kafkacpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\kafkacpp\Conf.h">
+      <Filter>kafkacpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\kafkacpp\Consumer.h">
+      <Filter>kafkacpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\kafkacpp\Producer.h">
+      <Filter>kafkacpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\kafkacpp\Topic.h">
       <Filter>kafkacpp</Filter>
     </ClInclude>
   </ItemGroup>
@@ -26,11 +41,20 @@
     <ClCompile Include="..\..\kafkacpp\Topic.cpp">
       <Filter>kafkacpp</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\kafkacpp\test\consumer.cpp">
+    <ClCompile Include="..\..\kafkacpp\Kafkacpp.cpp">
+      <Filter>kafkacpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\kafkacpp\test\TestConsumer.cpp">
       <Filter>kafkacpp\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\kafkacpp\test\producer.cpp">
+    <ClCompile Include="..\..\kafkacpp\test\TestProducer.cpp">
       <Filter>kafkacpp\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\kafkacpp\test_ex\TestConsumer.cpp">
+      <Filter>kafkacpp\test_ex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\kafkacpp\test_ex\TestProducer.cpp">
+      <Filter>kafkacpp\test_ex</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

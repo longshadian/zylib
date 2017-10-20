@@ -25,15 +25,18 @@ INC += -I$(SRC_DIR)
 OBJS = $(SRC_CPP:%.cpp=%.o)
 OBJS += $(SRC_CC:%.cc=%.o)
 
-OUTPUT = test test_ex
+OUTPUT = test_producer test_consumer test_cpp
 
 all:$(OBJS) $(OUTPUT)
 
-test:$(OBJS) producer.cpp
+test_producer:$(OBJS) TestProducer.cpp
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
 
-test_ex:$(OBJS) consumer.cpp
+test_consumer:$(OBJS) TestConsumer.cpp
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
+
+test_cpp:TestCpp.cpp
+	$(CC) $(CFLAGS) $(INC) $^ -I/home/cgy/libs/librdkafka/src-cpp -L/home/cgy/libs/librdkafka/src-cpp $(LIB) -lrdkafka++ -lrdkafka -Wl,-rpath=/home/cgy/libs/librdkafka/src-cpp,-rpath=/home/cgy/libs/librdkafka/src -o $@
 
 .cpp.o:
 	@echo [  $(shell expr $(shell echo $(OBJS)|sed 's#$@.*$$#$@#'|wc -w) \* 100 / $(words $(OBJS)))%] $(CC) -c $< -o $@ 

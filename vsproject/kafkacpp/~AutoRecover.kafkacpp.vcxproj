@@ -19,14 +19,21 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\kafkacpp\Conf.h" />
+    <ClInclude Include="..\..\kafkacpp\Consumer.h" />
     <ClInclude Include="..\..\kafkacpp\Kafkacpp.h" />
+    <ClInclude Include="..\..\kafkacpp\Producer.h" />
+    <ClInclude Include="..\..\kafkacpp\Topic.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\kafkacpp\Conf.cpp" />
     <ClCompile Include="..\..\kafkacpp\Consumer.cpp" />
+    <ClCompile Include="..\..\kafkacpp\Kafkacpp.cpp" />
     <ClCompile Include="..\..\kafkacpp\Producer.cpp" />
-    <ClCompile Include="..\..\kafkacpp\test\consumer.cpp" />
-    <ClCompile Include="..\..\kafkacpp\test\producer.cpp" />
+    <ClCompile Include="..\..\kafkacpp\test\TestConsumer.cpp" />
+    <ClCompile Include="..\..\kafkacpp\test\TestProducer.cpp" />
+    <ClCompile Include="..\..\kafkacpp\test_ex\TestConsumer.cpp" />
+    <ClCompile Include="..\..\kafkacpp\test_ex\TestProducer.cpp" />
     <ClCompile Include="..\..\kafkacpp\Topic.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -86,7 +93,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\vsinclude\librdkafka\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\vsinclude\librdkafka\src;..\..\..\vsinclude\librdkafka\src-cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

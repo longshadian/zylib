@@ -21,6 +21,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mysqlcpp_v2", "mysqlcpp_v2\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "kafkacpp", "kafkacpp\kafkacpp.vcxproj", "{A4E2FBFB-07ED-4A63-BD56-C3144D751C61}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "rdkafkacpp", "rdkafkacpp\rdkafkacpp.vcxproj", "{6E231AE5-6A2B-41DF-A8CB-D6418E6A8AB5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -101,6 +103,14 @@ Global
 		{A4E2FBFB-07ED-4A63-BD56-C3144D751C61}.Release|x64.Build.0 = Release|x64
 		{A4E2FBFB-07ED-4A63-BD56-C3144D751C61}.Release|x86.ActiveCfg = Release|Win32
 		{A4E2FBFB-07ED-4A63-BD56-C3144D751C61}.Release|x86.Build.0 = Release|Win32
+		{6E231AE5-6A2B-41DF-A8CB-D6418E6A8AB5}.Debug|x64.ActiveCfg = Debug|x64
+		{6E231AE5-6A2B-41DF-A8CB-D6418E6A8AB5}.Debug|x64.Build.0 = Debug|x64
+		{6E231AE5-6A2B-41DF-A8CB-D6418E6A8AB5}.Debug|x86.ActiveCfg = Debug|Win32
+		{6E231AE5-6A2B-41DF-A8CB-D6418E6A8AB5}.Debug|x86.Build.0 = Debug|Win32
+		{6E231AE5-6A2B-41DF-A8CB-D6418E6A8AB5}.Release|x64.ActiveCfg = Release|x64
+		{6E231AE5-6A2B-41DF-A8CB-D6418E6A8AB5}.Release|x64.Build.0 = Release|x64
+		{6E231AE5-6A2B-41DF-A8CB-D6418E6A8AB5}.Release|x86.ActiveCfg = Release|Win32
+		{6E231AE5-6A2B-41DF-A8CB-D6418E6A8AB5}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
