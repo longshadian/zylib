@@ -7,6 +7,7 @@ namespace utility {
 
 std::string getMsgStr(const ::RdKafka::Message& msg);
 std::string getKeyStr(const ::RdKafka::Message& msg);
+std::string getTmName(const ::RdKafka::Message& msg);
 
 class DeliveryReportCb : public ::RdKafka::DeliveryReportCb 
 {
@@ -15,7 +16,6 @@ public:
     virtual ~DeliveryReportCb();
 
     virtual void dr_cb(::RdKafka::Message &message) override;
-    std::function<void()> m_cb;
 };
 
 

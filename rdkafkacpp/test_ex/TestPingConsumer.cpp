@@ -23,15 +23,15 @@ static void sigterm(int sig) {
 ::RdKafka::Producer* producer;
 ::RdKafka::Topic*    topic;
 
-void startProducer()
+void startProducer(std::thread* tout)
 {
     std::string brokers = "127.0.0.1:9092";
     std::string errstr;
     ::RdKafka::Conf *conf = ::RdKafka::Conf::create(::RdKafka::Conf::CONF_GLOBAL);
     conf->set("group.id", "xxx", errstr);
     conf->set("metadata.broker.list", brokers, errstr);
-    utility::DeliveryReportCb ex_dr_cb{};
-    conf->set("dr_cb", &ex_dr_cb, errstr);
+    utility::DeliveryReportCb* ex_dr_cb = new utility::DeliveryReportCb();
+    conf->set("dr_cb", ex_dr_cb, errstr);
     ::RdKafka::Conf *tconf = ::RdKafka::Conf::create(::RdKafka::Conf::CONF_TOPIC);
     tconf->set("request.required.acks", "all", errstr);
     std::vector<std::string> topics = { "tp.test2" };
@@ -49,20 +49,20 @@ void startProducer()
     }
 
     std::cout << "start producer \n";
-    std::thread t([]
+    std::thread t([conf, tconf, ex_dr_cb]
     {
         while (producer_run) {
-            producer->poll(1000);
+            producer->poll(1);
         }
+
+        delete topic;
+        delete producer;
+        delete conf;
+        delete tconf;
+        delete ex_dr_cb;
     }
     );
-
-    t.join();
-
-    delete topic;
-    delete producer;
-    delete conf;
-    delete tconf;
+    *tout = std::move(t);
 }
 
 int main()
@@ -70,7 +70,8 @@ int main()
     signal(SIGINT, sigterm);
     signal(SIGTERM, sigterm);
 
-    std::thread p_thread([] { startProducer(); });
+    std::thread p_thread{};
+    startProducer(&p_thread);
     std::this_thread::sleep_for(std::chrono::seconds{ 1 });
 
     std::string brokers = "127.0.0.1:9092";
@@ -96,19 +97,22 @@ int main()
     delete p;
 
     while (consumer_run) {
-        RdKafka::Message* msg = consumer->consume(1000);
+        RdKafka::Message* msg = consumer->consume(1);
         auto str = utility::getMsgStr(*msg);
         auto offset = msg->offset();
+        (void)offset;
         delete msg;
 
-        ::RdKafka::ErrorCode resp = producer->produce(topic, 0, ::RdKafka::Producer::RK_MSG_COPY
-            , const_cast<char*>(str.c_str()), str.size()
-            , nullptr, nullptr);
-        if (resp) {
-            std::cout << "error send: " << ::RdKafka::err2str(resp) << "\n";
+        if (!str.empty()) {
+            ::RdKafka::ErrorCode resp = producer->produce(topic, 0, ::RdKafka::Producer::RK_MSG_COPY
+                , const_cast<char*>(str.c_str()), str.size()
+                , nullptr, nullptr);
+            if (resp) {
+                std::cout << "error send: " << ::RdKafka::err2str(resp) << "\n";
+            }
+            //if (!str.empty())
+            //    std::cout << "recevie " << str << "  " << offset << "\n";
         }
-        if (!str.empty())
-            std::cout << "recevie " << str << "  " << offset << "\n";
     }
     consumer->close();
     delete consumer;

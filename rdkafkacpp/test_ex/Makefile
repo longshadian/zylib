@@ -37,7 +37,9 @@ INC += -I$(SRC_DIR)
 OBJS = $(SRC_CPP:%.cpp=%.o)
 OBJS += $(SRC_CC:%.cc=%.o)
 
-OUTPUT = test_consumer test_producer ping_producer ping_consumer
+OUTPUT = test_consumer test_producer \
+         ping_producer ping_consumer \
+         key_producer key_consumer
 
 all:$(OBJS) $(OUTPUT)
 
@@ -51,6 +53,12 @@ ping_producer:TestPingProducer.cpp Utility.cpp
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
 
 ping_consumer:TestPingConsumer.cpp Utility.cpp
+	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
+
+key_consumer:TestKeyConsumer.cpp Utility.cpp
+	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
+
+key_producer:TestKeyProducer.cpp Utility.cpp
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
 
 #test_consumer:TestConsumer.cpp

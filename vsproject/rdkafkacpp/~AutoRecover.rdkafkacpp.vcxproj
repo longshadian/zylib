@@ -113,6 +113,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\rdkafkacpp\test_ex\TestConsumer.cpp" />
+    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestKeyConsumer.cpp" />
+    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestKeyProducer.cpp" />
     <ClCompile Include="..\..\rdkafkacpp\test_ex\TestPingConsumer.cpp" />
     <ClCompile Include="..\..\rdkafkacpp\test_ex\TestPingProducer.cpp" />
     <ClCompile Include="..\..\rdkafkacpp\test_ex\TestProducer.cpp" />

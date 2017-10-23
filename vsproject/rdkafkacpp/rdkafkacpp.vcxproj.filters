@@ -24,6 +24,12 @@
     <ClCompile Include="..\..\rdkafkacpp\test_ex\TestPingProducer.cpp">
       <Filter>rdkafkacpp\test</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestKeyConsumer.cpp">
+      <Filter>rdkafkacpp\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestKeyProducer.cpp">
+      <Filter>rdkafkacpp\test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\rdkafkacpp\test_ex\Utility.h">

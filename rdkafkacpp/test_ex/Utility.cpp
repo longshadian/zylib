@@ -16,6 +16,8 @@ namespace utility {
 
 std::string getMsgStr(const ::RdKafka::Message& msg)
 {
+    if (!msg.payload())
+        return {};
     const char* p = reinterpret_cast<char*>(msg.payload());
     return std::string{p, p + msg.len()};
 }
@@ -28,6 +30,18 @@ std::string getKeyStr(const ::RdKafka::Message& msg)
     return std::string{ p, p + msg.key_len() };
 }
 
+std::string getTmName(const ::RdKafka::Message& msg)
+{
+    std::string tsname = "?";
+    auto ts = msg.timestamp();
+    if (ts.type != RdKafka::MessageTimestamp::MSG_TIMESTAMP_NOT_AVAILABLE) {
+        if (ts.type == RdKafka::MessageTimestamp::MSG_TIMESTAMP_CREATE_TIME)
+            tsname = "create time";
+        else if (ts.type == RdKafka::MessageTimestamp::MSG_TIMESTAMP_LOG_APPEND_TIME)
+            tsname = "log append time";
+    }
+    return tsname;
+}
 
 DeliveryReportCb::DeliveryReportCb()
 {
@@ -63,8 +77,10 @@ void DeliveryReportCb::dr_cb(::RdKafka::Message &message)
                 << " cost: " << delta << "ms\n";
         }
         */
+        /*
         if (m_cb)
             m_cb();
+            */
     }
 }
 
