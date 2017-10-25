@@ -39,7 +39,8 @@ OBJS += $(SRC_CC:%.cc=%.o)
 
 OUTPUT = test_consumer test_producer \
          ping_producer ping_consumer \
-         key_producer key_consumer
+         key_producer key_consumer   \
+         server_producer server_consumer
 
 all:$(OBJS) $(OUTPUT)
 
@@ -59,6 +60,12 @@ key_consumer:TestKeyConsumer.cpp Utility.cpp
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
 
 key_producer:TestKeyProducer.cpp Utility.cpp
+	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
+
+server_producer:TestServerProducer.cpp Utility.cpp
+	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
+
+server_consumer:TestServerConsumer.cpp Utility.cpp
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
 
 #test_consumer:TestConsumer.cpp
