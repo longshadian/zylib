@@ -118,6 +118,8 @@
     <ClCompile Include="..\..\rdkafkacpp\test_ex\TestPingConsumer.cpp" />
     <ClCompile Include="..\..\rdkafkacpp\test_ex\TestPingProducer.cpp" />
     <ClCompile Include="..\..\rdkafkacpp\test_ex\TestProducer.cpp" />
+    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestServerConsumer.cpp" />
+    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestServerProducer.cpp" />
     <ClCompile Include="..\..\rdkafkacpp\test_ex\Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
