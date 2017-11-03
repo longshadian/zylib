@@ -27,14 +27,14 @@ public:
                 << "    payload: " << utility::getMsgStr(message)
                 << "\n";
         } else {
-            /*
+            
             std::cout << "producer_send_success: " << message.topic_name()
                 << " partition: " << message.partition()
                 << " offset: " << message.offset()
-                << " key: " << getKeyStr(message)
-                << " payload: " << getMsgStr(message)
+                //<< " key: " << getKeyStr(message)
+                //<< " payload: " << getMsgStr(message)
                 << "\n";
-                */
+            
         }
     }
 };
