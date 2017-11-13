@@ -7,6 +7,7 @@
 #include <boost/log/core.hpp>
 #include <boost/log/expressions.hpp>
 #include <boost/log/utility/setup/common_attributes.hpp>  
+#include <boost/log/utility/exception_handler.hpp>
 
 
 namespace zylib {
@@ -83,6 +84,7 @@ void Logger::initAsyncFile(const FileOptional& opt, SEVERITY s)
     frontend->set_formatter( creatLogFormattter() );
     frontend->set_filter(severity >= s);
     boost::log::core::get()->add_sink(frontend);
+    boost::log::core::get()->set_exception_handler(boost::log::make_exception_suppressor());
     boost::log::add_common_attributes();
 }
 
@@ -99,6 +101,7 @@ void Logger::initSyncFile(const FileOptional& opt, SEVERITY s)
     frontend->set_formatter( creatLogFormattter() );
     frontend->set_filter(severity >= s);
     boost::log::core::get()->add_sink(frontend);
+    boost::log::core::get()->set_exception_handler(boost::log::make_exception_suppressor());
     boost::log::add_common_attributes();
 }
 
@@ -113,6 +116,7 @@ void Logger::initSyncConsole(SEVERITY s)
     frontend->set_formatter(creatLogFormattter());
     frontend->set_filter(severity >= s);
     boost::log::core::get()->add_sink(frontend);
+    boost::log::core::get()->set_exception_handler(boost::log::make_exception_suppressor());
     boost::log::add_common_attributes();
 }
 
