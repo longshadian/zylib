@@ -223,6 +223,7 @@ void EventSession::onRead(int fd, short ev)
             if (msg_count >= 0) {
                 addEvent(EV_READ);
             } else if (msg_count < 0) {
+                getHandler()->close(getRequest());
                 shutdown();
             }
         } else {
