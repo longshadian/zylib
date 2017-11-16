@@ -4,15 +4,15 @@
 
 namespace knet {
 
-class ReplayEventCB : public ::RdKafka::EventCb 
+class EventCB : public ::RdKafka::EventCb 
 {
 public:
-    ReplayEventCB() = default;
-    virtual ~ReplayEventCB() = default;
-    ReplayEventCB(const ReplayEventCB&) = delete;
-    ReplayEventCB& operator=(const ReplayEventCB&) = delete;
-    ReplayEventCB(ReplayEventCB&&) = delete;
-    ReplayEventCB& operator=(ReplayEventCB&&) = delete;
+    EventCB() = default;
+    virtual ~EventCB() = default;
+    EventCB(const EventCB&) = delete;
+    EventCB& operator=(const EventCB&) = delete;
+    EventCB(EventCB&&) = delete;
+    EventCB& operator=(EventCB&&) = delete;
 
     virtual void event_cb(::RdKafka::Event&) override;
 };

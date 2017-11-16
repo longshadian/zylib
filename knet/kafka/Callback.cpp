@@ -2,7 +2,7 @@
 
 namespace knet {
 
-void ReplayEventCB::event_cb(::RdKafka::Event&)
+void EventCB::event_cb(::RdKafka::Event&)
 {
 }
 

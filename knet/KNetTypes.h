@@ -13,4 +13,7 @@ using MessagePtr = std::shared_ptr<KMessage>;
 using MessageContextPtr = std::shared_ptr<KMessageContext>;
 
 
+using ServiceID = std::string;
+
+
 } // knet

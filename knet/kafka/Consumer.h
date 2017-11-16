@@ -53,7 +53,7 @@ private:
     std::atomic<bool>                           m_run;
     std::unique_ptr<KafkaConf>                  m_server_conf;
     std::unique_ptr<::RdKafka::KafkaConsumer>   m_consumer;
-    std::unique_ptr<ConsumerCB>                 m_cb_list;
+    std::unique_ptr<ConsumerCB>                 m_consumer_cb;
     std::unique_ptr<ConsumerReceiveMessageCB>   m_received_cb;
 };
 

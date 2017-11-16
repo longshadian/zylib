@@ -18,13 +18,13 @@ Consumer::Consumer()
     , m_run()
     , m_server_conf(std::make_unique<KafkaConf>())
     , m_consumer(std::make_unique<::RdKafka::KafkaConsumer>())
-    , m_cb_list(std::make_unique<ConsumerCB>())
+    , m_consumer_cb(std::make_unique<ConsumerCB>())
     , m_received_cb(std::make_unique<ConsumerReceiveMessageCB>())
 {
-    m_cb_list->m_rebalance_cb = std::make_unique<ConsumerConsumeCB>();
-    m_cb_list->m_consume_cb = std::make_unique<ConsumerConsumeCB>();
-    m_cb_list->m_offset_commit_cb = std::make_unique<ConsumerOffsetCommitCB>();
-    m_cb_list->m_event_cb = std::make_unique<ReplayEventCB>();
+    m_consumer_cb->m_rebalance_cb = std::make_unique<ConsumerConsumeCB>();
+    m_consumer_cb->m_consume_cb = std::make_unique<ConsumerConsumeCB>();
+    m_consumer_cb->m_offset_commit_cb = std::make_unique<ConsumerOffsetCommitCB>();
+    m_consumer_cb->m_event_cb = std::make_unique<ReplayEventCB>();
 }
 
 Consumer::~Consumer()
@@ -38,13 +38,13 @@ bool Consumer::init(std::unique_ptr<KafkaConf> server_conf, std::unique_ptr<Cons
     m_server_conf = std::move(server_conf);
     if (cb) {
         if (cb->m_event_cb)
-            m_cb_list->m_event_cb = std::move(cb->m_event_cb);
+            m_consumer_cb->m_event_cb = std::move(cb->m_event_cb);
         if (cb->m_consume_cb)
-            m_cb_list->m_consume_cb = std::move(cb->m_consume_cb);
+            m_consumer_cb->m_consume_cb = std::move(cb->m_consume_cb);
         if (cb->m_rebalance_cb)
-            m_cb_list->m_rebalance_cb = std::move(cb->m_rebalance_cb);
+            m_consumer_cb->m_rebalance_cb = std::move(cb->m_rebalance_cb);
         if (cb->m_offset_commit_cb)
-            m_cb_list->m_offset_commit_cb = std::move(cb->m_offset_commit_cb);
+            m_consumer_cb->m_offset_commit_cb = std::move(cb->m_offset_commit_cb);
     }
 
     std::unique_ptr<::RdKafka::Conf> conf{ ::RdKafka::Conf::create(::RdKafka::Conf::CONF_GLOBAL) };
@@ -61,22 +61,22 @@ bool Consumer::init(std::unique_ptr<KafkaConf> server_conf, std::unique_ptr<Cons
         return false;
     }
 
-    conf_ret = conf->set("rebalance_cb", &*m_cb_list->m_rebalance_cb, err_str);
+    conf_ret = conf->set("rebalance_cb", &*m_consumer_cb->m_rebalance_cb, err_str);
     if (conf_ret != ::RdKafka::Conf::CONF_OK) {
         return false;
     }
 
-    conf_ret = conf->set("consume_cb", &*m_cb_list->m_consume_cb, err_str);
+    conf_ret = conf->set("consume_cb", &*m_consumer_cb->m_consume_cb, err_str);
     if (conf_ret != ::RdKafka::Conf::CONF_OK) {
         return false;
     }
 
-    conf_ret = conf->set("offset_commit_cb", &*m_cb_list->m_offset_commit_cb, err_str);
+    conf_ret = conf->set("offset_commit_cb", &*m_consumer_cb->m_offset_commit_cb, err_str);
     if (conf_ret != ::RdKafka::Conf::CONF_OK) {
         return false;
     }
 
-    conf_ret = conf->set("event_cb", &*m_cb_list->m_event_cb, err_str);
+    conf_ret = conf->set("event_cb", &*m_consumer_cb->m_event_cb, err_str);
     if (conf_ret != ::RdKafka::Conf::CONF_OK) {
         return false;
     }

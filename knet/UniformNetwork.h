@@ -11,6 +11,7 @@ namespace knet {
 class KafkaConsumer;
 class CallbackManager;
 class Consumer;
+class Producer;
 
 class KMessage
 {
@@ -50,6 +51,7 @@ private:
     std::queue<MessagePtr>           m_queue;
     std::unique_ptr<CallbackManager> m_cb_mgr;
     std::unique_ptr<Consumer>        m_consumer;
+    std::unique_ptr<Producer>        m_producer;
 };
 
 } // knet
