@@ -9,34 +9,42 @@
 
 #include <rdkafkacpp.h>
 
+#include "knet/kafka/Callback.h"
+
 namespace knet {
 
-KafkaConsumer::KafkaConsumer()
-    : m_server_conf(std::make_unique<KafkaConf>())
-    , m_thread()
+Consumer::Consumer()
+    : m_thread()
     , m_run()
-    , m_consumer()
+    , m_server_conf(std::make_unique<KafkaConf>())
+    , m_consumer(std::make_unique<::RdKafka::KafkaConsumer>())
+    , m_cb_list(std::make_unique<ConsumerCB>())
+    , m_received_cb(std::make_unique<ConsumerReceiveMessageCB>())
 {
+    m_cb_list->m_rebalance_cb = std::make_unique<ConsumerConsumeCB>();
+    m_cb_list->m_consume_cb = std::make_unique<ConsumerConsumeCB>();
+    m_cb_list->m_offset_commit_cb = std::make_unique<ConsumerOffsetCommitCB>();
+    m_cb_list->m_event_cb = std::make_unique<ReplayEventCB>();
 }
 
-KafkaConsumer::~KafkaConsumer()
+Consumer::~Consumer()
 {
     stop();
     waitThreadExit();
 }
 
-bool KafkaConsumer::init(std::unique_ptr<KafkaConf> server_conf, std::unique_ptr<ConsumerCB> cb)
+bool Consumer::init(std::unique_ptr<KafkaConf> server_conf, std::unique_ptr<ConsumerCB> cb)
 {
     m_server_conf = std::move(server_conf);
-    if (server_cb) {
-        if (server_cb->m_event_cb)
-            m_server_cb->m_event_cb = std::move(server_cb->m_event_cb);
-        if (server_cb->m_consume_cb)
-            m_server_cb->m_consume_cb = std::move(server_cb->m_consume_cb);
-        if (server_cb->m_rebalance_cb)
-            m_server_cb->m_rebalance_cb = std::move(server_cb->m_rebalance_cb);
-        if (server_cb->m_offset_commit_cb)
-            m_server_cb->m_offset_commit_cb = std::move(server_cb->m_offset_commit_cb);
+    if (cb) {
+        if (cb->m_event_cb)
+            m_cb_list->m_event_cb = std::move(cb->m_event_cb);
+        if (cb->m_consume_cb)
+            m_cb_list->m_consume_cb = std::move(cb->m_consume_cb);
+        if (cb->m_rebalance_cb)
+            m_cb_list->m_rebalance_cb = std::move(cb->m_rebalance_cb);
+        if (cb->m_offset_commit_cb)
+            m_cb_list->m_offset_commit_cb = std::move(cb->m_offset_commit_cb);
     }
 
     std::unique_ptr<::RdKafka::Conf> conf{ ::RdKafka::Conf::create(::RdKafka::Conf::CONF_GLOBAL) };
@@ -53,22 +61,22 @@ bool KafkaConsumer::init(std::unique_ptr<KafkaConf> server_conf, std::unique_ptr
         return false;
     }
 
-    conf_ret = conf->set("rebalance_cb", &*m_server_cb->m_rebalance_cb, err_str);
+    conf_ret = conf->set("rebalance_cb", &*m_cb_list->m_rebalance_cb, err_str);
     if (conf_ret != ::RdKafka::Conf::CONF_OK) {
         return false;
     }
 
-    conf_ret = conf->set("consume_cb", &*m_server_cb->m_consume_cb, err_str);
+    conf_ret = conf->set("consume_cb", &*m_cb_list->m_consume_cb, err_str);
     if (conf_ret != ::RdKafka::Conf::CONF_OK) {
         return false;
     }
 
-    conf_ret = conf->set("offset_commit_cb", &*m_server_cb->m_offset_commit_cb, err_str);
+    conf_ret = conf->set("offset_commit_cb", &*m_cb_list->m_offset_commit_cb, err_str);
     if (conf_ret != ::RdKafka::Conf::CONF_OK) {
         return false;
     }
 
-    conf_ret = conf->set("event_cb", &*m_server_cb->m_event_cb, err_str);
+    conf_ret = conf->set("event_cb", &*m_cb_list->m_event_cb, err_str);
     if (conf_ret != ::RdKafka::Conf::CONF_OK) {
         return false;
     }
@@ -82,38 +90,37 @@ bool KafkaConsumer::init(std::unique_ptr<KafkaConf> server_conf, std::unique_ptr
     if (!consumer) {
         return false;
     }
-    std::unique_ptr<::RdKafka::TopicPartition> topic{::RdKafka::TopicPartition::create(m_server_conf->m_topic_name
+    std::unique_ptr<::RdKafka::TopicPartition> topic{::RdKafka::TopicPartition::create(m_server_conf->m_topic
         , m_server_conf->m_partition) };
     auto ec = consumer->assign({ &*topic });
     if (ec) {
         return false;
     }
-
     m_consumer = std::move(consumer);
 
     m_run = true;
-    std::thread t{ std::bind(&ReplayConsumer::threadRun, this) };
+    std::thread t{ std::bind(&Consumer::threadRun, this) };
     m_thread = std::move(t);
     return true;
 }
 
-void KafkaConsumer::stop()
+void Consumer::stop()
 {
     m_run = false;
 }
 
-void KafkaConsumer::waitThreadExit()
+void Consumer::waitThreadExit()
 {
     if (m_thread.joinable())
         m_thread.join();
 }
 
-void KafkaConsumer::flush()
+void Consumer::flush()
 {
     m_consumer->close();
 }
 
-void KafkaConsumer::threadRun()
+void Consumer::threadRun()
 {
     while (m_run) {
         ::RdKafka::Message* msg = m_consumer->consume(1000);
@@ -123,16 +130,14 @@ void KafkaConsumer::threadRun()
     }
 }
 
-void KafkaConsumer::processMsg(const ::RdKafka::Message& msg)
+void Consumer::processMsg(const ::RdKafka::Message& msg)
 {
     switch (msg.err()) {
     case ::RdKafka::ERR__TIMED_OUT:
-        break;
     case ::RdKafka::ERR_NO_ERROR:
-        processMsgInternal(msg);
-        break;
     case ::RdKafka::ERR__PARTITION_EOF:
-        break;
+        m_received_cb->onReceived(msg.payload(), msg.len(), msg.key_pointer(), msg.key_len());
+        return;
     case ::RdKafka::ERR__UNKNOWN_TOPIC:
     case ::RdKafka::ERR__UNKNOWN_PARTITION:
         break;
@@ -140,10 +145,7 @@ void KafkaConsumer::processMsg(const ::RdKafka::Message& msg)
         /* Errors */
         break;
     }
-}
-
-void KafkaConsumer::processMsgInternal(const ::RdKafka::Message& msg)
-{
+    m_received_cb->onError(msg.err(), msg.errstr());
 }
 
 } // knet

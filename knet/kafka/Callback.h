@@ -72,4 +72,19 @@ public:
         , std::vector<::RdKafka::TopicPartition*>&) override;
 };
 
+class ConsumerReceiveMessageCB
+{
+public:
+    ConsumerReceiveMessageCB() = default;
+    virtual ~ConsumerReceiveMessageCB() = default;
+
+    ConsumerReceiveMessageCB(const ConsumerReceiveMessageCB&) = delete;
+    ConsumerReceiveMessageCB& operator=(const ConsumerReceiveMessageCB&) = delete;
+    ConsumerReceiveMessageCB(ConsumerReceiveMessageCB&&) = delete;
+    ConsumerReceiveMessageCB& operator=(ConsumerReceiveMessageCB&&) = delete;
+
+    virtual void onError(int32_t err_no, const std::string& err_str);
+    virtual void onReceived(const void* p, size_t p_len, const void* key, size_t key_len);
+}
+
 } // knet
