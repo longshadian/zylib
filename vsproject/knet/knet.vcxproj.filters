@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\..\knet\main.cpp" />
+    <ClCompile Include="..\..\knet\kafka\Callback.cpp">
+      <Filter>kafka</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\knet\kafka\Consumer.cpp">
+      <Filter>kafka</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="kafka">
+      <UniqueIdentifier>{c162fa32-734e-44d8-b7fc-213fb20bb394}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\knet\kafka\Callback.h">
+      <Filter>kafka</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\knet\kafka\Consumer.h">
+      <Filter>kafka</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\knet\kafka\KafkaTypes.h">
+      <Filter>kafka</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
