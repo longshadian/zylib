@@ -15,6 +15,7 @@
     </ClCompile>
     <ClCompile Include="..\..\knet\RPCManager.cpp" />
     <ClCompile Include="..\..\knet\TimerManager.cpp" />
+    <ClCompile Include="..\..\knet\Message.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="kafka">
@@ -41,5 +42,6 @@
     <ClInclude Include="..\..\knet\Log.h" />
     <ClInclude Include="..\..\knet\RPCManager.h" />
     <ClInclude Include="..\..\knet\TimerManager.h" />
+    <ClInclude Include="..\..\knet\Message.h" />
   </ItemGroup>
 </Project>
