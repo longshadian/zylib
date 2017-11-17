@@ -26,7 +26,7 @@ struct ProducerConf
 class ProducerMsg
 {
 public:
-    ProducerMsg();
+    ProducerMsg(ServiceID sid);
     virtual ~ProducerMsg();
 
     ProducerMsg(const ProducerMsg&) = delete;
@@ -37,8 +37,12 @@ public:
     virtual bool            Parse() { return true; }
     virtual const void*     GetPtr() const { return nullptr; }
     virtual size_t          GetSize() const { return 0; }
+    const ServiceID&        GetServiceID() const { return m_service_id; }
+    const void*             GetRPCKeyPtr() const { return m_rpc_key == 0 ? nullptr : & m_rpc_key; }
+    size_t                  getRPCKeySize() const { return GetRPCKeyPtr() ? sizeof(m_rpc_key) : 0; }
 private:
-
+    ServiceID m_service_id{};
+    RPCKey    m_rpc_key{};
 };
 
 struct ProducerCB 
@@ -66,7 +70,7 @@ public:
 private:
     void StartPollThread();
     void StartSendThread();
-    void SendMessageInternal(const Message& msg);
+    void SendMessageInternal(const ProducerMsg& msg);
     ::RdKafka::Topic* FindOrCreate(const ServiceID& sid);
 
 private:

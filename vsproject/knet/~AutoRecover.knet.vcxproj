@@ -117,6 +117,8 @@
     <ClCompile Include="..\..\knet\kafka\Consumer.cpp" />
     <ClCompile Include="..\..\knet\kafka\Producer.cpp" />
     <ClCompile Include="..\..\knet\main.cpp" />
+    <ClCompile Include="..\..\knet\RPCManager.cpp" />
+    <ClCompile Include="..\..\knet\TimerManager.cpp" />
     <ClCompile Include="..\..\knet\UniformNetwork.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -128,6 +130,8 @@
     <ClInclude Include="..\..\knet\knet.h" />
     <ClInclude Include="..\..\knet\KNetTypes.h" />
     <ClInclude Include="..\..\knet\Log.h" />
+    <ClInclude Include="..\..\knet\RPCManager.h" />
+    <ClInclude Include="..\..\knet\TimerManager.h" />
     <ClInclude Include="..\..\knet\UniformNetwork.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

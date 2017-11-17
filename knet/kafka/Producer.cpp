@@ -6,6 +6,20 @@
 
 namespace knet {
 
+
+ProducerMsg::ProducerMsg(ServiceID sid)
+    : m_service_id(std::move(sid))
+{
+}
+
+ProducerMsg::~ProducerMsg()
+{
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 Producer::Producer()
     : m_p_conf()
     , m_poll_thread()
@@ -133,45 +147,42 @@ void Producer::StartPollThread()
 
 void Producer::StartSendThread()
 {
-    std::unique_ptr<Message> msg{};
+    std::unique_ptr<ProducerMsg> msg{};
     while (m_run) {
         msg = nullptr;
         {
             std::unique_lock<std::mutex> lk{m_mtx};
             m_cond.wait_for(lk, std::chrono::seconds{1}, [this] { return !m_queue.empty(); });
             if (!m_queue.empty()) {
-                msg = std::move(m_queue.front());
                 m_queue.pop();
             }
         }
-        if (msg) {
+        if (msg && msg->Parse()) {
             SendMessageInternal(*msg);
         }
     }
 }
 
-void Producer::SendMessageInternal(const Message& msg)
+void Producer::SendMessageInternal(const ProducerMsg& msg)
 {
-    std::pair<uint8_t*, int> buffer{nullptr, 0};
-    auto ret = MessageDecoder::encoder(msg, &buffer);
-    if (!ret) {
-        LOG(WARNING) << "message encode fail. replay_id: " << msg.getReplayID() 
-            << " sequence_id: " << msg.getSequenceID();
+    const auto& sid = msg.GetServiceID();
+    auto* topic = FindOrCreate(sid);
+    if (!topic) {
+        LOG(WARNING) << "can't FindOrCreate topic. service_id: " << sid;
         return;
     }
 
-    ::RdKafka::ErrorCode resp = m_producer->produce(&*m_topic
-        , m_p_conf->m_partition, ::RdKafka::Producer::RK_MSG_FREE
-        , buffer.first, buffer.second
-        , nullptr, nullptr);
+    // TODO partition 0
+    ::RdKafka::ErrorCode resp = m_producer->produce(&*topic
+        , 0, ::RdKafka::Producer::RK_MSG_COPY
+        , msg.GetPtr(), msg.GetSize(), msg.GetRPCKeyPtr(), msg.getRPCKeySize()
+        , nullptr);
     if (resp) {
         LOG(WARNING) << "send replay fail. err: " << resp
             << " err_str: " << ::RdKafka::err2str(resp);
     }
     if (resp == -1) {
-        ::free(buffer.first);
     }
-
 }
 
 ::RdKafka::Topic* Producer::FindOrCreate(const ServiceID& sid)
