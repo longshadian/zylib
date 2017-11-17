@@ -1,9 +1,9 @@
 #include "knet/UniformNetwork.h"
 
 #include "knet/CallbackManager.h"
+#include "knet/RPCManager.h"
 
 namespace knet {
-
 
 UniformNetwork::UniformNetwork()
 {
@@ -34,6 +34,16 @@ void UniformNetwork::ProcessMsg()
     while (!temp.empty()) {
         MessagePtr msg = std::move(temp.front());
         temp.pop();
+        m_cb_mgr->CallbackMsg(nullptr, std::move(msg));
+    }
+}
+
+void UniformNetwork::DispatchMsg(MessagePtr msg)
+{
+    // ÊÇrpcÏûÏ¢
+    if (msg->HasRPCKey()) {
+        m_rpc_manager->OnReceivedMsg(msg);
+    } else {
         m_cb_mgr->CallbackMsg(nullptr, std::move(msg));
     }
 }

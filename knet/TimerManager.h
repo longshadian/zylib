@@ -13,6 +13,8 @@
 
 namespace knet {
 
+using TimerCB = std::function<void()>;
+
 class TimerContext
 {
 public:
@@ -23,11 +25,12 @@ public:
     TimerContext(TimerContext&&) = delete;
     TimerContext& operator=(TimerContext&&) = delete;
 
+    std::unique_ptr<boost::asio::deadline_timer> m_timer;
+    TimerCB m_cb;
 };
 
 using TimerContextPtr = std::shared_ptr<TimerContext>;
 using TimerHdl = std::shared_ptr<TimerContext>;
-using TimerCB = std::function<void()>;
 
 
 class TimerManager
@@ -40,13 +43,17 @@ public:
     TimerManager(TimerManager&&) = delete;
     TimerManager& operator=(TimerManager&&) = delete;
 
+    // TODO 转换成同步执行
     bool Init();
     void Tick(DiffTime diff);
-    void addTimer(TimerCB cb, std::chrono::milliseconds tm);
+    TimerHdl AddTimer(TimerCB cb, std::chrono::milliseconds tm);
+    void CancelTimer(const TimerHdl& hdl);
 
 private:
     void ThreadRun();
-    TimerContextPtr SetTimer(std::chrono::milliseconds dt);
+    TimerContextPtr SetTimer(TimerCB cb, std::chrono::milliseconds dt);
+    void InsertTimerContext(const TimerContextPtr& tc);
+    void RemoveTimerContext(const TimerContextPtr& tc);
 
 private:
     boost::asio::io_service m_io_service;

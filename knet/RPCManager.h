@@ -12,7 +12,7 @@ namespace knet {
 
 class UniformNetwork;
 
-using RPCSuccessCB = std::function<void()>;
+using RPCSuccessCB = std::function<void(MessagePtr msg)>;
 using RPCTimeoutCB = std::function<void()>;
 
 struct RPCContext
@@ -35,6 +35,7 @@ public:
 
     void Tick(DiffTime diff);
     RPCKey AsyncRPC(const ServiceID& sid, std::string str, RPCContextUPtr context);
+    void OnReceivedMsg(MessagePtr msg);
 
 private:
     RPCKey NextKey();

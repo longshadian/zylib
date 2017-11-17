@@ -21,6 +21,11 @@ public:
     KMessage();
     virtual ~KMessage();
 
+    bool HasRPCKey() const;
+
+    int32_t              m_msg_id;
+    std::vector<uint8_t> m_payload;
+    RPCKey               m_key;
 };
 
 class KMessageContext
@@ -51,6 +56,7 @@ public:
 
 private:
     void ProcessMsg();
+    void DispatchMsg(MessagePtr msg);
 
 private:
     std::mutex                       m_mtx;

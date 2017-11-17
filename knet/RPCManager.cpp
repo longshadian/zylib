@@ -26,9 +26,22 @@ RPCKey RPCManager::AsyncRPC(const ServiceID& sid, std::string str, RPCContextUPt
     return key;
 }
 
+void RPCManager::OnReceivedMsg(MessagePtr msg)
+{
+    auto it = m_contexts.find(msg->m_key);
+    if (it == m_contexts.end())
+        return;
+    auto& context = it->second;
+    context->m_success_cb(msg);
+    m_contexts.erase(msg->m_key);
+}
+
 RPCKey RPCManager::NextKey()
 {
-    return ++m_key;
+    ++m_key;
+    if (m_key == 0)
+        return ++m_key;
+    return m_key;
 }
 
 void RPCManager::CB_SuccessKey(RPCKey key)
