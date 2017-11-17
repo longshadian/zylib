@@ -35,7 +35,7 @@ void TimerManager::ThreadRun()
     }
 }
 
-TimerContextUPtr TimerManager::SetTimer(std::chrono::milliseconds dt)
+TimerContextPtr TimerManager::SetTimer(std::chrono::milliseconds dt)
 {
     auto tc = std::make_unique<TimerContext>();
     tc->m_timer = std::make_shared<boost::asio::deadline_timer>(m_io_service);
