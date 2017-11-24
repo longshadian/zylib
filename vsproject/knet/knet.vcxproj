@@ -113,6 +113,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\knet\CallbackManager.cpp" />
+    <ClCompile Include="..\..\knet\EventManager.cpp" />
     <ClCompile Include="..\..\knet\kafka\Callback.cpp" />
     <ClCompile Include="..\..\knet\kafka\Consumer.cpp" />
     <ClCompile Include="..\..\knet\kafka\Producer.cpp" />
@@ -124,6 +125,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\knet\CallbackManager.h" />
+    <ClInclude Include="..\..\knet\EventManager.h" />
     <ClInclude Include="..\..\knet\kafka\Callback.h" />
     <ClInclude Include="..\..\knet\kafka\Consumer.h" />
     <ClInclude Include="..\..\knet\kafka\KafkaTypes.h" />

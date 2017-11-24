@@ -1,8 +1,13 @@
 #include "knet/TimerManager.h"
 
+#include "knet/EventManager.h"
+
 namespace knet {
 
-TimerManager::TimerManager()
+TimerManager::TimerManager(EventManager& event_manager)
+    : m_event_manager(event_manager)
+    , m_mtx()
+    , m_timers()
 {
 }
 
@@ -17,58 +22,43 @@ bool TimerManager::Init()
 
 void TimerManager::Tick(DiffTime diff)
 {
+    decltype(m_wait_cb) all_wait_cb{};
+    {
+        std::lock_guard<std::mutex> lk{m_mtx};
+        std::swap(all_wait_cb, m_wait_cb);
+    }
 
-}
+    while (!all_wait_cb.empty()) {
+        TimerContextPtr tc = std::move(all_wait_cb.front());
+        all_wait_cb.pop();
 
-TimerHdl TimerManager::AddTimer(TimerCB cb, std::chrono::milliseconds tm)
-{
-    return SetTimer(std::move(cb), tm);
-}
-
-void TimerManager::CancelTimer(const TimerHdl& hdl)
-{
-    RemoveTimerContext(hdl);
-}
-
-void TimerManager::ThreadRun()
-{
-    try {
-        while (m_running) {
-            m_io_service.run();
-        }
-    } catch (const std::exception& e) {
-        LOG(WARNING) << "boost io_service exception: " << e.what();
+        // 如果没找到，说明此计时器已经被取消，不需要callback
+        auto it = m_timers.find(tc);
+        if (it == m_timers.end())
+            continue;
+        tc->m_sync_cb();
     }
 }
 
-TimerContextPtr TimerManager::SetTimer(TimerCB cb, std::chrono::milliseconds dt)
+TimerHdl TimerManager::AddTimer(Callback sync_cb, Duration d)
 {
     auto tc = std::make_shared<TimerContext>();
-    tc->m_timer = std::make_shared<boost::asio::deadline_timer>(m_io_service);
-    tc->m_timer->expires_from_now(dt);
-    tc->m_cb = std::move(cb);
-
-    //timer->expires_from_now(boost::posix_time::seconds(seconds));
-    InsertTimerContext(tc);
-
-    tc->m_timer->async_wait([this, tc](const boost::system::error_code& ec) {
-        // TODO 判断是否是取消
-        RemoveTimerContext(tc);
-        tc->m_cb();
-    });
+    auto et = m_event_manager.AddTimer(std::bind(&TimerManager::EventCallback, this, tc), d);
+    tc->m_sync_cb = std::move(sync_cb);
+    m_timers.insert(tc);
     return tc;
 }
 
-void TimerManager::InsertTimerContext(const TimerContextPtr& tc)
+void TimerManager::CancelTimer(TimerHdl hdl)
 {
-    std::lock_guard<std::mutex> lk{m_mtx};
-    m_timers.insert(tc);
+    m_event_manager.CancelTimer(hdl->m_et);
+    m_timers.erase(hdl);
 }
 
-void TimerManager::RemoveTimerContext(const TimerContextPtr& tc)
+void TimerManager::EventCallback(TimerHdl hdl)
 {
     std::lock_guard<std::mutex> lk{m_mtx};
-    m_timers.erase(tc);
+    m_wait_cb.push(hdl);
 }
 
 } // knet
