@@ -17,10 +17,16 @@
     <ClCompile Include="..\..\knet\TimerManager.cpp" />
     <ClCompile Include="..\..\knet\Message.cpp" />
     <ClCompile Include="..\..\knet\EventManager.cpp" />
+    <ClCompile Include="..\..\knet\detail\AsyncReceivedMsgCB.cpp">
+      <Filter>detail</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="kafka">
       <UniqueIdentifier>{c162fa32-734e-44d8-b7fc-213fb20bb394}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="detail">
+      <UniqueIdentifier>{96f2d551-53ab-4adf-8ab7-9eecc5e01eb9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -45,5 +51,8 @@
     <ClInclude Include="..\..\knet\TimerManager.h" />
     <ClInclude Include="..\..\knet\Message.h" />
     <ClInclude Include="..\..\knet\EventManager.h" />
+    <ClInclude Include="..\..\knet\detail\AsyncReceivedMsgCB.h">
+      <Filter>detail</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -18,10 +18,18 @@ namespace knet {
 
 using EventID = uint64_t;
 
-struct EventMsg
+class EventTask
 {
+public:
+    EventTask(EventID id, Callback sync, Callback async);
+    ~EventTask();
+    EventTask(const EventTask&) = delete;
+    EventTask& operator=(const EventTask&) = delete;
+    EventTask(EventTask&&) = delete;
+    EventTask& operator=(EventTask&&) = delete;
+
+    enum { Size = sizeof(EventID) };
     EventID m_event_id;
-    enum  { Size = sizeof(EventMsg) };
 
     std::vector<uint8_t> serializeToBinary() const
     {
@@ -30,8 +38,12 @@ struct EventMsg
         std::memcpy(buf.data(), &m_event_id, buf.size());
         return buf;
     }
+
+private:
+    EventID     m_id;
+    Callback    m_sync_cb;
+    Callback    m_async_cb;
 };
-static_assert(std::is_pod<EventMsg>::type, "EventMsg mush be TOD!");
 
 class SocketPair
 {
@@ -44,7 +56,7 @@ public:
     SocketPair& operator=(SocketPair&&) = delete;
 
     void AsyncRead();
-    void AsyncWrite(const EventMsg& msg);
+    void AsyncWrite(const EventTask& msg);
 
 private:
     void DoWrite();
@@ -54,7 +66,7 @@ private:
     boost::asio::local::stream_protocol::socket m_sock_read;
     boost::asio::local::stream_protocol::socket m_sock_write;
 
-    std::array<uint8_t, EventMsg::Size>     m_read_buf;
+    std::array<uint8_t, EventTask::Size>    m_read_buf;
     std::list<std::vector<uint8_t>>         m_write_buf;
 };
 
@@ -81,6 +93,8 @@ public:
     EventTimerPtr AddTimer(Callback async_cb, Duration d);
     void CancelTimer(EventTimerPtr& et);
 
+    void AddEvent(Callback sync_cb, Callback async_cb);
+
 private:
     void ThreadRun();
 
@@ -89,6 +103,7 @@ private:
     std::unique_ptr<boost::asio::io_service::work> m_ios_work;
     std::atomic<bool>           m_running;
     std::thread                 m_thread;
+    EventID                     m_next_event_id;
     std::mutex                  m_mtx;
     std::unique_ptr<SocketPair> m_socket_pair;
 };

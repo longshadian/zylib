@@ -33,7 +33,9 @@ Consumer::~Consumer()
     waitThreadExit();
 }
 
-bool Consumer::init(std::unique_ptr<KafkaConf> server_conf, std::unique_ptr<ConsumerCB> cb)
+bool Consumer::init(std::unique_ptr<KafkaConf> server_conf
+    , std::unique_ptr<ConsumerReceiveMessageCB> msg_cb 
+    , std::unique_ptr<ConsumerCB> cb)
 {
     m_server_conf = std::move(server_conf);
     if (cb) {
@@ -46,6 +48,8 @@ bool Consumer::init(std::unique_ptr<KafkaConf> server_conf, std::unique_ptr<Cons
         if (cb->m_offset_commit_cb)
             m_consumer_cb->m_offset_commit_cb = std::move(cb->m_offset_commit_cb);
     }
+    if (msg_cb)
+        m_received_cb = std::move(msg_cb);
 
     std::unique_ptr<::RdKafka::Conf> conf{ ::RdKafka::Conf::create(::RdKafka::Conf::CONF_GLOBAL) };
     std::unique_ptr<::RdKafka::Conf> tconf{ ::RdKafka::Conf::create(::RdKafka::Conf::CONF_TOPIC) };

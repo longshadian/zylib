@@ -23,7 +23,7 @@ struct KafkaConf
 
 struct ConsumerCB
 {
-    ConsumerConsumeCBUPtr       m_rebalance_cb{};
+    ConsumerRebalanceCBUPtr     m_rebalance_cb{};
     ConsumerConsumeCBUPtr       m_consume_cb{};
     ConsumerOffsetCommitCBUPtr  m_offset_commit_cb{};
     ReplayEventCBUPtr           m_event_cb{};
@@ -39,7 +39,9 @@ public:
     Consumer(Consumer&&) = delete;
     Consumer& operator=(Consumer&&) = delete;
 
-    bool init(std::unique_ptr<KafkaConf> server_conf, std::unique_ptr<ConsumerCB> cb);
+    bool init(std::unique_ptr<KafkaConf> server_conf
+        , std::unique_ptr<ConsumerReceiveMessageCB> msg_cb 
+        , std::unique_ptr<ConsumerCB> cb);
     void stop();
     void waitThreadExit();
     void flush();

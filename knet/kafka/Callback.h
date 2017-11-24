@@ -85,6 +85,6 @@ public:
 
     virtual void onError(int32_t err_no, const std::string& err_str);
     virtual void onReceived(const void* p, size_t p_len, const void* key, size_t key_len);
-}
+};
 
 } // knet

@@ -2,6 +2,22 @@
 
 namespace knet {
 
+EventTask::EventTask(EventID id, Callback sync, Callback async)
+    : m_id(id)
+    , m_sync_cb(std::move(sync))
+    , m_async_cb(std::move(async))
+{
+
+}
+
+EventTask::~EventTask()
+{
+
+}
+
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 SocketPair::SocketPair(boost::asio::io_service io_service)
     : m_io_service(io_service)
     , m_sock_read(m_io_service)
@@ -32,7 +48,7 @@ void SocketPair::AsyncRead()
                 LOG(WARNING) << "socket read error. " << ec.message();
                 return;
             }
-            EventMsg em{};
+            EventTask em{};
             std::memcpy(&em, m_read_buf.data(), m_read_buf.size());
             // TODO callback em;
 
@@ -40,7 +56,7 @@ void SocketPair::AsyncRead()
         });
 }
 
-void SocketPair::AsyncWrite(const EventMsg& msg)
+void SocketPair::AsyncWrite(const EventTask& msg)
 {
     m_io_service.post([this, buf = msg.serializeToBinary()]()
     {
@@ -74,6 +90,7 @@ EventManager::EventManager()
     , m_ios_work(std::make_unique<boost::asio::io_service::work>(m_io_service))
     , m_running()
     , m_thread()
+    , m_next_event_id()
     , m_mtx()
     , m_socket_pair(std::make_unique<SocketPair>(m_io_service))
 {
@@ -130,6 +147,11 @@ void EventManager::CancelTimer(EventTimerPtr& et)
     } catch (const std::exception& e) {
         (void)e;
     }
+}
+
+void EventManager::AddEvent(Callback sync_cb, Callback async_cb)
+{
+    auto event_task = std::make_shared<EventTask>(++m_next_event_id, std::move(sync_cb), std::move(async_cb));
 }
 
 void EventManager::ThreadRun()
