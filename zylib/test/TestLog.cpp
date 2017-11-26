@@ -27,12 +27,12 @@ void testSyncConsole()
 
 int main()
 {
-    //testAsyncTextFile();
+    testAsyncTextFile();
     //testSyncTextFile();
-    testSyncConsole();
+    //testSyncConsole();
     std::srand((unsigned int)std::time(nullptr));
     int n = 0;
-    while (n < 5) {
+    while (n < 3) {
         ++n;
         auto val = int( std::rand() % 1000);
         std::this_thread::sleep_for(std::chrono::seconds(2));

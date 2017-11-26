@@ -83,6 +83,7 @@ void Logger::initAsyncFile(const FileOptional& opt, SEVERITY s)
     auto frontend = boost::make_shared<AsyncTextFile>(backend);
     frontend->set_formatter( creatLogFormattter() );
     frontend->set_filter(severity >= s);
+    frontend->set_exception_handler(boost::log::make_exception_suppressor());
     boost::log::core::get()->add_sink(frontend);
     boost::log::core::get()->set_exception_handler(boost::log::make_exception_suppressor());
     boost::log::add_common_attributes();
@@ -100,6 +101,7 @@ void Logger::initSyncFile(const FileOptional& opt, SEVERITY s)
     auto frontend = boost::make_shared<SyncTextFile>(backend);
     frontend->set_formatter( creatLogFormattter() );
     frontend->set_filter(severity >= s);
+    frontend->set_exception_handler(boost::log::make_exception_suppressor());
     boost::log::core::get()->add_sink(frontend);
     boost::log::core::get()->set_exception_handler(boost::log::make_exception_suppressor());
     boost::log::add_common_attributes();
@@ -115,6 +117,7 @@ void Logger::initSyncConsole(SEVERITY s)
     auto frontend = boost::make_shared<SyncConsole>(backend);
     frontend->set_formatter(creatLogFormattter());
     frontend->set_filter(severity >= s);
+    frontend->set_exception_handler(boost::log::make_exception_suppressor());
     boost::log::core::get()->add_sink(frontend);
     boost::log::core::get()->set_exception_handler(boost::log::make_exception_suppressor());
     boost::log::add_common_attributes();
