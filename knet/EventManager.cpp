@@ -1,5 +1,7 @@
 #include "knet/EventManager.h"
 
+#include "knet/FakeLog.h"
+
 namespace knet {
 
 EventTask::EventTask(EventID id, Callback sync, Callback async)
@@ -18,7 +20,7 @@ EventTask::~EventTask()
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
-SocketPair::SocketPair(boost::asio::io_service io_service)
+SocketPair::SocketPair(boost::asio::io_service& io_service)
     : m_io_service(io_service)
     , m_sock_read(m_io_service)
     , m_sock_write(m_io_service)
@@ -44,15 +46,18 @@ void SocketPair::AsyncRead()
     boost::asio::async_read(m_sock_read, boost::asio::buffer(m_read_buf),
         [this](boost::system::error_code ec, size_t length)
         {
+            (void)length;
             if (ec) {
-                LOG(WARNING) << "socket read error. " << ec.message();
+                FAKE_LOG(WARNING) << "socket read error. " << ec.message();
                 return;
             }
+            /*
             EventTask em{};
             std::memcpy(&em, m_read_buf.data(), m_read_buf.size());
+            */
             // TODO callback em;
 
-            async_read();
+            AsyncRead();
         });
 }
 
@@ -74,8 +79,9 @@ void SocketPair::DoWrite()
         , boost::asio::buffer(m_write_buf.front().data(), m_write_buf.front().size())
         , [this](boost::system::error_code ec, size_t length)
         {
+            (void)length;
             if (ec) {
-                LOG(WARNING) << "write error. " << ec.message();
+                FAKE_LOG(WARNING) << "write error. " << ec.message();
                 return;
            }
         }
@@ -129,7 +135,7 @@ EventTimerPtr EventManager::AddTimer(Callback async_cb, Duration d)
 {
     auto et = std::make_shared<EventTimer>();
     et->m_timer = std::make_shared<boost::asio::deadline_timer>(m_io_service);
-    et->m_timer->expires_from_now(d);
+    et->m_timer->expires_from_now(boost::posix_time::milliseconds{d.count()});
     et->m_async_cb = std::move(async_cb);
     et->m_timer->async_wait([this, et](const boost::system::error_code& ec) 
         {
@@ -159,7 +165,7 @@ void EventManager::ThreadRun()
     try {
         m_io_service.run();
     } catch (const std::exception& e) {
-        LOG(WARNING) << "boost io_service exception: " << e.what();
+        FAKE_LOG(WARNING) << "boost io_service exception: " << e.what();
     }
 }
 

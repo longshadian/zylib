@@ -20,6 +20,7 @@
     <ClCompile Include="..\..\knet\detail\AsyncReceivedMsgCB.cpp">
       <Filter>detail</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\knet\FakeLog.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="kafka">
@@ -46,7 +47,6 @@
     <ClInclude Include="..\..\knet\kafka\Producer.h">
       <Filter>kafka</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\knet\Log.h" />
     <ClInclude Include="..\..\knet\RPCManager.h" />
     <ClInclude Include="..\..\knet\TimerManager.h" />
     <ClInclude Include="..\..\knet\Message.h" />
@@ -54,5 +54,6 @@
     <ClInclude Include="..\..\knet\detail\AsyncReceivedMsgCB.h">
       <Filter>detail</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\knet\FakeLog.h" />
   </ItemGroup>
 </Project>

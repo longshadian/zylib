@@ -9,6 +9,7 @@
 #include <unordered_set>
 #include <list>
 #include <type_traits>
+#include <thread>
 
 #include <boost/asio.hpp>
 
@@ -48,7 +49,7 @@ private:
 class SocketPair
 {
 public:
-    SocketPair(boost::asio::io_service io_service);
+    SocketPair(boost::asio::io_service& io_service);
     ~SocketPair();
     SocketPair(const SocketPair&) = delete;
     SocketPair& operator=(const SocketPair&) = delete;
