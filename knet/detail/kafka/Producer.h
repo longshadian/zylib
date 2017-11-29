@@ -12,12 +12,11 @@
 #include <rdkafkacpp.h>
 
 #include "knet/KNetTypes.h"
-#include "knet/kafka/KafkaTypes.h"
+#include "knet/detail/kafka/KafkaTypes.h"
 
 namespace knet {
 
-struct ClientCallback;
-class Message;
+namespace detail {
 
 struct ProducerConf
 {
@@ -87,5 +86,7 @@ private:
     std::unique_ptr<ProducerCB>                 m_producer_cb;
     std::unordered_map<ServiceID, std::unique_ptr<::RdKafka::Topic>> m_topics;
 };
+
+} // detail
 
 } // knet

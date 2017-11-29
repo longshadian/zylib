@@ -4,6 +4,8 @@
 
 namespace knet {
 
+namespace detail {
+
 class EventCB : public ::RdKafka::EventCb 
 {
 public:
@@ -87,4 +89,5 @@ public:
     virtual void onReceived(const void* p, size_t p_len, const void* key, size_t key_len);
 };
 
+} // detail
 } // knet

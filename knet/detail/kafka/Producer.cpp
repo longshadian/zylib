@@ -1,13 +1,13 @@
-#include "knet/kafka/Producer.h"
+#include "knet/detail/kafka/Producer.h"
 
 #include <functional>
 
 #include "knet/FakeLog.h"
-
-#include "knet/kafka/Callback.h"
+#include "knet/detail/kafka/Callback.h"
 
 namespace knet {
 
+namespace detail {
 
 ProducerMsg::ProducerMsg(ServiceID sid)
     : m_service_id(std::move(sid))
@@ -217,5 +217,7 @@ void Producer::SendMessageInternal(const ProducerMsg& msg)
     m_topics.insert(std::make_pair(sid, std::move(new_topic)));
     return ptr;
 }
+
+} // detail
 
 } // knet

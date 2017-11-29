@@ -1,6 +1,8 @@
-#include "knet/kafka/Callback.h"
+#include "knet/detail/kafka/Callback.h"
 
 namespace knet {
+
+namespace detail {
 
 void EventCB::event_cb(::RdKafka::Event&)
 {
@@ -34,5 +36,7 @@ void ConsumerReceiveMessageCB::onReceived(const void* p, size_t p_len, const voi
 {
     (void)p; (void)p_len; (void)key; (void)key_len;
 }
+
+} // detail
 
 } // knet

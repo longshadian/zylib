@@ -1,4 +1,4 @@
-#include "knet/kafka/Consumer.h"
+#include "knet/detail/kafka/Consumer.h"
 
 #include <iostream>
 #include <string>
@@ -9,9 +9,11 @@
 
 #include <rdkafkacpp.h>
 
-#include "knet/kafka/Callback.h"
+#include "knet/detail/kafka/Callback.h"
 
 namespace knet {
+
+namespace detail {
 
 Consumer::Consumer()
     : m_thread()
@@ -151,5 +153,7 @@ void Consumer::processMsg(const ::RdKafka::Message& msg)
     }
     m_received_cb->onError(msg.err(), msg.errstr());
 }
+
+} // detail
 
 } // knet

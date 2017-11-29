@@ -5,12 +5,12 @@
 
 #include <rdkafkacpp.h>
 
-#include "knet/kafka/KafkaTypes.h"
+#include "knet/detail/kafka/KafkaTypes.h"
 
 namespace knet {
 
-class ServerConf;
-class ServerCallback;
+namespace detail {
+
 class ConsumerReceiveMessageCB;
 
 struct KafkaConf
@@ -58,5 +58,7 @@ private:
     std::unique_ptr<ConsumerCB>                 m_consumer_cb;
     std::unique_ptr<ConsumerReceiveMessageCB>   m_received_cb;
 };
+
+} // detail
 
 } // knet

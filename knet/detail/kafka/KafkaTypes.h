@@ -4,6 +4,8 @@
 
 namespace knet {
 
+namespace detail {
+
 class EventCB;
 class ProducerDeliveryReportCB;
 class ConsumerRebalanceCB;
@@ -15,5 +17,7 @@ using ProducerDeliveryReportCBUPtr  = std::unique_ptr<ProducerDeliveryReportCB>;
 using ConsumerRebalanceCBUPtr       = std::unique_ptr<ConsumerRebalanceCB>;
 using ConsumerConsumeCBUPtr         = std::unique_ptr<ConsumerConsumeCB>;
 using ConsumerOffsetCommitCBUPtr    = std::unique_ptr<ConsumerOffsetCommitCB>;
+
+} // detail
 
 } // knet

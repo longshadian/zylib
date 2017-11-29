@@ -5,7 +5,7 @@
 #include <queue>
 
 #include "knet/KNetTypes.h"
-#include "knet/kafka/Callback.h"
+#include "knet/detail/kafka/Callback.h"
 
 namespace knet {
 

@@ -5,19 +5,19 @@
 #include <queue>
 
 #include "knet/KNetTypes.h"
-#include "knet/kafka/Callback.h"
+//#include "knet/kafka/Callback.h"
 
 namespace knet {
 
 namespace detail {
 class AsyncReceivedMsgCB;
+class KafkaConsumer;
+class Consumer;
+class Producer;
 
 } // detail
 
-class KafkaConsumer;
 class CallbackManager;
-class Consumer;
-class Producer;
 class RPCManager;
 class TimerManager;
 class EventManager;
@@ -38,10 +38,6 @@ public:
     bool Init();
     void Tick(DiffTime diff);
 
-    Producer& GetProducer();
-    Consumer& GetConsumer();
-    TimerManager& GetTimerManager();
-
 private:
     void ProcessMsg();
     void DispatchMsg(MessagePtr msg);
@@ -50,8 +46,8 @@ private:
 private:
     std::unique_ptr<EventManager>    m_event_manager;
     std::unique_ptr<CallbackManager> m_cb_mgr;
-    std::unique_ptr<Consumer>        m_consumer;
-    std::unique_ptr<Producer>        m_producer;
+    std::unique_ptr<detail::Consumer> m_consumer;
+    std::unique_ptr<detail::Producer> m_producer;
     std::unique_ptr<RPCManager>      m_rpc_manager;
     std::unique_ptr<TimerManager>    m_timer_manager;
 

@@ -1,8 +1,10 @@
 #include "knet/RPCManager.h"
 
 #include "knet/UniformNetwork.h"
-#include "knet/kafka/Producer.h"
 #include "knet/Message.h"
+
+#include "knet/detail/kafka/Producer.h"
+#include "knet/detail/kafka/Callback.h"
 
 namespace knet {
 
@@ -28,7 +30,9 @@ void RPCManager::Tick(DiffTime diff)
 RPCKey RPCManager::AsyncRPC(const ServiceID& sid, std::string str, RPCContextUPtr context)
 {
     auto key = NextKey();
-    m_uniform_network.GetProducer().SendToMessage(sid, std::move(str));
+    (void)sid;
+    (void)str;
+    //m_uniform_network.GetProducer().SendToMessage(sid, std::move(str));
     m_contexts.insert(std::make_pair(key, std::move(context)));
     return key;
 }

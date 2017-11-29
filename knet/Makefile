@@ -35,6 +35,7 @@ DIR_SRC= .
 SRC_CPP = $(wildcard $(DIR_SRC)/*.cpp)
 SRC_CPP += $(wildcard $(DIR_SRC)/kafka/*.cpp)
 SRC_CPP += $(wildcard $(DIR_SRC)/detail/*.cpp)
+SRC_CPP += $(wildcard $(DIR_SRC)/detail/kafka/*.cpp)
 
 OBJS = $(SRC_CPP:%.cpp=%.o)
 

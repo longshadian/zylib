@@ -8,8 +8,9 @@
 #include "knet/EventManager.h"
 #include "knet/Message.h"
 
-#include "knet/kafka/Consumer.h"
-#include "knet/kafka/Producer.h"
+#include "knet/detail/kafka/Consumer.h"
+#include "knet/detail/kafka/Producer.h"
+#include "knet/detail/kafka/Callback.h"
 
 namespace knet {
 
@@ -29,8 +30,8 @@ bool UniformNetwork::Init()
 {
     m_event_manager = std::make_unique<EventManager>();
     m_cb_mgr = std::make_unique<CallbackManager>();
-    m_consumer = std::make_unique<Consumer>();
-    m_producer = std::make_unique<Producer>();
+    m_consumer = std::make_unique<detail::Consumer>();
+    m_producer = std::make_unique<detail::Producer>();
     m_rpc_manager = std::make_unique<RPCManager>(*this);
     m_timer_manager = std::make_unique<TimerManager>(*m_event_manager);
     return false;
