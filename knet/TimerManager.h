@@ -29,10 +29,6 @@ public:
     EventTimerPtr   m_et;
 };
 
-using TimerContextPtr = std::shared_ptr<TimerContext>;
-using TimerHdl = std::shared_ptr<TimerContext>;
-
-
 class TimerManager
 {
 public:

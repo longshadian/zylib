@@ -5,7 +5,7 @@
 #include <queue>
 
 #include "knet/KNetTypes.h"
-#include "knet/Callback.h"
+#include "knet/kafka/Callback.h"
 
 namespace knet {
 
@@ -14,44 +14,13 @@ class AsyncReceivedMsgCB;
 
 } // detail
 
-
-
-
 class KafkaConsumer;
 class CallbackManager;
 class Consumer;
 class Producer;
 class RPCManager;
 class TimerManager;
-
-class KMessage
-{
-public:
-    KMessage();
-    virtual ~KMessage();
-    KMessage(const KMessage&) = delete;
-    KMessage& operator=(const KMessage&) = delete;
-    KMessage(KMessage&&) = delete;
-    KMessage& operator=(KMessage&&) = delete;
-
-    bool HasRPCKey() const;
-    void PayloadParseFromBinary(const void* p, size_t p_len);
-    bool KeyParseFromBinary(const void* key, size_t key_len);
-
-    int32_t              m_msg_id;
-    std::vector<uint8_t> m_payload;
-    RPCKey               m_key;
-};
-
-class KMessageContext
-{
-public:
-    KMessageContext();
-    virtual ~KMessageContext();
-
-};
-
-class UniformNetwork;
+class EventManager;
 
 class UniformNetwork
 {
@@ -79,6 +48,7 @@ private:
     void receviedMsg(const void* p, size_t p_len, const void* key, size_t key_len);
 
 private:
+    std::unique_ptr<EventManager>    m_event_manager;
     std::unique_ptr<CallbackManager> m_cb_mgr;
     std::unique_ptr<Consumer>        m_consumer;
     std::unique_ptr<Producer>        m_producer;

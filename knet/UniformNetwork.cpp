@@ -1,41 +1,17 @@
 #include "knet/UniformNetwork.h"
 
+#include <cstring>
+
 #include "knet/CallbackManager.h"
 #include "knet/RPCManager.h"
+#include "knet/TimerManager.h"
+#include "knet/EventManager.h"
+#include "knet/Message.h"
+
+#include "knet/kafka/Consumer.h"
+#include "knet/kafka/Producer.h"
 
 namespace knet {
-
-KMessage::KMessage()
-    : m_msg_id()
-    , m_payload()
-    , m_key()
-{
-}
-
-KMessage::~KMessage()
-{
-}
-
-bool KMessage::HasRPCKey() const
-{
-    return m_key != 0;
-}
-
-void KMessage::PayloadParseFromBinary(const void* p, size_t p_len)
-{
-    if (p && p_len > 0) {
-        const auto* up = reinterpret_cast<const uint8_t*>(p);
-        m_payload.assign(up, up + p_len);
-    }
-}
-
-bool KMessage::KeyParseFromBinary(const void* key, size_t key_len)
-{
-    if (key && key_len) {
-        std::memcpy(&m_key, key, key_len);
-    }
-    return key_len == sizeof(RPCKey);
-}
 
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
@@ -51,18 +27,18 @@ UniformNetwork::~UniformNetwork()
 
 bool UniformNetwork::Init()
 {
+    m_event_manager = std::make_unique<EventManager>();
     m_cb_mgr = std::make_unique<CallbackManager>();
     m_consumer = std::make_unique<Consumer>();
     m_producer = std::make_unique<Producer>();
-    m_rpc_manager = std::make_unique<RPCManager>();
-    m_timer_manager = std::make_unique<TimerManager>();
-
+    m_rpc_manager = std::make_unique<RPCManager>(*this);
+    m_timer_manager = std::make_unique<TimerManager>(*m_event_manager);
     return false;
 }
 
 void UniformNetwork::Tick(DiffTime diff)
 {
-
+    (void)diff;
 }
 
 void UniformNetwork::ProcessMsg()

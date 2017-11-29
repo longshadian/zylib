@@ -26,7 +26,7 @@ using RPCContextUPtr = std::unique_ptr<RPCContext>;
 class RPCManager
 {
 public:
-    RPCManager();
+    RPCManager(UniformNetwork& uniform_network);
     ~RPCManager();
     RPCManager(const RPCManager&) = delete;
     RPCManager& operator=(const RPCManager&) = delete;

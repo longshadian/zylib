@@ -2,10 +2,17 @@
 
 #include "knet/UniformNetwork.h"
 #include "knet/kafka/Producer.h"
+#include "knet/Message.h"
 
 namespace knet {
 
-RPCManager::RPCManager()
+RPCManager:: RPCManager(UniformNetwork& uniform_network)
+    : m_uniform_network(uniform_network)
+    , m_key()
+    , m_contexts()
+    , m_mtx()
+    , m_success_key()
+    , m_timeout_key()
 {
 }
 
@@ -15,14 +22,14 @@ RPCManager::~RPCManager()
 
 void RPCManager::Tick(DiffTime diff)
 {
-
+    (void)diff;
 }
 
 RPCKey RPCManager::AsyncRPC(const ServiceID& sid, std::string str, RPCContextUPtr context)
 {
     auto key = NextKey();
-    m_uniform_network.GetProducer().SendToMessage(str);
-    m_contexts.insert({key, std::move(context)});
+    m_uniform_network.GetProducer().SendToMessage(sid, std::move(str));
+    m_contexts.insert(std::make_pair(key, std::move(context)));
     return key;
 }
 

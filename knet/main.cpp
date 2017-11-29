@@ -1,7 +1,7 @@
 
 #include <boost/asio.hpp>
 
-#include "knet/kafka/ReplayConsumer.h"
+#include "knet/knet.h"
 
 int main()
 {

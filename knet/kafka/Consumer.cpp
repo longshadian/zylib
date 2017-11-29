@@ -17,14 +17,14 @@ Consumer::Consumer()
     : m_thread()
     , m_run()
     , m_server_conf(std::make_unique<KafkaConf>())
-    , m_consumer(std::make_unique<::RdKafka::KafkaConsumer>())
+    , m_consumer()
     , m_consumer_cb(std::make_unique<ConsumerCB>())
     , m_received_cb(std::make_unique<ConsumerReceiveMessageCB>())
 {
-    m_consumer_cb->m_rebalance_cb = std::make_unique<ConsumerConsumeCB>();
+    m_consumer_cb->m_rebalance_cb = std::make_unique<ConsumerRebalanceCB>();
     m_consumer_cb->m_consume_cb = std::make_unique<ConsumerConsumeCB>();
     m_consumer_cb->m_offset_commit_cb = std::make_unique<ConsumerOffsetCommitCB>();
-    m_consumer_cb->m_event_cb = std::make_unique<ReplayEventCB>();
+    m_consumer_cb->m_event_cb = std::make_unique<EventCB>();
 }
 
 Consumer::~Consumer()

@@ -2,6 +2,8 @@
 
 #include <functional>
 
+#include "knet/FakeLog.h"
+
 #include "knet/kafka/Callback.h"
 
 namespace knet {
@@ -58,19 +60,19 @@ bool Producer::Init(std::unique_ptr<ProducerConf> p_conf, std::unique_ptr<Produc
 
     conf_ret = conf->set("event_cb", &*m_producer_cb->m_event_cb, err_str);
     if (conf_ret != ::RdKafka::Conf::CONF_OK) {
-        LOG(WARNING) << "conf_set event_cb fail. " << err_str;
+        FAKE_LOG(WARNING) << "conf_set event_cb fail. " << err_str;
         return false;
     }
 
     conf_ret = conf->set("dr_cb", &*m_producer_cb->m_dr_cb, err_str);
     if (conf_ret != ::RdKafka::Conf::CONF_OK) {
-        LOG(WARNING) << "conf_set dr_cb fail. " << err_str;
+        FAKE_LOG(WARNING) << "conf_set dr_cb fail. " << err_str;
         return false;
     }
 
     std::unique_ptr<::RdKafka::Producer> producer{::RdKafka::Producer::create(&*conf, err_str)};
     if (!producer) {
-        LOG(WARNING) << "create producer fail.";
+        FAKE_LOG(WARNING) << "create producer fail.";
         return false;
     }
 
@@ -116,7 +118,7 @@ void Producer::FlushReplay()
 
     // ·¢ËÍÊ£ÓàÂ¼Ïñ
     while (!m_queue.empty()) {
-        std::unique_ptr<Message> msg = std::move(m_queue.front());
+        std::unique_ptr<ProducerMsg> msg = std::move(m_queue.front());
         m_queue.pop();
         SendMessageInternal(*msg);
     }
@@ -129,12 +131,15 @@ void Producer::FlushReplay()
     } while (ec != ::RdKafka::ERR_NO_ERROR);
 }
 
-void Producer::SendToMessage(std::string msg)
+void Producer::SendToMessage(ServiceID sid, std::string msg)
 {
+    (void)msg;
     if (!m_run)
         return;
+    // TODO
+    auto pm = std::make_unique<ProducerMsg>(sid);
     std::lock_guard<std::mutex> lk{m_mtx};
-    m_queue.push(std::move(msg));
+    m_queue.push(std::move(pm));
     m_cond.notify_one();
 }
 
@@ -168,17 +173,18 @@ void Producer::SendMessageInternal(const ProducerMsg& msg)
     const auto& sid = msg.GetServiceID();
     auto* topic = FindOrCreate(sid);
     if (!topic) {
-        LOG(WARNING) << "can't FindOrCreate topic. service_id: " << sid;
+        FAKE_LOG(WARNING) << "can't FindOrCreate topic. service_id: " << sid;
         return;
     }
 
     // TODO partition 0
     ::RdKafka::ErrorCode resp = m_producer->produce(&*topic
         , 0, ::RdKafka::Producer::RK_MSG_COPY
-        , msg.GetPtr(), msg.GetSize(), msg.GetRPCKeyPtr(), msg.getRPCKeySize()
+        , (void*)msg.GetPtr(), msg.GetSize()
+        , msg.GetRPCKeyPtr(), msg.getRPCKeySize()
         , nullptr);
     if (resp) {
-        LOG(WARNING) << "send replay fail. err: " << resp
+        FAKE_LOG(WARNING) << "send replay fail. err: " << resp
             << " err_str: " << ::RdKafka::err2str(resp);
     }
     if (resp == -1) {
@@ -196,19 +202,19 @@ void Producer::SendMessageInternal(const ProducerMsg& msg)
     std::unique_ptr<::RdKafka::Conf> tconf{::RdKafka::Conf::create(::RdKafka::Conf::CONF_TOPIC)};
     ::RdKafka::Conf::ConfResult conf_ret = tconf->set("request.required.acks", "all", err_str);
     if (conf_ret != ::RdKafka::Conf::CONF_OK) {
-        LOG(WARNING) << "conf_set request.required.acks fail. " << err_str;
+        FAKE_LOG(WARNING) << "conf_set request.required.acks fail. " << err_str;
         return nullptr;
     }
 
     std::unique_ptr<::RdKafka::Topic> new_topic{
         ::RdKafka::Topic::create(&*m_producer, sid, &*tconf, err_str)};
     if (!new_topic) {
-        LOG(WARNING) << "create topic fail.";
+        FAKE_LOG(WARNING) << "create topic fail.";
         return nullptr;
     }
 
     auto* ptr = new_topic.get();
-    m_topics.insert({sid, std::move(new_topic)});
+    m_topics.insert(std::make_pair(sid, std::move(new_topic)));
     return ptr;
 }
 

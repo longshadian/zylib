@@ -6,8 +6,9 @@ namespace knet {
 
 TimerManager::TimerManager(EventManager& event_manager)
     : m_event_manager(event_manager)
-    , m_mtx()
     , m_timers()
+    , m_mtx()
+    , m_wait_cb()
 {
 }
 
@@ -22,6 +23,7 @@ bool TimerManager::Init()
 
 void TimerManager::Tick(DiffTime diff)
 {
+    (void)diff;
     decltype(m_wait_cb) all_wait_cb{};
     {
         std::lock_guard<std::mutex> lk{m_mtx};

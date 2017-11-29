@@ -12,6 +12,7 @@
 #include <rdkafkacpp.h>
 
 #include "knet/KNetTypes.h"
+#include "knet/kafka/KafkaTypes.h"
 
 namespace knet {
 
@@ -36,6 +37,7 @@ public:
 
     virtual bool            Parse() { return true; }
     virtual const void*     GetPtr() const { return nullptr; }
+    virtual void*           GetPtr() { return nullptr; }
     virtual size_t          GetSize() const { return 0; }
     const ServiceID&        GetServiceID() const { return m_service_id; }
     const void*             GetRPCKeyPtr() const { return m_rpc_key == 0 ? nullptr : & m_rpc_key; }
@@ -47,7 +49,7 @@ private:
 
 struct ProducerCB 
 {
-    ReplayEventCBUPtr            m_event_cb{};
+    EventCBUPtr                  m_event_cb{};
     ProducerDeliveryReportCBUPtr m_dr_cb{};
 };
 
@@ -65,7 +67,7 @@ public:
     void Stop();
     void WaitThreadExit();
     void FlushReplay();
-    void SendToMessage(std::string s);
+    void SendToMessage(ServiceID sid, std::string s);
 
 private:
     void StartPollThread();

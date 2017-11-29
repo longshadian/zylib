@@ -71,12 +71,19 @@ private:
     std::list<std::vector<uint8_t>>         m_write_buf;
 };
 
-struct EventTimer
+class EventTimer
 {
+public:
+    EventTimer() = default;
+    ~EventTimer() = default;
+    EventTimer(const EventTimer&) = delete;
+    EventTimer& operator=(const EventTimer&) = delete;
+    EventTimer(EventTimer&&) = delete;
+    EventTimer& operator=(EventTimer&&) = delete;
+
     std::shared_ptr<boost::asio::deadline_timer> m_timer;
     Callback m_async_cb;
 };
-using EventTimerPtr = std::shared_ptr<EventTimer>;
 
 class EventManager
 {

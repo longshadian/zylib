@@ -26,7 +26,7 @@ struct ConsumerCB
     ConsumerRebalanceCBUPtr     m_rebalance_cb{};
     ConsumerConsumeCBUPtr       m_consume_cb{};
     ConsumerOffsetCommitCBUPtr  m_offset_commit_cb{};
-    ReplayEventCBUPtr           m_event_cb{};
+    EventCBUPtr                 m_event_cb{};
 };
 
 class Consumer

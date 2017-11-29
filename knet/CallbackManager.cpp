@@ -1,5 +1,7 @@
 #include "knet/CallbackManager.h"
 
+#include "knet/Message.h"
+
 namespace knet {
 
 CallbackManager::CallbackManager()
