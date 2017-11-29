@@ -10,9 +10,16 @@
 
 namespace knet {
 
-class UniformNetwork;
+namespace detail {
 
-using RPCSuccessCB = std::function<void(MessagePtr msg)>;
+class Producer;
+
+}
+
+class UniformNetwork;
+class CallbackManager;
+
+using RPCSuccessCB = std::function<void(ReceivedMessagePtr msg)>;
 using RPCTimeoutCB = std::function<void()>;
 
 struct RPCContext
@@ -26,7 +33,7 @@ using RPCContextUPtr = std::unique_ptr<RPCContext>;
 class RPCManager
 {
 public:
-    RPCManager(UniformNetwork& uniform_network);
+    RPCManager(detail::Producer& producer);
     ~RPCManager();
     RPCManager(const RPCManager&) = delete;
     RPCManager& operator=(const RPCManager&) = delete;
@@ -34,17 +41,21 @@ public:
     RPCManager& operator=(RPCManager&&) = delete;
 
     void Tick(DiffTime diff);
-    RPCKey AsyncRPC(const ServiceID& sid, std::string str, RPCContextUPtr context);
-    void OnReceivedMsg(MessagePtr msg);
+    RPCKey AsyncRPC(const ServiceID& sid, MsgID msg_id, MsgType msg, RPCContextUPtr context);
+    void OnReceivedMsg(ReceivedMessagePtr msg);
 
 private:
     RPCKey NextKey();
     void CB_SuccessKey(RPCKey key);
     void CB_TimeoutKey(RPCKey key);
 
+    void RpcReceviedMsg(ReceivedMessagePtr msg);
+    void NormalReceviedMsg(ReceivedMessagePtr msg);
+
 private:
-    UniformNetwork& m_uniform_network;
-    RPCKey          m_key;
+    detail::Producer&                m_producer;
+    std::unique_ptr<CallbackManager> m_cb_mgr;
+    RPCKey                           m_current_key;
     std::unordered_map<RPCKey, RPCContextUPtr> m_contexts; 
 
     std::mutex      m_mtx;

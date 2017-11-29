@@ -114,11 +114,11 @@
   <ItemGroup>
     <ClCompile Include="..\..\knet\CallbackManager.cpp" />
     <ClCompile Include="..\..\knet\detail\AsyncReceivedMsgCB.cpp" />
+    <ClCompile Include="..\..\knet\detail\kafka\Callback.cpp" />
+    <ClCompile Include="..\..\knet\detail\kafka\Consumer.cpp" />
+    <ClCompile Include="..\..\knet\detail\kafka\Producer.cpp" />
     <ClCompile Include="..\..\knet\EventManager.cpp" />
     <ClCompile Include="..\..\knet\FakeLog.cpp" />
-    <ClCompile Include="..\..\knet\kafka\Callback.cpp" />
-    <ClCompile Include="..\..\knet\kafka\Consumer.cpp" />
-    <ClCompile Include="..\..\knet\kafka\Producer.cpp" />
     <ClCompile Include="..\..\knet\main.cpp" />
     <ClCompile Include="..\..\knet\Message.cpp" />
     <ClCompile Include="..\..\knet\RPCManager.cpp" />
@@ -128,12 +128,12 @@
   <ItemGroup>
     <ClInclude Include="..\..\knet\CallbackManager.h" />
     <ClInclude Include="..\..\knet\detail\AsyncReceivedMsgCB.h" />
+    <ClInclude Include="..\..\knet\detail\kafka\Callback.h" />
+    <ClInclude Include="..\..\knet\detail\kafka\Consumer.h" />
+    <ClInclude Include="..\..\knet\detail\kafka\KafkaTypes.h" />
+    <ClInclude Include="..\..\knet\detail\kafka\Producer.h" />
     <ClInclude Include="..\..\knet\EventManager.h" />
     <ClInclude Include="..\..\knet\FakeLog.h" />
-    <ClInclude Include="..\..\knet\kafka\Callback.h" />
-    <ClInclude Include="..\..\knet\kafka\Consumer.h" />
-    <ClInclude Include="..\..\knet\kafka\KafkaTypes.h" />
-    <ClInclude Include="..\..\knet\kafka\Producer.h" />
     <ClInclude Include="..\..\knet\knet.h" />
     <ClInclude Include="..\..\knet\KNetTypes.h" />
     <ClInclude Include="..\..\knet\Message.h" />

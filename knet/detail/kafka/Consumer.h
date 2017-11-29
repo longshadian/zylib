@@ -5,6 +5,7 @@
 
 #include <rdkafkacpp.h>
 
+#include "knet/KNetTypes.h"
 #include "knet/detail/kafka/KafkaTypes.h"
 
 namespace knet {
@@ -45,6 +46,7 @@ public:
     void stop();
     void waitThreadExit();
     void flush();
+    const ServiceID& GetServiceID() const;
 
 private:
     void threadRun();

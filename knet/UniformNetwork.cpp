@@ -2,11 +2,11 @@
 
 #include <cstring>
 
-#include "knet/CallbackManager.h"
 #include "knet/RPCManager.h"
 #include "knet/TimerManager.h"
 #include "knet/EventManager.h"
 #include "knet/Message.h"
+#include "knet/FakeLog.h"
 
 #include "knet/detail/kafka/Consumer.h"
 #include "knet/detail/kafka/Producer.h"
@@ -29,10 +29,9 @@ UniformNetwork::~UniformNetwork()
 bool UniformNetwork::Init()
 {
     m_event_manager = std::make_unique<EventManager>();
-    m_cb_mgr = std::make_unique<CallbackManager>();
     m_consumer = std::make_unique<detail::Consumer>();
     m_producer = std::make_unique<detail::Producer>();
-    m_rpc_manager = std::make_unique<RPCManager>(*this);
+    m_rpc_manager = std::make_unique<RPCManager>(*m_producer);
     m_timer_manager = std::make_unique<TimerManager>(*m_event_manager);
     return false;
 }
@@ -40,6 +39,22 @@ bool UniformNetwork::Init()
 void UniformNetwork::Tick(DiffTime diff)
 {
     (void)diff;
+    ProcessMsg();
+}
+
+void UniformNetwork::Rpc(const ServiceID& sid, MsgID msg_id, MsgType msg)
+{
+    // TODO
+    (void)sid;
+    (void)msg;
+    (void)msg_id;
+}
+
+void UniformNetwork::Send(const ServiceID& sid, MsgID msg_id, MsgType msg)
+{
+    (void)sid;
+    (void)msg_id;
+    (void)msg;
 }
 
 void UniformNetwork::ProcessMsg()
@@ -51,30 +66,28 @@ void UniformNetwork::ProcessMsg()
     }
 
     while (!temp.empty()) {
-        MessagePtr msg = std::move(temp.front());
+        ReceivedMessagePtr msg = std::move(temp.front());
         temp.pop();
-        m_cb_mgr->CallbackMsg(nullptr, std::move(msg));
-    }
-}
-
-void UniformNetwork::DispatchMsg(MessagePtr msg)
-{
-    // ÊÇrpcÏûÏ¢
-    if (msg->HasRPCKey()) {
         m_rpc_manager->OnReceivedMsg(msg);
-    } else {
-        m_cb_mgr->CallbackMsg(nullptr, std::move(msg));
     }
 }
 
-void UniformNetwork::receviedMsg(const void* p, size_t p_len, const void* key, size_t key_len)
+void UniformNetwork::ReceviedMsg_CB(const void* p, size_t p_len, const void* key, size_t key_len)
 {
-    auto msg = std::make_shared<KMessage>();
-    msg->PayloadParseFromBinary(p, p_len);
-    msg->KeyParseFromBinary(key, key_len);
-
+    auto received_msg = MessageDecoder::decode(
+        reinterpret_cast<const uint8_t*>(p), p_len
+        , reinterpret_cast<const uint8_t*>(key), key_len);
+    if (!received_msg) {
+        FAKE_LOG(WARNING) << "decode msg fail\n";
+        return;
+    }
     std::lock_guard<std::mutex> lk(m_mtx);
-    m_received_msgs.push(std::move(msg));
+    m_received_msgs.push(std::move(received_msg));
+}
+
+const ServiceID& UniformNetwork::SelfServiceID() const
+{
+    return m_consumer->GetServiceID();
 }
 
 } // knet

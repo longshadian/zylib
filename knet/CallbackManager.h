@@ -9,7 +9,7 @@ namespace knet {
 
 class NetworkMessageContext;
 
-using Msg_Callback          = std::function<void(MessageContextPtr, MessagePtr)>;
+using Msg_Callback          = std::function<void(MessageContextPtr, ReceivedMessagePtr)>;
 using Msg_Callback_Array    = std::unordered_map<int32_t, Msg_Callback>;
 
 class CallbackManager
@@ -20,7 +20,7 @@ public:
     CallbackManager(const CallbackManager& rhs) = delete;
     CallbackManager& operator=(const CallbackManager& rhs) = delete;
 
-    bool CallbackMsg(MessageContextPtr context, MessagePtr msg);
+    bool CallbackMsg(MessageContextPtr context, ReceivedMessagePtr msg);
     void SetMsgCallbackArray(Msg_Callback_Array msg_cb_array);
 
 private:

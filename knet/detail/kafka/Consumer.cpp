@@ -126,6 +126,11 @@ void Consumer::flush()
     m_consumer->close();
 }
 
+const ServiceID& Consumer::GetServiceID() const
+{
+    return m_server_conf->m_topic;
+}
+
 void Consumer::threadRun()
 {
     while (m_run) {

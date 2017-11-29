@@ -2,17 +2,8 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="..\..\knet\main.cpp" />
-    <ClCompile Include="..\..\knet\kafka\Callback.cpp">
-      <Filter>kafka</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\knet\kafka\Consumer.cpp">
-      <Filter>kafka</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\knet\UniformNetwork.cpp" />
     <ClCompile Include="..\..\knet\CallbackManager.cpp" />
-    <ClCompile Include="..\..\knet\kafka\Producer.cpp">
-      <Filter>kafka</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\knet\RPCManager.cpp" />
     <ClCompile Include="..\..\knet\TimerManager.cpp" />
     <ClCompile Include="..\..\knet\Message.cpp" />
@@ -21,32 +12,29 @@
       <Filter>detail</Filter>
     </ClCompile>
     <ClCompile Include="..\..\knet\FakeLog.cpp" />
+    <ClCompile Include="..\..\knet\detail\kafka\Callback.cpp">
+      <Filter>detail\kafka</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\knet\detail\kafka\Consumer.cpp">
+      <Filter>detail\kafka</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\knet\detail\kafka\Producer.cpp">
+      <Filter>detail\kafka</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="kafka">
-      <UniqueIdentifier>{c162fa32-734e-44d8-b7fc-213fb20bb394}</UniqueIdentifier>
-    </Filter>
     <Filter Include="detail">
       <UniqueIdentifier>{96f2d551-53ab-4adf-8ab7-9eecc5e01eb9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="detail\kafka">
+      <UniqueIdentifier>{ee0d1f8f-eee4-4529-8b8e-f3bbb2a6f09b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\knet\kafka\Callback.h">
-      <Filter>kafka</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\knet\kafka\Consumer.h">
-      <Filter>kafka</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\knet\kafka\KafkaTypes.h">
-      <Filter>kafka</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\knet\knet.h" />
     <ClInclude Include="..\..\knet\UniformNetwork.h" />
     <ClInclude Include="..\..\knet\KNetTypes.h" />
     <ClInclude Include="..\..\knet\CallbackManager.h" />
-    <ClInclude Include="..\..\knet\kafka\Producer.h">
-      <Filter>kafka</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\knet\RPCManager.h" />
     <ClInclude Include="..\..\knet\TimerManager.h" />
     <ClInclude Include="..\..\knet\Message.h" />
@@ -55,5 +43,17 @@
       <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="..\..\knet\FakeLog.h" />
+    <ClInclude Include="..\..\knet\detail\kafka\Callback.h">
+      <Filter>detail\kafka</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\knet\detail\kafka\Consumer.h">
+      <Filter>detail\kafka</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\knet\detail\kafka\KafkaTypes.h">
+      <Filter>detail\kafka</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\knet\detail\kafka\Producer.h">
+      <Filter>detail\kafka</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

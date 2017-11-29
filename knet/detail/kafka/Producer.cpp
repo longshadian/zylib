@@ -3,20 +3,13 @@
 #include <functional>
 
 #include "knet/FakeLog.h"
+#include "knet/Message.h"
+
 #include "knet/detail/kafka/Callback.h"
 
 namespace knet {
 
 namespace detail {
-
-ProducerMsg::ProducerMsg(ServiceID sid)
-    : m_service_id(std::move(sid))
-{
-}
-
-ProducerMsg::~ProducerMsg()
-{
-}
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -99,7 +92,7 @@ void Producer::WaitThreadExit()
         m_send_thread.join();
 }
 
-void Producer::FlushReplay()
+void Producer::Flush()
 {
     if (m_run)
         return;
@@ -118,7 +111,7 @@ void Producer::FlushReplay()
 
     // ·¢ËÍÊ£ÓàÂ¼Ïñ
     while (!m_queue.empty()) {
-        std::unique_ptr<ProducerMsg> msg = std::move(m_queue.front());
+        std::shared_ptr<SendMessage> msg = std::move(m_queue.front());
         m_queue.pop();
         SendMessageInternal(*msg);
     }
@@ -131,15 +124,12 @@ void Producer::FlushReplay()
     } while (ec != ::RdKafka::ERR_NO_ERROR);
 }
 
-void Producer::SendToMessage(ServiceID sid, std::string msg)
+void Producer::SendTo(std::shared_ptr<SendMessage> send_msg)
 {
-    (void)msg;
     if (!m_run)
         return;
-    // TODO
-    auto pm = std::make_unique<ProducerMsg>(sid);
     std::lock_guard<std::mutex> lk{m_mtx};
-    m_queue.push(std::move(pm));
+    m_queue.push(std::move(send_msg));
     m_cond.notify_one();
 }
 
@@ -152,23 +142,25 @@ void Producer::StartPollThread()
 
 void Producer::StartSendThread()
 {
-    std::unique_ptr<ProducerMsg> msg{};
+    std::shared_ptr<SendMessage> send_msg{};
     while (m_run) {
-        msg = nullptr;
+        send_msg = nullptr;
         {
             std::unique_lock<std::mutex> lk{m_mtx};
             m_cond.wait_for(lk, std::chrono::seconds{1}, [this] { return !m_queue.empty(); });
             if (!m_queue.empty()) {
+                send_msg = std::move(m_queue.front());
                 m_queue.pop();
             }
         }
-        if (msg && msg->Parse()) {
-            SendMessageInternal(*msg);
+        if (send_msg) {
+            MessageDecoder::encode(*send_msg);
+            SendMessageInternal(*send_msg);
         }
     }
 }
 
-void Producer::SendMessageInternal(const ProducerMsg& msg)
+void Producer::SendMessageInternal(const SendMessage& msg)
 {
     const auto& sid = msg.GetServiceID();
     auto* topic = FindOrCreate(sid);
@@ -181,7 +173,7 @@ void Producer::SendMessageInternal(const ProducerMsg& msg)
     ::RdKafka::ErrorCode resp = m_producer->produce(&*topic
         , 0, ::RdKafka::Producer::RK_MSG_COPY
         , (void*)msg.GetPtr(), msg.GetSize()
-        , msg.GetRPCKeyPtr(), msg.getRPCKeySize()
+        , msg.GetRPCKeyPtr(), msg.GetRPCKeySize()
         , nullptr);
     if (resp) {
         FAKE_LOG(WARNING) << "send replay fail. err: " << resp

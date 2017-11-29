@@ -17,9 +17,9 @@ void CallbackManager::SetMsgCallbackArray(Msg_Callback_Array msg_cb_array)
     m_msg_cb_array = std::move(msg_cb_array);
 }
 
-bool CallbackManager::CallbackMsg(MessageContextPtr context, MessagePtr msg)
+bool CallbackManager::CallbackMsg(MessageContextPtr context, ReceivedMessagePtr msg)
 {
-    auto it = m_msg_cb_array.find(msg->m_msg_id);
+    auto it = m_msg_cb_array.find(msg->GetMsgID());
     if (it == m_msg_cb_array.end()) {
         return false;
     }

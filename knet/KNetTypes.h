@@ -8,10 +8,10 @@ namespace knet {
 
 using DiffTime = std::chrono::milliseconds;
 
-class KMessage;
+class ReceivedMessage;
 class KMessageContext;
 
-using MessagePtr = std::shared_ptr<KMessage>;
+using ReceivedMessagePtr = std::shared_ptr<ReceivedMessage>;
 using MessageContextPtr = std::shared_ptr<KMessageContext>;
 
 using ServiceID = std::string;
@@ -27,5 +27,8 @@ using TimerHdl = std::shared_ptr<TimerContext>;
 
 struct EventTimer;
 using EventTimerPtr = std::shared_ptr<EventTimer>;
+
+using MsgType = std::string;
+using MsgID   = int32_t;
 
 } // knet

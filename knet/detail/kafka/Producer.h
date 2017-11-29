@@ -16,34 +16,13 @@
 
 namespace knet {
 
+class SendMessage;
+
 namespace detail {
 
 struct ProducerConf
 {
     std::string m_broker_list{};
-};
-
-class ProducerMsg
-{
-public:
-    ProducerMsg(ServiceID sid);
-    virtual ~ProducerMsg();
-
-    ProducerMsg(const ProducerMsg&) = delete;
-    ProducerMsg& operator=(const ProducerMsg&) = delete;
-    ProducerMsg(ProducerMsg&&) = delete;
-    ProducerMsg& operator=(ProducerMsg&&) = delete;
-
-    virtual bool            Parse() { return true; }
-    virtual const void*     GetPtr() const { return nullptr; }
-    virtual void*           GetPtr() { return nullptr; }
-    virtual size_t          GetSize() const { return 0; }
-    const ServiceID&        GetServiceID() const { return m_service_id; }
-    const void*             GetRPCKeyPtr() const { return m_rpc_key == 0 ? nullptr : & m_rpc_key; }
-    size_t                  getRPCKeySize() const { return GetRPCKeyPtr() ? sizeof(m_rpc_key) : 0; }
-private:
-    ServiceID m_service_id{};
-    RPCKey    m_rpc_key{};
 };
 
 struct ProducerCB 
@@ -65,20 +44,20 @@ public:
     bool Init(std::unique_ptr<ProducerConf> p_conf, std::unique_ptr<ProducerCB> client_cb);
     void Stop();
     void WaitThreadExit();
-    void FlushReplay();
-    void SendToMessage(ServiceID sid, std::string s);
+    void Flush();
+    void SendTo(std::shared_ptr<SendMessage> send_msg);
 
 private:
     void StartPollThread();
     void StartSendThread();
-    void SendMessageInternal(const ProducerMsg& msg);
+    void SendMessageInternal(const SendMessage& msg);
     ::RdKafka::Topic* FindOrCreate(const ServiceID& sid);
 
 private:
     std::unique_ptr<ProducerConf>               m_p_conf;
     std::thread                                 m_poll_thread;  // poll线程
     std::thread                                 m_send_thread;  // 发送线程
-    std::queue<std::unique_ptr<ProducerMsg>>    m_queue;
+    std::queue<std::shared_ptr<SendMessage>>    m_queue;
     std::mutex                                  m_mtx;
     std::condition_variable                     m_cond;
     std::atomic<bool>                           m_run;
