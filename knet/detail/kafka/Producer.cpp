@@ -31,7 +31,7 @@ Producer::Producer()
     , m_producer_cb(std::make_unique<ProducerCB>())
 {
     m_producer_cb->m_event_cb = std::make_unique<EventCB>();
-    m_producer_cb->m_dr_cb = std::make_unique<ProducerDeliveryReportCB>();
+    m_producer_cb->m_dr_cb = std::make_unique<DeliveryReportCB>();
 }
 
 Producer::~Producer()

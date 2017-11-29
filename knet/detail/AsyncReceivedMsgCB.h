@@ -13,7 +13,7 @@ class UniformNetwork;
 
 namespace detail {
 
-class AsyncReceivedMsgCB : public ConsumerReceiveMessageCB
+class AsyncReceivedMsgCB : public ReceiveMessageCB
 {
 public:
     AsyncReceivedMsgCB(UniformNetwork& un);

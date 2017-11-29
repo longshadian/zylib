@@ -8,31 +8,31 @@ void EventCB::event_cb(::RdKafka::Event&)
 {
 }
 
-void ProducerDeliveryReportCB::dr_cb(::RdKafka::Message&)
+void DeliveryReportCB::dr_cb(::RdKafka::Message&)
 {
 }
 
-void ConsumerRebalanceCB::rebalance_cb(::RdKafka::KafkaConsumer*
+void RebalanceCB::rebalance_cb(::RdKafka::KafkaConsumer*
     , ::RdKafka::ErrorCode
     , std::vector<::RdKafka::TopicPartition*>&)
 {
 }
 
-void ConsumerConsumeCB::consume_cb(::RdKafka::Message&, void*)
+void ConsumeCB::consume_cb(::RdKafka::Message&, void*)
 {
 }
 
-void ConsumerOffsetCommitCB::offset_commit_cb(::RdKafka::ErrorCode
+void OffsetCommitCB::offset_commit_cb(::RdKafka::ErrorCode
     , std::vector<::RdKafka::TopicPartition*>&) 
 {
 }
 
-void ConsumerReceiveMessageCB::onError(int32_t err_no, const std::string& err_str)
+void ReceiveMessageCB::onError(int32_t err_no, const std::string& err_str)
 {
     (void)err_no; (void)err_str;
 }
 
-void ConsumerReceiveMessageCB::onReceived(const void* p, size_t p_len, const void* key, size_t key_len)
+void ReceiveMessageCB::onReceived(const void* p, size_t p_len, const void* key, size_t key_len)
 {
     (void)p; (void)p_len; (void)key; (void)key_len;
 }

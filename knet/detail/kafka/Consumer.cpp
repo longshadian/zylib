@@ -21,11 +21,11 @@ Consumer::Consumer()
     , m_server_conf(std::make_unique<KafkaConf>())
     , m_consumer()
     , m_consumer_cb(std::make_unique<ConsumerCB>())
-    , m_received_cb(std::make_unique<ConsumerReceiveMessageCB>())
+    , m_received_cb(std::make_unique<ReceiveMessageCB>())
 {
-    m_consumer_cb->m_rebalance_cb = std::make_unique<ConsumerRebalanceCB>();
-    m_consumer_cb->m_consume_cb = std::make_unique<ConsumerConsumeCB>();
-    m_consumer_cb->m_offset_commit_cb = std::make_unique<ConsumerOffsetCommitCB>();
+    m_consumer_cb->m_rebalance_cb = std::make_unique<RebalanceCB>();
+    m_consumer_cb->m_consume_cb = std::make_unique<ConsumeCB>();
+    m_consumer_cb->m_offset_commit_cb = std::make_unique<OffsetCommitCB>();
     m_consumer_cb->m_event_cb = std::make_unique<EventCB>();
 }
 
@@ -36,7 +36,7 @@ Consumer::~Consumer()
 }
 
 bool Consumer::init(std::unique_ptr<KafkaConf> server_conf
-    , std::unique_ptr<ConsumerReceiveMessageCB> msg_cb 
+    , std::unique_ptr<ReceiveMessageCB> msg_cb 
     , std::unique_ptr<ConsumerCB> cb)
 {
     m_server_conf = std::move(server_conf);

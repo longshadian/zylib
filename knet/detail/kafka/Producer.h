@@ -48,8 +48,8 @@ private:
 
 struct ProducerCB 
 {
-    EventCBUPtr                  m_event_cb{};
-    ProducerDeliveryReportCBUPtr m_dr_cb{};
+    EventCBUPtr          m_event_cb{};
+    DeliveryReportCBUPtr m_dr_cb{};
 };
 
 class Producer

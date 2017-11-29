@@ -19,71 +19,71 @@ public:
     virtual void event_cb(::RdKafka::Event&) override;
 };
 
-class ProducerDeliveryReportCB : public ::RdKafka::DeliveryReportCb 
+class DeliveryReportCB : public ::RdKafka::DeliveryReportCb 
 {
 public:
-    ProducerDeliveryReportCB() = default;
-    virtual ~ProducerDeliveryReportCB() = default;
-    ProducerDeliveryReportCB(const ProducerDeliveryReportCB&) = default;
-    ProducerDeliveryReportCB& operator=(const ProducerDeliveryReportCB&) = default;
-    ProducerDeliveryReportCB(ProducerDeliveryReportCB&&) = default;
-    ProducerDeliveryReportCB& operator=(ProducerDeliveryReportCB&&) = default;
+    DeliveryReportCB() = default;
+    virtual ~DeliveryReportCB() = default;
+    DeliveryReportCB(const DeliveryReportCB&) = default;
+    DeliveryReportCB& operator=(const DeliveryReportCB&) = default;
+    DeliveryReportCB(DeliveryReportCB&&) = default;
+    DeliveryReportCB& operator=(DeliveryReportCB&&) = default;
 
     virtual void dr_cb(::RdKafka::Message&) override;
 };
 
-class ConsumerRebalanceCB : public ::RdKafka::RebalanceCb
+class RebalanceCB : public ::RdKafka::RebalanceCb
 {
 public:
-    ConsumerRebalanceCB() = default;
-    virtual ~ConsumerRebalanceCB() = default;
-    ConsumerRebalanceCB(const ConsumerRebalanceCB&) = delete;
-    ConsumerRebalanceCB& operator=(const ConsumerRebalanceCB&) = delete;
-    ConsumerRebalanceCB(ConsumerRebalanceCB&&) = delete;
-    ConsumerRebalanceCB& operator=(ConsumerRebalanceCB&&) = delete;
+    RebalanceCB() = default;
+    virtual ~RebalanceCB() = default;
+    RebalanceCB(const RebalanceCB&) = delete;
+    RebalanceCB& operator=(const RebalanceCB&) = delete;
+    RebalanceCB(RebalanceCB&&) = delete;
+    RebalanceCB& operator=(RebalanceCB&&) = delete;
 
     virtual void rebalance_cb(::RdKafka::KafkaConsumer*
         , ::RdKafka::ErrorCode
         , std::vector<::RdKafka::TopicPartition*>&);
 };
 
-class ConsumerConsumeCB : public ::RdKafka::ConsumeCb
+class ConsumeCB : public ::RdKafka::ConsumeCb
 {
 public:
-    ConsumerConsumeCB() = default;
-    virtual ~ConsumerConsumeCB() = default;
-    ConsumerConsumeCB(const ConsumerConsumeCB&) = delete;
-    ConsumerConsumeCB& operator=(const ConsumerConsumeCB&) = delete;
-    ConsumerConsumeCB(ConsumerConsumeCB&&) = delete;
-    ConsumerConsumeCB& operator=(ConsumerConsumeCB&&) = delete;
+    ConsumeCB() = default;
+    virtual ~ConsumeCB() = default;
+    ConsumeCB(const ConsumeCB&) = delete;
+    ConsumeCB& operator=(const ConsumeCB&) = delete;
+    ConsumeCB(ConsumeCB&&) = delete;
+    ConsumeCB& operator=(ConsumeCB&&) = delete;
 
     virtual void consume_cb(::RdKafka::Message&, void*) override;
 };
 
-class ConsumerOffsetCommitCB : public ::RdKafka::OffsetCommitCb
+class OffsetCommitCB : public ::RdKafka::OffsetCommitCb
 {
 public:
-    ConsumerOffsetCommitCB() = default;
-    virtual ~ConsumerOffsetCommitCB() = default;
-    ConsumerOffsetCommitCB(const ConsumerOffsetCommitCB&) = delete;
-    ConsumerOffsetCommitCB& operator=(const ConsumerOffsetCommitCB&) = delete;
-    ConsumerOffsetCommitCB(ConsumerOffsetCommitCB&&) = delete;
-    ConsumerOffsetCommitCB& operator=(ConsumerOffsetCommitCB&&) = delete;
+    OffsetCommitCB() = default;
+    virtual ~OffsetCommitCB() = default;
+    OffsetCommitCB(const OffsetCommitCB&) = delete;
+    OffsetCommitCB& operator=(const OffsetCommitCB&) = delete;
+    OffsetCommitCB(OffsetCommitCB&&) = delete;
+    OffsetCommitCB& operator=(OffsetCommitCB&&) = delete;
 
     virtual void offset_commit_cb(::RdKafka::ErrorCode
         , std::vector<::RdKafka::TopicPartition*>&) override;
 };
 
-class ConsumerReceiveMessageCB
+class ReceiveMessageCB
 {
 public:
-    ConsumerReceiveMessageCB() = default;
-    virtual ~ConsumerReceiveMessageCB() = default;
+    ReceiveMessageCB() = default;
+    virtual ~ReceiveMessageCB() = default;
 
-    ConsumerReceiveMessageCB(const ConsumerReceiveMessageCB&) = delete;
-    ConsumerReceiveMessageCB& operator=(const ConsumerReceiveMessageCB&) = delete;
-    ConsumerReceiveMessageCB(ConsumerReceiveMessageCB&&) = delete;
-    ConsumerReceiveMessageCB& operator=(ConsumerReceiveMessageCB&&) = delete;
+    ReceiveMessageCB(const ReceiveMessageCB&) = delete;
+    ReceiveMessageCB& operator=(const ReceiveMessageCB&) = delete;
+    ReceiveMessageCB(ReceiveMessageCB&&) = delete;
+    ReceiveMessageCB& operator=(ReceiveMessageCB&&) = delete;
 
     virtual void onError(int32_t err_no, const std::string& err_str);
     virtual void onReceived(const void* p, size_t p_len, const void* key, size_t key_len);
