@@ -119,9 +119,9 @@
     <ClCompile Include="..\..\knet\detail\kafka\Producer.cpp" />
     <ClCompile Include="..\..\knet\EventManager.cpp" />
     <ClCompile Include="..\..\knet\FakeLog.cpp" />
-    <ClCompile Include="..\..\knet\main.cpp" />
     <ClCompile Include="..\..\knet\Message.cpp" />
     <ClCompile Include="..\..\knet\RPCManager.cpp" />
+    <ClCompile Include="..\..\knet\test\main.cpp" />
     <ClCompile Include="..\..\knet\TimerManager.cpp" />
     <ClCompile Include="..\..\knet\UniformNetwork.cpp" />
   </ItemGroup>

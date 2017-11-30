@@ -28,6 +28,9 @@ using TimerHdl = std::shared_ptr<TimerContext>;
 struct EventTimer;
 using EventTimerPtr = std::shared_ptr<EventTimer>;
 
+class RPCContext;
+using RPCContextUPtr = std::unique_ptr<RPCContext>;
+
 using MsgType = std::string;
 using MsgID   = int32_t;
 

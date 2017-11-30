@@ -42,12 +42,9 @@ void UniformNetwork::Tick(DiffTime diff)
     ProcessMsg();
 }
 
-void UniformNetwork::Rpc(const ServiceID& sid, MsgID msg_id, MsgType msg)
+void UniformNetwork::Rpc(const ServiceID& sid, MsgID msg_id, MsgType msg, RPCContextUPtr cb)
 {
-    // TODO
-    (void)sid;
-    (void)msg;
-    (void)msg_id;
+    m_rpc_manager->AsyncRPC(sid, msg_id, msg, std::move(cb));
 }
 
 void UniformNetwork::Send(const ServiceID& sid, MsgID msg_id, MsgType msg)

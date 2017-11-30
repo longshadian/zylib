@@ -36,7 +36,7 @@ public:
 
     bool Init();
     void Tick(DiffTime diff);
-    void Rpc(const ServiceID& sid, MsgID msg_id, MsgType msg);
+    void Rpc(const ServiceID& sid, MsgID msg_id, MsgType msg, RPCContextUPtr cb);
     void Send(const ServiceID& sid, MsgID msg_id, MsgType msg);
 
 private:

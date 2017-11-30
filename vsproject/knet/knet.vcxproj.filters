@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="..\..\knet\main.cpp" />
     <ClCompile Include="..\..\knet\UniformNetwork.cpp" />
     <ClCompile Include="..\..\knet\CallbackManager.cpp" />
     <ClCompile Include="..\..\knet\RPCManager.cpp" />
@@ -21,6 +20,9 @@
     <ClCompile Include="..\..\knet\detail\kafka\Producer.cpp">
       <Filter>detail\kafka</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\knet\test\main.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="detail">
@@ -28,6 +30,9 @@
     </Filter>
     <Filter Include="detail\kafka">
       <UniqueIdentifier>{ee0d1f8f-eee4-4529-8b8e-f3bbb2a6f09b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test">
+      <UniqueIdentifier>{ea658ed2-d467-431d-8ffe-7b08029a3955}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

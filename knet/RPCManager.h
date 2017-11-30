@@ -22,13 +22,19 @@ class CallbackManager;
 using RPCSuccessCB = std::function<void(ReceivedMessagePtr msg)>;
 using RPCTimeoutCB = std::function<void()>;
 
-struct RPCContext
+class RPCContext
 {
-    RPCSuccessCB m_success_cb{};
-    RPCTimeoutCB m_timeout_cb{};
-};
+public:
+    RPCContext() = default;
+    ~RPCContext() = default;
+    RPCContext(const RPCContext&) = delete;
+    RPCContext& operator=(const RPCContext&) = delete;
+    RPCContext(RPCContext&&) = delete;
+    RPCContext& operator=(RPCContext&&) = delete;
 
-using RPCContextUPtr = std::unique_ptr<RPCContext>;
+    RPCSuccessCB m_success_cb;
+    RPCTimeoutCB m_timeout_cb;
+};
 
 class RPCManager
 {
