@@ -24,7 +24,7 @@ MsgID KMessage::GetMsgID() const
 
 bool KMessage::HasRPCKey() const
 {
-    return m_key != 0;
+    return true;
 }
 
 RPCKey KMessage::GetKey() const
@@ -34,14 +34,13 @@ RPCKey KMessage::GetKey() const
 
 const void* KMessage::GetRPCKeyPtr() const 
 { 
-    return m_key == 0 ? nullptr : &m_key; 
+    return m_key.data();
 }
 
 size_t KMessage::GetRPCKeySize() const 
 { 
-    return GetRPCKeyPtr() ? sizeof(m_key) : 0; 
+    return m_key.size();
 }
-
 
 SendMessage::SendMessage(ServiceID sid, MsgID msg_id, MsgType payload, RPCKey key)
     : KMessage(std::move(sid), std::move(msg_id), std::move(key))
@@ -74,6 +73,11 @@ ReceivedMessage::~ReceivedMessage()
 {
 }
 
+const MsgType& ReceivedMessage::GetMsgType() const
+{
+    return m_payload;
+}
+
 void MessageDecoder::encode(SendMessage& send_msg)
 {
     auto& buffer = send_msg.m_buffer;
@@ -95,9 +99,8 @@ ReceivedMessagePtr MessageDecoder::decode(const uint8_t* p, size_t len, const ui
 {
     if (len < 8 + 4)
         return nullptr;
-    if (key_len != 0 && key_len != 8) {
+    if (!key || key_len == 0)
         return nullptr;
-    }
 
     std::array<char, 8> topic_name{};
     std::memcpy(topic_name.data(), p, 8);
@@ -110,10 +113,7 @@ ReceivedMessagePtr MessageDecoder::decode(const uint8_t* p, size_t len, const ui
     p += 4;
 
     RPCKey rpc_key{};
-    if (key && key_len != 0) {
-        std::memcpy(&rpc_key, key, 8);
-    }
-
+    rpc_key.assign(reinterpret_cast<const char*>(key), reinterpret_cast<const char*>(key) + key_len);
     auto received_msg = std::make_shared<ReceivedMessage>(std::move(sid), msg_id, rpc_key);
     received_msg->m_payload.append(p, p + len - 8 - 4);
     return received_msg;

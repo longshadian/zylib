@@ -1,6 +1,7 @@
 #pragma once
 
 #include "knet/KNetTypes.h"
+#include "knet/CallbackManager.h"
 
 namespace knet {
 
@@ -21,6 +22,7 @@ public:
 
     void setConsuerConf(std::unique_ptr<ConsumerConf> conf);
     void setProducerConf(std::unique_ptr<ProducerConf> conf);
+    void setMsgCallbackArray(Msg_Callback_Array arr);
 
     bool Init();
     void Tick(DiffTime diff);
@@ -34,6 +36,7 @@ private:
 
     std::unique_ptr<ConsumerConf>   m_consumer_conf;
     std::unique_ptr<ProducerConf>   m_producer_conf;
+    Msg_Callback_Array              m_msg_cb_array;
 };
 
 } // knet

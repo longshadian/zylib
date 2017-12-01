@@ -16,7 +16,7 @@ RPCManager::RPCManager()
     : m_consumer()
     , m_producer()
     , m_cb_mgr(std::make_unique<CallbackManager>())
-    , m_current_key()
+    , m_key_sequence_id()
     , m_contexts()
     , m_mtx()
     , m_success_key()
@@ -42,7 +42,7 @@ bool RPCManager::Init(std::unique_ptr<ConsumerConf> c_conf, std::unique_ptr<Prod
         return false;
     }
     m_cb_mgr = std::make_unique<CallbackManager>();
-    return false;
+    return true;
 }
 
 void RPCManager::Tick(DiffTime diff)
@@ -63,10 +63,8 @@ RPCKey RPCManager::AsyncRPC(const ServiceID& sid, MsgID msg_id, MsgType msg, RPC
 
 RPCKey RPCManager::NextKey()
 {
-    ++m_current_key;
-    if (m_current_key == 0)
-        return ++m_current_key;
-    return m_current_key;
+    ++m_key_sequence_id;
+    return m_consumer->GetServiceID() + std::to_string(m_key_sequence_id);
 }
 
 void RPCManager::CB_SuccessKey(RPCKey key)
@@ -92,21 +90,20 @@ void RPCManager::ProcessMsg()
     while (!temp.empty()) {
         ReceivedMessagePtr msg = std::move(temp.front());
         temp.pop();
-        if (msg->HasRPCKey()) {
-            RpcReceviedMsg(msg);
-        } else {
-            NormalReceviedMsg(msg);
-        }
+        RpcReceviedMsg(msg);
     }
 }
 
 void RPCManager::RpcReceviedMsg(ReceivedMessagePtr msg)
 {
     auto it = m_contexts.find(msg->GetKey());
-    if (it == m_contexts.end())
+    if (it == m_contexts.end()) {
+        NormalReceviedMsg(msg);
         return;
+    }
     auto& context = it->second;
-    context->m_success_cb(msg);
+    if (context->m_success_cb)
+        context->m_success_cb(msg);
     m_contexts.erase(msg->GetKey());
 }
 
@@ -124,11 +121,16 @@ void RPCManager::CB_ReceviedMsg(const void* p, size_t p_len, const void* key, si
         reinterpret_cast<const uint8_t*>(p), p_len
         , reinterpret_cast<const uint8_t*>(key), key_len);
     if (!received_msg) {
-        FAKE_LOG(WARNING) << "decode msg fail\n";
+        FAKE_LOG(WARNING) << "decode msg fail";
         return;
     }
     std::lock_guard<std::mutex> lk(m_mtx);
     m_received_msgs.push(std::move(received_msg));
+}
+
+CallbackManager& RPCManager::getCallbackManager()
+{
+    return *m_cb_mgr;
 }
 
 } // knet

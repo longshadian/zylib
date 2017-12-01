@@ -15,7 +15,7 @@ using ReceivedMessagePtr = std::shared_ptr<ReceivedMessage>;
 using MessageContextPtr = std::shared_ptr<KMessageContext>;
 
 using ServiceID = std::string;
-using RPCKey = uint64_t;
+using RPCKey = std::string;
 
 using Duration = std::chrono::milliseconds;
 

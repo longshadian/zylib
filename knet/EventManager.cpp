@@ -100,7 +100,7 @@ EventManager::EventManager()
     , m_mtx()
     , m_socket_pair(std::make_unique<SocketPair>(m_io_service))
 {
-    m_socket_pair->AsyncRead();
+    //m_socket_pair->AsyncRead();
 }
 
 EventManager::~EventManager()

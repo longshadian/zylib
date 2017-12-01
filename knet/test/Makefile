@@ -30,6 +30,8 @@ LIB	=  ../libknet.a \
 		
 CC      = g++
 CFLAGS  = -g -Wall -Wextra -Werror -std=c++14
+LDFLAGS = -Wl,-rpath=/home/cgy/libs/librdkafka-0.11.1/src-cpp \
+	  -Wl,-rpath=/home/cgy/libs/librdkafka-0.11.1/src 
 
 .SUFFIXES:  .o .cpp .cc
 

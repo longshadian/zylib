@@ -51,6 +51,7 @@ public:
     RPCKey AsyncRPC(const ServiceID& sid, MsgID msg_id, MsgType msg, RPCContextUPtr context);
 
     void CB_ReceviedMsg(const void* p, size_t p_len, const void* key, size_t key_len);
+    CallbackManager& getCallbackManager();
 private:
     RPCKey NextKey();
     void CB_SuccessKey(RPCKey key);
@@ -64,7 +65,7 @@ private:
     std::unique_ptr<detail::Consumer>   m_consumer;
     std::unique_ptr<detail::Producer>   m_producer;
     std::unique_ptr<CallbackManager>    m_cb_mgr;
-    RPCKey                              m_current_key;
+    uint64_t                            m_key_sequence_id;
     std::unordered_map<RPCKey, RPCContextUPtr> m_contexts; 
 
     std::mutex                          m_mtx;

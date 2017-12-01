@@ -10,6 +10,7 @@
 #include <rdkafkacpp.h>
 
 #include "knet/detail/kafka/Callback.h"
+#include "knet/FakeLog.h"
 
 namespace knet {
 
@@ -145,9 +146,10 @@ void Consumer::ProcessMsg(const ::RdKafka::Message& msg)
 {
     switch (msg.err()) {
     case ::RdKafka::ERR__TIMED_OUT:
+        break;
     case ::RdKafka::ERR_NO_ERROR:
-    case ::RdKafka::ERR__PARTITION_EOF:
         m_received_cb->onReceived(msg.payload(), msg.len(), msg.key_pointer(), msg.key_len());
+    case ::RdKafka::ERR__PARTITION_EOF:
         return;
     case ::RdKafka::ERR__UNKNOWN_TOPIC:
     case ::RdKafka::ERR__UNKNOWN_PARTITION:

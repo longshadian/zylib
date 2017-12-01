@@ -59,6 +59,7 @@ public:
     ReceivedMessage(ReceivedMessage&&) = delete;
     ReceivedMessage& operator=(ReceivedMessage&&) = delete;
 
+    const MsgType& GetMsgType() const;
 private:
     MsgType              m_payload;
 };
