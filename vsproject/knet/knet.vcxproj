@@ -121,7 +121,8 @@
     <ClCompile Include="..\..\knet\FakeLog.cpp" />
     <ClCompile Include="..\..\knet\Message.cpp" />
     <ClCompile Include="..\..\knet\RPCManager.cpp" />
-    <ClCompile Include="..\..\knet\test\main.cpp" />
+    <ClCompile Include="..\..\knet\test\game.cpp" />
+    <ClCompile Include="..\..\knet\test\lobby.cpp" />
     <ClCompile Include="..\..\knet\TimerManager.cpp" />
     <ClCompile Include="..\..\knet\UniformNetwork.cpp" />
   </ItemGroup>

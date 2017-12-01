@@ -20,7 +20,10 @@
     <ClCompile Include="..\..\knet\detail\kafka\Producer.cpp">
       <Filter>detail\kafka</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\knet\test\main.cpp">
+    <ClCompile Include="..\..\knet\test\game.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\knet\test\lobby.cpp">
       <Filter>test</Filter>
     </ClCompile>
   </ItemGroup>
