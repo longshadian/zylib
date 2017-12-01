@@ -22,7 +22,11 @@ INC = 	-I../../ \
 	-I$(RDKAFKA_INCLUDE) \
 	-I$(RDKAFKACPP_INCLUDE) 
 		
-LIB	= 
+LIB	=  ../libknet.a \
+	-L$(RDKAFKACPP_LIB) -lrdkafka++ \
+	-L$(RDKAFKA_LIB) -lrdkafka \
+	 -lboost_system -lpthread
+
 		
 CC      = g++
 CFLAGS  = -g -Wall -Wextra -Werror -std=c++14
@@ -39,10 +43,10 @@ SRC_CPP += $(wildcard $(DIR_SRC)/detail/kafka/*.cpp)
 
 OBJS = $(SRC_CPP:%.cpp=%.o)
 
-OUTPUT = ./libknet.a
+OUTPUT = a.out
 
-$(OUTPUT): $(OBJS)
-	ar -rc $(OUTPUT) $(OBJS) 
+$(OUTPUT):$(OBJS)
+	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
 	
 .cpp.o:
 	$(CC) $(CFLAGS) $(INC) -c $< -o $@

@@ -18,7 +18,7 @@ namespace detail {
 Consumer::Consumer()
     : m_thread()
     , m_run()
-    , m_server_conf(std::make_unique<KafkaConf>())
+    , m_consumer_conf(std::make_unique<ConsumerConf>())
     , m_consumer()
     , m_consumer_cb(std::make_unique<ConsumerCB>())
     , m_received_cb(std::make_unique<ReceiveMessageCB>())
@@ -31,15 +31,15 @@ Consumer::Consumer()
 
 Consumer::~Consumer()
 {
-    stop();
-    waitThreadExit();
+    Stop();
+    WaitThreadExit();
 }
 
-bool Consumer::init(std::unique_ptr<KafkaConf> server_conf
+bool Consumer::Init(std::unique_ptr<ConsumerConf> consumer_conf 
     , std::unique_ptr<ReceiveMessageCB> msg_cb 
     , std::unique_ptr<ConsumerCB> cb)
 {
-    m_server_conf = std::move(server_conf);
+    m_consumer_conf = std::move(consumer_conf);
     if (cb) {
         if (cb->m_event_cb)
             m_consumer_cb->m_event_cb = std::move(cb->m_event_cb);
@@ -58,11 +58,11 @@ bool Consumer::init(std::unique_ptr<KafkaConf> server_conf
 
     std::string err_str{};
     ::RdKafka::Conf::ConfResult conf_ret = ::RdKafka::Conf::CONF_OK;
-    conf_ret = conf->set("group.id", m_server_conf->m_group_id, err_str);
+    conf_ret = conf->set("group.id", m_consumer_conf->m_group_id, err_str);
     if (conf_ret != ::RdKafka::Conf::CONF_OK) {
         return false;
     }
-    conf_ret = conf->set("metadata.broker.list", m_server_conf->m_broker_list, err_str);
+    conf_ret = conf->set("metadata.broker.list", m_consumer_conf->m_broker_list, err_str);
     if (conf_ret != ::RdKafka::Conf::CONF_OK) {
         return false;
     }
@@ -96,8 +96,8 @@ bool Consumer::init(std::unique_ptr<KafkaConf> server_conf
     if (!consumer) {
         return false;
     }
-    std::unique_ptr<::RdKafka::TopicPartition> topic{::RdKafka::TopicPartition::create(m_server_conf->m_topic
-        , m_server_conf->m_partition) };
+    std::unique_ptr<::RdKafka::TopicPartition> topic{::RdKafka::TopicPartition::create(m_consumer_conf->m_topic
+        , m_consumer_conf->m_partition) };
     auto ec = consumer->assign({ &*topic });
     if (ec) {
         return false;
@@ -105,43 +105,43 @@ bool Consumer::init(std::unique_ptr<KafkaConf> server_conf
     m_consumer = std::move(consumer);
 
     m_run = true;
-    std::thread t{ std::bind(&Consumer::threadRun, this) };
+    std::thread t{ std::bind(&Consumer::ThreadRun, this) };
     m_thread = std::move(t);
     return true;
 }
 
-void Consumer::stop()
+void Consumer::Stop()
 {
     m_run = false;
 }
 
-void Consumer::waitThreadExit()
+void Consumer::WaitThreadExit()
 {
     if (m_thread.joinable())
         m_thread.join();
 }
 
-void Consumer::flush()
+void Consumer::Flush()
 {
     m_consumer->close();
 }
 
 const ServiceID& Consumer::GetServiceID() const
 {
-    return m_server_conf->m_topic;
+    return m_consumer_conf->m_topic;
 }
 
-void Consumer::threadRun()
+void Consumer::ThreadRun()
 {
     while (m_run) {
         ::RdKafka::Message* msg = m_consumer->consume(1000);
-        processMsg(*msg);
+        ProcessMsg(*msg);
         m_consumer->commitSync(msg);
         delete msg;
     }
 }
 
-void Consumer::processMsg(const ::RdKafka::Message& msg)
+void Consumer::ProcessMsg(const ::RdKafka::Message& msg)
 {
     switch (msg.err()) {
     case ::RdKafka::ERR__TIMED_OUT:

@@ -9,21 +9,21 @@
 
 namespace knet {
 
-class UniformNetwork;
+class RPCManager;
 
 namespace detail {
 
 class AsyncReceivedMsgCB : public ReceiveMessageCB
 {
 public:
-    AsyncReceivedMsgCB(UniformNetwork& un);
+    AsyncReceivedMsgCB(RPCManager& rpc);
     virtual ~AsyncReceivedMsgCB();
 
     virtual void onError(int32_t err_no, const std::string& err_str) override;
     virtual void onReceived(const void* p, size_t p_len, const void* key, size_t key_len) override;
 
 private:
-    UniformNetwork& m_un;
+    RPCManager& m_rpc;
 };
 
 } // detail

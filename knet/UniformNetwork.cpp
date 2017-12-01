@@ -5,12 +5,7 @@
 #include "knet/RPCManager.h"
 #include "knet/TimerManager.h"
 #include "knet/EventManager.h"
-#include "knet/Message.h"
 #include "knet/FakeLog.h"
-
-#include "knet/detail/kafka/Consumer.h"
-#include "knet/detail/kafka/Producer.h"
-#include "knet/detail/kafka/Callback.h"
 
 namespace knet {
 
@@ -19,6 +14,11 @@ namespace knet {
 //////////////////////////////////////////////////////////////////////////
 
 UniformNetwork::UniformNetwork()
+    : m_event_manager()
+    , m_timer_manager()
+    , m_rpc_manager()
+    , m_consumer_conf()
+    , m_producer_conf()
 {
 }
 
@@ -26,23 +26,41 @@ UniformNetwork::~UniformNetwork()
 {
 }
 
+void UniformNetwork::setConsuerConf(std::unique_ptr<ConsumerConf> conf)
+{
+    m_consumer_conf = std::move(conf);
+}
+
+void UniformNetwork::setProducerConf(std::unique_ptr<ProducerConf> conf)
+{
+    m_producer_conf = std::move(conf);
+}
+
 bool UniformNetwork::Init()
 {
     m_event_manager = std::make_unique<EventManager>();
-    m_consumer = std::make_unique<detail::Consumer>();
-    m_producer = std::make_unique<detail::Producer>();
-    m_rpc_manager = std::make_unique<RPCManager>(*m_producer);
+    if (!m_event_manager->Init())
+        return false;
+
     m_timer_manager = std::make_unique<TimerManager>(*m_event_manager);
-    return false;
+    if (!m_timer_manager->Init())
+        return false;
+
+    m_rpc_manager = std::make_unique<RPCManager>();
+    if (!m_rpc_manager->Init(std::move(m_consumer_conf), std::move(m_producer_conf)))
+        return false;
+
+    return true;
 }
 
 void UniformNetwork::Tick(DiffTime diff)
 {
-    (void)diff;
-    ProcessMsg();
+    m_event_manager->Tick(diff);
+    m_timer_manager->Tick(diff);
+    m_rpc_manager->Tick(diff);
 }
 
-void UniformNetwork::Rpc(const ServiceID& sid, MsgID msg_id, MsgType msg, RPCContextUPtr cb)
+void UniformNetwork::RPC(const ServiceID& sid, MsgID msg_id, MsgType msg, RPCContextUPtr cb)
 {
     m_rpc_manager->AsyncRPC(sid, msg_id, msg, std::move(cb));
 }
@@ -52,39 +70,6 @@ void UniformNetwork::Send(const ServiceID& sid, MsgID msg_id, MsgType msg)
     (void)sid;
     (void)msg_id;
     (void)msg;
-}
-
-void UniformNetwork::ProcessMsg()
-{
-    decltype(m_received_msgs) temp{};
-    {
-        std::lock_guard<std::mutex> lk{m_mtx};
-        std::swap(temp, m_received_msgs);
-    }
-
-    while (!temp.empty()) {
-        ReceivedMessagePtr msg = std::move(temp.front());
-        temp.pop();
-        m_rpc_manager->OnReceivedMsg(msg);
-    }
-}
-
-void UniformNetwork::ReceviedMsg_CB(const void* p, size_t p_len, const void* key, size_t key_len)
-{
-    auto received_msg = MessageDecoder::decode(
-        reinterpret_cast<const uint8_t*>(p), p_len
-        , reinterpret_cast<const uint8_t*>(key), key_len);
-    if (!received_msg) {
-        FAKE_LOG(WARNING) << "decode msg fail\n";
-        return;
-    }
-    std::lock_guard<std::mutex> lk(m_mtx);
-    m_received_msgs.push(std::move(received_msg));
-}
-
-const ServiceID& UniformNetwork::SelfServiceID() const
-{
-    return m_consumer->GetServiceID();
 }
 
 } // knet

@@ -34,4 +34,19 @@ using RPCContextUPtr = std::unique_ptr<RPCContext>;
 using MsgType = std::string;
 using MsgID   = int32_t;
 
+struct ConsumerConf
+{
+    std::string m_group_id{};
+    std::string m_broker_list{};
+    std::string m_topic{};
+    int32_t     m_partition{};
+};
+using ConsumerConfUPtr = std::unique_ptr<ConsumerConf>;
+
+struct ProducerConf
+{
+    std::string m_broker_list{};
+};
+using ProducerConfUPtr = std::unique_ptr<ProducerConf>;
+
 } // knet

@@ -20,10 +20,6 @@ class SendMessage;
 
 namespace detail {
 
-struct ProducerConf
-{
-    std::string m_broker_list{};
-};
 
 struct ProducerCB 
 {

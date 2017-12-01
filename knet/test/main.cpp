@@ -1,10 +1,14 @@
 
+#include <iostream>
+#include <memory>
+
 #include <boost/asio.hpp>
 
 #include "knet/knet.h"
 
 int main()
 {
-    boost::asio::io_service io_service{};
+    auto p = std::make_shared<knet::UniformNetwork>();
+    p->Init();
     return 0;
 }
