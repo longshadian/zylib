@@ -35,17 +35,21 @@ CFLAGS  = -g -Wall -Wextra -Werror -std=c++14
 
 .PHONY:clean
 
-DIR_SRC= .
-SRC_CPP = $(wildcard $(DIR_SRC)/*.cpp)
-SRC_CPP += $(wildcard $(DIR_SRC)/kafka/*.cpp)
-SRC_CPP += $(wildcard $(DIR_SRC)/detail/*.cpp)
-SRC_CPP += $(wildcard $(DIR_SRC)/detail/kafka/*.cpp)
+#DIR_SRC= .
+#SRC_CPP = $(wildcard $(DIR_SRC)/*.cpp)
+#SRC_CPP += $(wildcard $(DIR_SRC)/kafka/*.cpp)
+#SRC_CPP += $(wildcard $(DIR_SRC)/detail/*.cpp)
+#SRC_CPP += $(wildcard $(DIR_SRC)/detail/kafka/*.cpp)
 
-OBJS = $(SRC_CPP:%.cpp=%.o)
+#OBJS = $(SRC_CPP:%.cpp=%.o)
+OUTPUT=game lobby
 
-OUTPUT = a.out
+all:$(OUTPUT)
 
-$(OUTPUT):$(OBJS)
+game:game.cpp
+	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
+    
+lobby:lobby.cpp
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
 	
 .cpp.o:
