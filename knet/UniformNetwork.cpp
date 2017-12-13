@@ -51,7 +51,7 @@ bool UniformNetwork::Init()
     if (!m_timer_manager->Init())
         return false;
 
-    m_rpc_manager = std::make_unique<RPCManager>();
+    m_rpc_manager = std::make_unique<RPCManager>(*this);
     if (!m_rpc_manager->Init(std::move(m_consumer_conf), std::move(m_producer_conf)))
         return false;
     m_rpc_manager->getCallbackManager().SetMsgCallbackArray(std::move(m_msg_cb_array));
@@ -76,6 +76,16 @@ void UniformNetwork::Send(const ServiceID& sid, MsgID msg_id, MsgType msg)
     (void)sid;
     (void)msg_id;
     (void)msg;
+}
+
+TimerManager& UniformNetwork::GetTimerManager()
+{
+    return *m_timer_manager;
+}
+
+const TimerManager& UniformNetwork::GetTimerManager() const
+{
+    return *m_timer_manager;
 }
 
 } // knet

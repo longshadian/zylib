@@ -11,19 +11,19 @@ namespace knet {
 
 class EventManager;
 
-class TimerContext
+class Timer
 {
 public:
-    TimerContext()
+    Timer()
         : m_sync_cb()
         , m_et() 
     {}
 
-    ~TimerContext() {}
-    TimerContext(const TimerContext&) = delete;
-    TimerContext& operator=(const TimerContext&) = delete;
-    TimerContext(TimerContext&&) = delete;
-    TimerContext& operator=(TimerContext&&) = delete;
+    ~Timer() {}
+    Timer(const Timer&) = delete;
+    Timer& operator=(const Timer&) = delete;
+    Timer(Timer&&) = delete;
+    Timer& operator=(Timer&&) = delete;
 
     Callback        m_sync_cb;
     EventTimerPtr   m_et;
@@ -48,10 +48,10 @@ private:
     void EventCallback(TimerHdl hdl);
 
 private:
-    EventManager&                       m_event_manager;
-    std::unordered_set<TimerContextPtr> m_timers;
-    std::mutex                          m_mtx;
-    std::queue<TimerContextPtr>         m_wait_cb;
+    EventManager&                m_event_manager;
+    std::unordered_set<TimerPtr> m_timers;
+    std::mutex                   m_mtx;
+    std::queue<TimerPtr>         m_wait_cb;
 };
 
 } // knet

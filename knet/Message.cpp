@@ -3,6 +3,8 @@
 #include <cstring>
 #include <array>
 
+#include "knet/RPCManager.h"
+
 namespace knet {
 
 KMessage::KMessage(ServiceID id, MsgID msg_id, RPCKey key)
@@ -78,7 +80,20 @@ const MsgType& ReceivedMessage::GetMsgType() const
     return m_payload;
 }
 
-void MessageDecoder::encode(SendMessage& send_msg)
+ReceivedMessageContext::ReceivedMessageContext(RPCManager& rpc_mgr)
+    : m_rpc_mgr(rpc_mgr)
+    , m_sid()
+    , m_key()
+{
+
+}
+
+void ReceivedMessageContext::SendResponse(MsgID msg_id, MsgType msg)
+{
+    m_rpc_mgr.RPCResponse(m_sid, msg_id, std::move(msg), m_key);
+}
+
+void MessageDecoder::Encode(SendMessage& send_msg)
 {
     auto& buffer = send_msg.m_buffer;
     buffer.resize(8 + 4 + send_msg.m_payload.size());
@@ -95,7 +110,7 @@ void MessageDecoder::encode(SendMessage& send_msg)
     std::memcpy(p, send_msg.m_payload.data(), send_msg.m_payload.size());
 }
 
-ReceivedMessagePtr MessageDecoder::decode(const uint8_t* p, size_t len, const uint8_t* key, size_t key_len)
+ReceivedMessagePtr MessageDecoder::Decode(const uint8_t* p, size_t len, const uint8_t* key, size_t key_len)
 {
     if (len < 8 + 4)
         return nullptr;

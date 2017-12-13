@@ -29,6 +29,9 @@ public:
     void RPC(const ServiceID& sid, MsgID msg_id, MsgType msg, RPCContextUPtr cb);
     void Send(const ServiceID& sid, MsgID msg_id, MsgType msg);
 
+    TimerManager& GetTimerManager();
+    const TimerManager& GetTimerManager() const;
+
 private:
     std::unique_ptr<EventManager>   m_event_manager;
     std::unique_ptr<TimerManager>   m_timer_manager;

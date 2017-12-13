@@ -154,7 +154,7 @@ void Producer::StartSendThread()
             }
         }
         if (send_msg) {
-            MessageDecoder::encode(*send_msg);
+            MessageDecoder::Encode(*send_msg);
             SendMessageInternal(*send_msg);
         }
     }

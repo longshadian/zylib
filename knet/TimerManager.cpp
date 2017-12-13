@@ -31,10 +31,10 @@ void TimerManager::Tick(DiffTime diff)
     }
 
     while (!all_wait_cb.empty()) {
-        TimerContextPtr tc = std::move(all_wait_cb.front());
+        TimerPtr tc = std::move(all_wait_cb.front());
         all_wait_cb.pop();
 
-        // 如果没找到，说明此计时器已经被取消，不需要callback
+        // 如果没找到，说明此定时器已经被取消，不需要callback
         auto it = m_timers.find(tc);
         if (it == m_timers.end())
             continue;
@@ -44,7 +44,7 @@ void TimerManager::Tick(DiffTime diff)
 
 TimerHdl TimerManager::AddTimer(Callback sync_cb, Duration d)
 {
-    auto tc = std::make_shared<TimerContext>();
+    auto tc = std::make_shared<Timer>();
     auto et = m_event_manager.AddTimer(std::bind(&TimerManager::EventCallback, this, tc), d);
     tc->m_sync_cb = std::move(sync_cb);
     m_timers.insert(tc);

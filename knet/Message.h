@@ -7,6 +7,8 @@
 namespace knet {
 
 class MessageDecoder;
+class ReceivedMessageContext;
+class RPCManager;
 
 class KMessage
 {
@@ -67,14 +69,20 @@ private:
 class ReceivedMessageContext
 {
 public:
-    ReceivedMessageContext() = default;
+    ReceivedMessageContext(RPCManager& rpc_mgr);
     ~ReceivedMessageContext() = default;
+
+    void SendResponse(MsgID msg_id, MsgType msg);
+private:
+    RPCManager& m_rpc_mgr;
+    ServiceID   m_sid;
+    RPCKey      m_key;
 };
 
 struct MessageDecoder
 {
-    static void encode(SendMessage& send_msg);
-    static ReceivedMessagePtr decode(const uint8_t* p, size_t len, const uint8_t* key, size_t key_len);
+    static void Encode(SendMessage& send_msg);
+    static ReceivedMessagePtr Decode(const uint8_t* p, size_t len, const uint8_t* key, size_t key_len);
 };
 
 } // knet

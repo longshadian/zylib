@@ -9,21 +9,18 @@ namespace knet {
 using DiffTime = std::chrono::milliseconds;
 
 class ReceivedMessage;
-class KMessageContext;
+class ReceivedMessageContext;
 
 using ReceivedMessagePtr = std::shared_ptr<ReceivedMessage>;
-using MessageContextPtr = std::shared_ptr<KMessageContext>;
-
-using ServiceID = std::string;
-using RPCKey = std::string;
+using MessageContextPtr = std::shared_ptr<ReceivedMessageContext>;
 
 using Duration = std::chrono::milliseconds;
 
 using Callback = std::function<void()>;
 
-class TimerContext;
-using TimerContextPtr = std::shared_ptr<TimerContext>;
-using TimerHdl = std::shared_ptr<TimerContext>;
+class Timer;
+using TimerPtr = std::shared_ptr<Timer>;
+using TimerHdl = std::shared_ptr<Timer>;
 
 struct EventTimer;
 using EventTimerPtr = std::shared_ptr<EventTimer>;
@@ -48,5 +45,10 @@ struct ProducerConf
     std::string m_broker_list{};
 };
 using ProducerConfUPtr = std::unique_ptr<ProducerConf>;
+
+
+using RPCKey = std::string;
+
+using ServiceID = std::string;
 
 } // knet
