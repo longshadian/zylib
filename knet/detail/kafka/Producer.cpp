@@ -128,6 +128,8 @@ void Producer::SendTo(std::shared_ptr<SendMessage> send_msg)
 {
     if (!m_run)
         return;
+    if (send_msg->Invalid())
+        return;
     std::lock_guard<std::mutex> lk{m_mtx};
     m_queue.push(std::move(send_msg));
     m_cond.notify_one();
@@ -162,10 +164,10 @@ void Producer::StartSendThread()
 
 void Producer::SendMessageInternal(const SendMessage& msg)
 {
-    const auto& sid = msg.GetServiceID();
-    auto* topic = FindOrCreate(sid);
+    const auto& to_sid = msg.GetToSID();
+    auto* topic = FindOrCreate(to_sid);
     if (!topic) {
-        FAKE_LOG(WARNING) << "can't FindOrCreate topic. service_id: " << sid;
+        FAKE_LOG(WARNING) << "can't FindOrCreate topic. to_sid: " << to_sid;
         return;
     }
 
@@ -173,7 +175,7 @@ void Producer::SendMessageInternal(const SendMessage& msg)
     ::RdKafka::ErrorCode resp = m_producer->produce(&*topic
         , 0, ::RdKafka::Producer::RK_MSG_COPY
         , (void*)msg.GetPtr(), msg.GetSize()
-        , msg.GetRPCKeyPtr(), msg.GetRPCKeySize()
+        , msg.GetKeyPtr(), msg.GetKeySize()
         , nullptr);
     if (resp) {
         FAKE_LOG(WARNING) << "send replay fail. err: " << resp
@@ -183,9 +185,9 @@ void Producer::SendMessageInternal(const SendMessage& msg)
     }
 }
 
-::RdKafka::Topic* Producer::FindOrCreate(const ServiceID& sid)
+::RdKafka::Topic* Producer::FindOrCreate(const ServiceID& to_sid)
 {
-    auto it = m_topics.find(sid);
+    auto it = m_topics.find(to_sid);
     if (it != m_topics.end())
         return it->second.get();
 
@@ -199,14 +201,14 @@ void Producer::SendMessageInternal(const SendMessage& msg)
     }
 
     std::unique_ptr<::RdKafka::Topic> new_topic{
-        ::RdKafka::Topic::create(&*m_producer, sid, &*tconf, err_str)};
+        ::RdKafka::Topic::create(&*m_producer, to_sid, &*tconf, err_str)};
     if (!new_topic) {
         FAKE_LOG(WARNING) << "create topic fail.";
         return nullptr;
     }
 
     auto* ptr = new_topic.get();
-    m_topics.insert(std::make_pair(sid, std::move(new_topic)));
+    m_topics.insert(std::make_pair(to_sid, std::move(new_topic)));
     return ptr;
 }
 

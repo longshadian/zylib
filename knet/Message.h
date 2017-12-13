@@ -7,29 +7,32 @@
 namespace knet {
 
 class MessageDecoder;
-class ReceivedMessageContext;
+class MessageContext;
 class RPCManager;
 
 class KMessage
 {
 public:
-    KMessage(ServiceID id, MsgID msg_id, RPCKey key);
+    KMessage(ServiceID from_sid, ServiceID to_sid, MsgID msg_id, RPCKey key);
     virtual ~KMessage() = default;
     KMessage(const KMessage&) = delete;
     KMessage& operator=(const KMessage&) = delete;
     KMessage(KMessage&&) = delete;
     KMessage& operator=(KMessage&&) = delete;
 
-    const ServiceID&    GetServiceID() const;
+    bool                Invalid() const;
+    const ServiceID&    GetFromSID() const;
+    const ServiceID&    GetToSID() const;
     MsgID               GetMsgID() const;
 
-    bool                HasRPCKey() const;
+    bool                HasKey() const;
     RPCKey              GetKey() const;
-    const void*         GetRPCKeyPtr() const;
-    size_t              GetRPCKeySize() const;
+    const void*         GetKeyPtr() const;
+    size_t              GetKeySize() const;
 
 protected:
-    ServiceID m_service_id;
+    ServiceID m_from_sid;
+    ServiceID m_to_sid;
     MsgID     m_msg_id;
     RPCKey    m_key;
 };
@@ -38,7 +41,7 @@ class SendMessage : public KMessage
 {
     friend class MessageDecoder;
 public:
-    SendMessage(ServiceID sid, MsgID msg_id, MsgType payload, RPCKey key);
+    SendMessage(ServiceID from_sid, ServiceID to_sid, MsgID msg_id, MsgType payload, RPCKey key);
     virtual ~SendMessage() = default;
 
     const void*         GetPtr() const;
@@ -54,28 +57,34 @@ class ReceivedMessage : public KMessage
 {
     friend class MessageDecoder;
 public:
-    ReceivedMessage(ServiceID id, MsgID msg_id, RPCKey key);
+    ReceivedMessage(ServiceID from_sid, ServiceID to_sid, MsgID msg_id, RPCKey key);
     virtual ~ReceivedMessage();
     ReceivedMessage(const ReceivedMessage&) = delete;
     ReceivedMessage& operator=(const ReceivedMessage&) = delete;
     ReceivedMessage(ReceivedMessage&&) = delete;
     ReceivedMessage& operator=(ReceivedMessage&&) = delete;
 
-    const MsgType& GetMsgType() const;
+    const MsgType& GetMsg() const;
 private:
     MsgType              m_payload;
 };
 
-class ReceivedMessageContext
+class MessageContext
 {
 public:
-    ReceivedMessageContext(RPCManager& rpc_mgr);
-    ~ReceivedMessageContext() = default;
+    MessageContext(RPCManager& rpc_mgr
+        , ServiceID from_sid, ServiceID to_sid, const RPCKey& key);
+    ~MessageContext() = default;
 
     void SendResponse(MsgID msg_id, MsgType msg);
+    const ServiceID& GetFromSID() const;
+    const ServiceID& GetToSID() const;
+    const RPCKey& GetKey() const;
+
 private:
     RPCManager& m_rpc_mgr;
-    ServiceID   m_sid;
+    ServiceID   m_from_sid;
+    ServiceID   m_to_sid;
     RPCKey      m_key;
 };
 

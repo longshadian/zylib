@@ -21,6 +21,21 @@ public:
     }
 };
 
+void OnSuccess(knet::ReceivedMessagePtr msg)
+{
+    FAKE_LOG(DEBUG) << "success: from: " << msg->GetFromSID()
+        << " to: " << msg->GetToSID()
+        << " key: " << msg->GetKey()
+        << " msg_id: " << msg->GetMsgID()
+        << " msg: " << msg->GetMsg();
+
+}
+
+void OnTimeout()
+{
+    FAKE_LOG(DEBUG) << "timeout";
+}
+
 
 int main()
 {
@@ -49,7 +64,13 @@ int main()
     while (true) {
         FAKE_LOG(DEBUG) << "sleep...";
         std::this_thread::sleep_for(std::chrono::seconds{1});
-        p->RPC("k.lobby", 100, "xxxxxxxx", std::make_unique<knet::RPCContext>());
+        //p->RPC("k.lobby", 100, "xxxxxxxx", std::make_unique<knet::RPCContext>());
+        //p->RPC("k.lobby", 100, "xxxxxxxx", nullptr);
+
+        auto context = std::make_unique<knet::RPCContext>();
+        context->SetSuccessCB(std::bind(&OnSuccess, std::placeholders::_1));
+        p->RPC("k.lobby", 100, "xxxxxxxx", std::move(context));
+
         tnow = std::chrono::system_clock::now();
         auto delta = std::chrono::duration_cast<knet::DiffTime>(tnow - tprevious);
         p->Tick(delta);

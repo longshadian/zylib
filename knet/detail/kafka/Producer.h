@@ -47,7 +47,7 @@ private:
     void StartPollThread();
     void StartSendThread();
     void SendMessageInternal(const SendMessage& msg);
-    ::RdKafka::Topic* FindOrCreate(const ServiceID& sid);
+    ::RdKafka::Topic* FindOrCreate(const ServiceID& to_sid);
 
 private:
     std::unique_ptr<ProducerConf>               m_p_conf;

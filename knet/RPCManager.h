@@ -21,6 +21,7 @@ class CallbackManager;
 class TimerManager;
 class UniformNetwork;
 class RPCManager;
+class MessageContext;
 
 using RPCSuccessCB = std::function<void(ReceivedMessagePtr msg)>;
 using RPCTimeoutCB = std::function<void()>;
@@ -70,7 +71,7 @@ public:
     bool Init(std::unique_ptr<ConsumerConf> c_conf, std::unique_ptr<ProducerConf> p_conf);
     void Tick(DiffTime diff);
     RPCKey AsyncRPC(const ServiceID& sid, MsgID msg_id, MsgType msg, RPCContextUPtr context);
-    void RPCResponse(const ServiceID& sid, MsgID msg_id, MsgType msg, const RPCKey& key);
+    void RPCResponse(const MessageContext& msg_context, MsgID msg_id, MsgType msg);
 
     void CB_ReceviedMsg(const void* p, size_t p_len, const void* key, size_t key_len);
     CallbackManager& getCallbackManager();

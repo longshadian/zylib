@@ -77,15 +77,17 @@ void RPCManager::Tick(DiffTime diff)
 RPCKey RPCManager::AsyncRPC(const ServiceID& sid, MsgID msg_id, MsgType msg, RPCContextUPtr context)
 {
     auto key = NextKey();
-    auto send_msg = std::make_shared<SendMessage>(sid, msg_id, std::move(msg), key);
+    auto send_msg = std::make_shared<SendMessage>(m_consumer->GetServiceID(), sid, msg_id, std::move(msg), key);
     m_producer->SendTo(send_msg);
     AppendRPCContext(key, std::move(context));
     return key;
 }
 
-void RPCManager::RPCResponse(const ServiceID& sid, MsgID msg_id, MsgType msg, const RPCKey& key)
+void RPCManager::RPCResponse(const MessageContext& msg_context, MsgID msg_id, MsgType msg)
 {
-    auto send_msg = std::make_shared<SendMessage>(sid, msg_id, std::move(msg), key);
+    auto send_msg = std::make_shared<SendMessage>(
+        msg_context.GetToSID(), msg_context.GetFromSID()
+        , msg_id, std::move(msg), msg_context.GetKey());
     m_producer->SendTo(send_msg);
 }
 
@@ -159,7 +161,8 @@ void RPCManager::RpcReceviedMsg(ReceivedMessagePtr msg)
 
 void RPCManager::NormalReceviedMsg(ReceivedMessagePtr msg)
 {
-    auto msg_context = std::make_shared<ReceivedMessageContext>(*this);
+    auto msg_context = std::make_shared<MessageContext>(*this
+        , msg->GetFromSID(), msg->GetToSID(), msg->GetKey());
     auto ret = m_cb_mgr->CallbackMsg(msg_context, msg);
     if (!ret) {
         FAKE_LOG(WARNING) << "can't find msg. " << msg->GetMsgID();

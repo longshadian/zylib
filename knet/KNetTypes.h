@@ -9,10 +9,10 @@ namespace knet {
 using DiffTime = std::chrono::milliseconds;
 
 class ReceivedMessage;
-class ReceivedMessageContext;
+class MessageContext;
 
 using ReceivedMessagePtr = std::shared_ptr<ReceivedMessage>;
-using MessageContextPtr = std::shared_ptr<ReceivedMessageContext>;
+using MessageContextPtr = std::shared_ptr<MessageContext>;
 
 using Duration = std::chrono::milliseconds;
 

@@ -31,7 +31,12 @@ void fun100(knet::MessageContextPtr p1, knet::ReceivedMessagePtr p2)
 {
     (void)p1;
     FAKE_LOG(DEBUG) << "key: " << p2->GetKey() 
-        << " payload: " << p2->GetMsgType();
+        << " payload: " << p2->GetMsg();
+
+    FAKE_LOG(DEBUG) << "key: " << p1->GetKey() 
+        << " from: " << p1->GetFromSID()
+        << " to: " << p1->GetToSID();
+    p1->SendResponse(200, "send rsp");
 }
 
 int main()
