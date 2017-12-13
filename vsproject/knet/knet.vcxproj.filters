@@ -26,6 +26,7 @@
     <ClCompile Include="..\..\knet\test\lobby.cpp">
       <Filter>test</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\knet\KNetTypes.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="detail">
@@ -62,6 +63,9 @@
     </ClInclude>
     <ClInclude Include="..\..\knet\detail\kafka\Producer.h">
       <Filter>detail\kafka</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\knet\detail\FixedString.h">
+      <Filter>detail</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
