@@ -20,18 +20,17 @@ public:
     UniformNetwork(UniformNetwork&&) = delete;
     UniformNetwork& operator=(UniformNetwork&&) = delete;
 
-    void setConsuerConf(std::unique_ptr<ConsumerConf> conf);
-    void setProducerConf(std::unique_ptr<ProducerConf> conf);
-    void setMsgCallbackArray(Msg_Callback_Array arr);
+    void                SetConsuerConf(std::unique_ptr<ConsumerConf> conf);
+    void                SetProducerConf(std::unique_ptr<ProducerConf> conf);
+    void                SetMsgCallbackArray(Msg_Callback_Array arr);
 
-    bool Init();
-    void Tick(DiffTime diff);
-    void RPC(const ServiceID& sid, MsgID msg_id, MsgType msg, RPCContextUPtr cb);
-    void Send(const ServiceID& sid, MsgID msg_id, MsgType msg);
+    bool                Init();
+    void                Tick(DiffTime diff);
+    void                RPC(const ServiceID& sid, MsgID msg_id, MsgType msg, RPCContextUPtr cb);
+    void                Send(const ServiceID& sid, MsgID msg_id, MsgType msg);
 
-    TimerManager& GetTimerManager();
+    TimerManager&       GetTimerManager();
     const TimerManager& GetTimerManager() const;
-
 private:
     std::unique_ptr<EventManager>   m_event_manager;
     std::unique_ptr<TimerManager>   m_timer_manager;

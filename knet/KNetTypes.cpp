@@ -3,6 +3,6 @@
 namespace knet {
 
 using ServiceID = std::string;
-using RPCKey = std::string;
+using Key = std::string;
 
 } // knet

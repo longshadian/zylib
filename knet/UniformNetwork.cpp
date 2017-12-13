@@ -26,17 +26,17 @@ UniformNetwork::~UniformNetwork()
 {
 }
 
-void UniformNetwork::setConsuerConf(std::unique_ptr<ConsumerConf> conf)
+void UniformNetwork::SetConsuerConf(std::unique_ptr<ConsumerConf> conf)
 {
     m_consumer_conf = std::move(conf);
 }
 
-void UniformNetwork::setProducerConf(std::unique_ptr<ProducerConf> conf)
+void UniformNetwork::SetProducerConf(std::unique_ptr<ProducerConf> conf)
 {
     m_producer_conf = std::move(conf);
 }
 
-void UniformNetwork::setMsgCallbackArray(Msg_Callback_Array arr)
+void UniformNetwork::SetMsgCallbackArray(Msg_Callback_Array arr)
 {
     m_msg_cb_array = std::move(arr);
 }
@@ -54,7 +54,7 @@ bool UniformNetwork::Init()
     m_rpc_manager = std::make_unique<RPCManager>(*this);
     if (!m_rpc_manager->Init(std::move(m_consumer_conf), std::move(m_producer_conf)))
         return false;
-    m_rpc_manager->getCallbackManager().SetMsgCallbackArray(std::move(m_msg_cb_array));
+    m_rpc_manager->GetCallbackManager().SetMsgCallbackArray(std::move(m_msg_cb_array));
 
     return true;
 }

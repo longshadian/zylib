@@ -3,8 +3,7 @@
 #include <functional>
 
 #include "knet/FakeLog.h"
-#include "knet/Message.h"
-
+#include "knet/detail/MessageDetail.h"
 #include "knet/detail/kafka/Callback.h"
 
 namespace knet {
@@ -111,7 +110,7 @@ void Producer::Flush()
 
     // ·¢ËÍÊ£ÓàÂ¼Ïñ
     while (!m_queue.empty()) {
-        std::shared_ptr<SendMessage> msg = std::move(m_queue.front());
+        std::shared_ptr<SendMsg> msg = std::move(m_queue.front());
         m_queue.pop();
         SendMessageInternal(*msg);
     }
@@ -124,7 +123,7 @@ void Producer::Flush()
     } while (ec != ::RdKafka::ERR_NO_ERROR);
 }
 
-void Producer::SendTo(std::shared_ptr<SendMessage> send_msg)
+void Producer::SendTo(std::shared_ptr<SendMsg> send_msg)
 {
     if (!m_run)
         return;
@@ -144,7 +143,7 @@ void Producer::StartPollThread()
 
 void Producer::StartSendThread()
 {
-    std::shared_ptr<SendMessage> send_msg{};
+    std::shared_ptr<SendMsg> send_msg{};
     while (m_run) {
         send_msg = nullptr;
         {
@@ -162,7 +161,7 @@ void Producer::StartSendThread()
     }
 }
 
-void Producer::SendMessageInternal(const SendMessage& msg)
+void Producer::SendMessageInternal(const SendMsg& msg)
 {
     const auto& to_sid = msg.GetToSID();
     auto* topic = FindOrCreate(to_sid);

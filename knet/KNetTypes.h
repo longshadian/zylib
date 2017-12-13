@@ -8,11 +8,11 @@ namespace knet {
 
 using DiffTime = std::chrono::milliseconds;
 
-class ReceivedMessage;
-class MessageContext;
+class ReceivedMsg;
+class ReceivedMsgCtx;
 
-using ReceivedMessagePtr = std::shared_ptr<ReceivedMessage>;
-using MessageContextPtr = std::shared_ptr<MessageContext>;
+using ReceivedMsgPtr = std::shared_ptr<ReceivedMsg>;
+using ReceivedMsgCtxPtr = std::shared_ptr<ReceivedMsgCtx>;
 
 using Duration = std::chrono::milliseconds;
 
@@ -47,7 +47,7 @@ struct ProducerConf
 using ProducerConfUPtr = std::unique_ptr<ProducerConf>;
 
 
-using RPCKey = std::string;
+using Key = std::string;
 
 using ServiceID = std::string;
 

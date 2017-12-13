@@ -1,15 +1,16 @@
 #include "knet/RPCManager.h"
 
 #include "knet/UniformNetwork.h"
-#include "knet/Message.h"
 #include "knet/CallbackManager.h"
 #include "knet/FakeLog.h"
 #include "knet/TimerManager.h"
+#include "knet/Message.h"
 
 #include "knet/detail/kafka/Producer.h"
 #include "knet/detail/kafka/Consumer.h"
 #include "knet/detail/kafka/Callback.h"
 #include "knet/detail/AsyncReceivedMsgCB.h"
+#include "knet/detail/MessageDetail.h"
 
 namespace knet {
 
@@ -24,26 +25,24 @@ void RPCContext::CB_Timeout()
         m_timeout_cb();
 }
 
-void RPCContext::CB_Success(ReceivedMessagePtr msg)
+void RPCContext::CB_Success(ReceivedMsgPtr msg)
 {
     if (HasSuccessCB())
         m_success_cb(msg);
 }
 
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
 RPCManager::RPCManager(UniformNetwork& network)
     : m_network(network)
     , m_consumer()
     , m_producer()
     , m_cb_mgr(std::make_unique<CallbackManager>())
     , m_key_sequence_id()
-    , m_contexts()
+    , m_slots()
     , m_mtx()
-    , m_success_key()
-    , m_timeout_key()
     , m_received_msgs()
 {
 }
@@ -74,47 +73,35 @@ void RPCManager::Tick(DiffTime diff)
     ProcessMsg();
 }
 
-RPCKey RPCManager::AsyncRPC(const ServiceID& sid, MsgID msg_id, MsgType msg, RPCContextUPtr context)
+Key RPCManager::AsyncRPC(const ServiceID& sid, MsgID msg_id, MsgType msg, RPCContextUPtr context)
 {
     auto key = NextKey();
-    auto send_msg = std::make_shared<SendMessage>(m_consumer->GetServiceID(), sid, msg_id, std::move(msg), key);
+    auto send_msg = std::make_shared<detail::SendMsg>(m_consumer->GetServiceID(), sid, msg_id, std::move(msg), key);
     m_producer->SendTo(send_msg);
     AppendRPCContext(key, std::move(context));
     return key;
 }
 
-void RPCManager::RPCResponse(const MessageContext& msg_context, MsgID msg_id, MsgType msg)
+void RPCManager::RPCResponse(const ReceivedMsgCtx& ctx, MsgID msg_id, MsgType msg)
 {
-    auto send_msg = std::make_shared<SendMessage>(
-        msg_context.GetToSID(), msg_context.GetFromSID()
-        , msg_id, std::move(msg), msg_context.GetKey());
+    auto send_msg = std::make_shared<detail::SendMsg>(
+        ctx.GetToSID(), ctx.GetFromSID()
+        , msg_id, std::move(msg), ctx.GetKey());
     m_producer->SendTo(send_msg);
 }
 
-RPCKey RPCManager::NextKey()
+Key RPCManager::NextKey()
 {
     ++m_key_sequence_id;
     return m_consumer->GetServiceID() + std::to_string(m_key_sequence_id);
 }
 
-void RPCManager::CB_SuccessKey(RPCKey key)
-{
-    std::lock_guard<std::mutex> lk{m_mtx};
-    m_success_key.push(key);
-}
-
-void RPCManager::CB_TimeoutKey(RPCKey key)
-{
-    std::lock_guard<std::mutex> lk{m_mtx};
-    m_timeout_key.push(key);
-}
-
-void RPCManager::AppendRPCContext(const RPCKey& key, RPCContextUPtr context)
+void RPCManager::AppendRPCContext(const Key& key, RPCContextUPtr context)
 {
     if (context) {
         auto slot = std::make_shared<ContextSlot>();
         slot->m_context = std::move(context);
-        m_contexts.insert(std::make_pair(key, slot));
+        m_slots.insert(std::make_pair(key, slot));
 
         // 增加定时器
         if (slot->m_context->HasTimeoutCB()) {
@@ -138,16 +125,16 @@ void RPCManager::ProcessMsg()
     }
 
     while (!temp.empty()) {
-        ReceivedMessagePtr msg = std::move(temp.front());
+        ReceivedMsgPtr msg = std::move(temp.front());
         temp.pop();
         RpcReceviedMsg(msg);
     }
 }
 
-void RPCManager::RpcReceviedMsg(ReceivedMessagePtr msg)
+void RPCManager::RpcReceviedMsg(ReceivedMsgPtr msg)
 {
-    auto it = m_contexts.find(msg->GetKey());
-    if (it == m_contexts.end()) {
+    auto it = m_slots.find(msg->GetKey());
+    if (it == m_slots.end()) {
         NormalReceviedMsg(msg);
         return;
     }
@@ -156,12 +143,12 @@ void RPCManager::RpcReceviedMsg(ReceivedMessagePtr msg)
     if (slot->m_timer_hdl) {
         m_network.GetTimerManager().CancelTimer(slot->m_timer_hdl);
     }
-    m_contexts.erase(it);
+    m_slots.erase(it);
 }
 
-void RPCManager::NormalReceviedMsg(ReceivedMessagePtr msg)
+void RPCManager::NormalReceviedMsg(ReceivedMsgPtr msg)
 {
-    auto msg_context = std::make_shared<MessageContext>(*this
+    auto msg_context = std::make_shared<ReceivedMsgCtx>(*this
         , msg->GetFromSID(), msg->GetToSID(), msg->GetKey());
     auto ret = m_cb_mgr->CallbackMsg(msg_context, msg);
     if (!ret) {
@@ -171,7 +158,7 @@ void RPCManager::NormalReceviedMsg(ReceivedMessagePtr msg)
 
 void RPCManager::CB_ReceviedMsg(const void* p, size_t p_len, const void* key, size_t key_len)
 {
-    auto received_msg = MessageDecoder::Decode(
+    auto received_msg = detail::MessageDecoder::Decode(
         reinterpret_cast<const uint8_t*>(p), p_len
         , reinterpret_cast<const uint8_t*>(key), key_len);
     if (!received_msg) {
@@ -182,7 +169,7 @@ void RPCManager::CB_ReceviedMsg(const void* p, size_t p_len, const void* key, si
     m_received_msgs.push(std::move(received_msg));
 }
 
-CallbackManager& RPCManager::getCallbackManager()
+CallbackManager& RPCManager::GetCallbackManager()
 {
     return *m_cb_mgr;
 }

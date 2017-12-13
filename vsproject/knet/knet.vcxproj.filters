@@ -5,7 +5,6 @@
     <ClCompile Include="..\..\knet\CallbackManager.cpp" />
     <ClCompile Include="..\..\knet\RPCManager.cpp" />
     <ClCompile Include="..\..\knet\TimerManager.cpp" />
-    <ClCompile Include="..\..\knet\Message.cpp" />
     <ClCompile Include="..\..\knet\EventManager.cpp" />
     <ClCompile Include="..\..\knet\detail\AsyncReceivedMsgCB.cpp">
       <Filter>detail</Filter>
@@ -27,6 +26,10 @@
       <Filter>test</Filter>
     </ClCompile>
     <ClCompile Include="..\..\knet\KNetTypes.cpp" />
+    <ClCompile Include="..\..\knet\detail\MessageDetail.cpp">
+      <Filter>detail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\knet\Message.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="detail">
@@ -46,7 +49,6 @@
     <ClInclude Include="..\..\knet\CallbackManager.h" />
     <ClInclude Include="..\..\knet\RPCManager.h" />
     <ClInclude Include="..\..\knet\TimerManager.h" />
-    <ClInclude Include="..\..\knet\Message.h" />
     <ClInclude Include="..\..\knet\EventManager.h" />
     <ClInclude Include="..\..\knet\detail\AsyncReceivedMsgCB.h">
       <Filter>detail</Filter>
@@ -67,5 +69,9 @@
     <ClInclude Include="..\..\knet\detail\FixedString.h">
       <Filter>detail</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\knet\detail\MessageDetail.h">
+      <Filter>detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\knet\Message.h" />
   </ItemGroup>
 </Project>

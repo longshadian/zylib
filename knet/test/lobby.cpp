@@ -27,7 +27,7 @@ std::string toString(const void* p, size_t len)
     return std::string{pp, pp+len};
 }
 
-void fun100(knet::MessageContextPtr p1, knet::ReceivedMessagePtr p2)
+void fun100(knet::ReceivedMsgCtxPtr p1, knet::ReceivedMsgPtr p2)
 {
     (void)p1;
     FAKE_LOG(DEBUG) << "key: " << p2->GetKey() 
@@ -58,9 +58,9 @@ int main()
     p_conf->m_broker_list = "127.0.0.1:9092";
 
     auto p = std::make_shared<knet::UniformNetwork>();
-    p->setConsuerConf(std::move(c_conf));
-    p->setProducerConf(std::move(p_conf));
-    p->setMsgCallbackArray(std::move(arr));
+    p->SetConsuerConf(std::move(c_conf));
+    p->SetProducerConf(std::move(p_conf));
+    p->SetMsgCallbackArray(std::move(arr));
 
     if (!p->Init()) {
         FAKE_LOG(WARNING) << "init error";

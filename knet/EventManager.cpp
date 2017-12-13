@@ -17,6 +17,14 @@ EventTask::~EventTask()
 
 }
 
+std::vector<uint8_t> EventTask::SerializeToBinary() const
+{
+    std::vector<uint8_t> buf{};
+    buf.resize(Size);
+    std::memcpy(buf.data(), &m_event_id, buf.size());
+    return buf;
+}
+
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
@@ -63,7 +71,7 @@ void SocketPair::AsyncRead()
 
 void SocketPair::AsyncWrite(const EventTask& msg)
 {
-    m_io_service.post([this, buf = msg.serializeToBinary()]()
+    m_io_service.post([this, buf = msg.SerializeToBinary()]()
     {
         bool wait_write = !m_write_buf.empty();
         m_write_buf.push_back(std::move(buf));

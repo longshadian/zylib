@@ -19,14 +19,14 @@ public:
         , m_et() 
     {}
 
-    ~Timer() {}
+    ~Timer() = default;
     Timer(const Timer&) = delete;
     Timer& operator=(const Timer&) = delete;
     Timer(Timer&&) = delete;
     Timer& operator=(Timer&&) = delete;
 
-    Callback        m_sync_cb;
-    EventTimerPtr   m_et;
+    Callback            m_sync_cb;
+    EventTimerPtr       m_et;
 };
 
 class TimerManager
@@ -39,14 +39,13 @@ public:
     TimerManager(TimerManager&&) = delete;
     TimerManager& operator=(TimerManager&&) = delete;
 
-    bool Init();
-    void Tick(DiffTime diff);
-    TimerHdl AddTimer(Callback sync_cb, Duration d);
-    void CancelTimer(TimerHdl hdl);
+    bool                Init();
+    void                Tick(DiffTime diff);
+    TimerHdl            AddTimer(Callback sync_cb, Duration d);
+    void                CancelTimer(TimerHdl hdl);
 
 private:
-    void EventCallback(TimerHdl hdl);
-
+    void                EventCallback(TimerHdl hdl);
 private:
     EventManager&                m_event_manager;
     std::unordered_set<TimerPtr> m_timers;

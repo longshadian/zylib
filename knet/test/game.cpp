@@ -21,7 +21,7 @@ public:
     }
 };
 
-void OnSuccess(knet::ReceivedMessagePtr msg)
+void OnSuccess(knet::ReceivedMsgPtr msg)
 {
     FAKE_LOG(DEBUG) << "success: from: " << msg->GetFromSID()
         << " to: " << msg->GetToSID()
@@ -51,8 +51,8 @@ int main()
     p_conf->m_broker_list = "127.0.0.1:9092";
 
     auto p = std::make_shared<knet::UniformNetwork>();
-    p->setConsuerConf(std::move(c_conf));
-    p->setProducerConf(std::move(p_conf));
+    p->SetConsuerConf(std::move(c_conf));
+    p->SetProducerConf(std::move(p_conf));
 
     if (!p->Init()) {
         FAKE_LOG(WARNING) << "init error";
@@ -61,15 +61,20 @@ int main()
 
     auto tprevious = std::chrono::system_clock::now();
     auto tnow = tprevious;
+    bool is_send = false;
     while (true) {
         FAKE_LOG(DEBUG) << "sleep...";
         std::this_thread::sleep_for(std::chrono::seconds{1});
         //p->RPC("k.lobby", 100, "xxxxxxxx", std::make_unique<knet::RPCContext>());
         //p->RPC("k.lobby", 100, "xxxxxxxx", nullptr);
 
-        auto context = std::make_unique<knet::RPCContext>();
-        context->SetSuccessCB(std::bind(&OnSuccess, std::placeholders::_1));
-        p->RPC("k.lobby", 100, "xxxxxxxx", std::move(context));
+        if (!is_send) {
+            auto context = std::make_unique<knet::RPCContext>();
+            context->SetSuccessCB(std::bind(&OnSuccess, std::placeholders::_1));
+            context->SetTimeoutCB(std::bind(&OnTimeout), std::chrono::seconds{2});
+            p->RPC("k.lobby", 100, "xxxxxxxx", std::move(context));
+            is_send = true;
+        }
 
         tnow = std::chrono::system_clock::now();
         auto delta = std::chrono::duration_cast<knet::DiffTime>(tnow - tprevious);

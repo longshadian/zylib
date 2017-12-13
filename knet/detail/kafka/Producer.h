@@ -16,10 +16,9 @@
 
 namespace knet {
 
-class SendMessage;
-
 namespace detail {
 
+class SendMsg;
 
 struct ProducerCB 
 {
@@ -41,19 +40,19 @@ public:
     void Stop();
     void WaitThreadExit();
     void Flush();
-    void SendTo(std::shared_ptr<SendMessage> send_msg);
+    void SendTo(std::shared_ptr<SendMsg> send_msg);
 
 private:
     void StartPollThread();
     void StartSendThread();
-    void SendMessageInternal(const SendMessage& msg);
+    void SendMessageInternal(const SendMsg& msg);
     ::RdKafka::Topic* FindOrCreate(const ServiceID& to_sid);
 
 private:
     std::unique_ptr<ProducerConf>               m_p_conf;
     std::thread                                 m_poll_thread;  // poll线程
     std::thread                                 m_send_thread;  // 发送线程
-    std::queue<std::shared_ptr<SendMessage>>    m_queue;
+    std::queue<std::shared_ptr<SendMsg>>        m_queue;
     std::mutex                                  m_mtx;
     std::condition_variable                     m_cond;
     std::atomic<bool>                           m_run;

@@ -117,6 +117,7 @@
     <ClCompile Include="..\..\knet\detail\kafka\Callback.cpp" />
     <ClCompile Include="..\..\knet\detail\kafka\Consumer.cpp" />
     <ClCompile Include="..\..\knet\detail\kafka\Producer.cpp" />
+    <ClCompile Include="..\..\knet\detail\MessageDetail.cpp" />
     <ClCompile Include="..\..\knet\EventManager.cpp" />
     <ClCompile Include="..\..\knet\FakeLog.cpp" />
     <ClCompile Include="..\..\knet\KNetTypes.cpp" />
@@ -135,6 +136,7 @@
     <ClInclude Include="..\..\knet\detail\kafka\Consumer.h" />
     <ClInclude Include="..\..\knet\detail\kafka\KafkaTypes.h" />
     <ClInclude Include="..\..\knet\detail\kafka\Producer.h" />
+    <ClInclude Include="..\..\knet\detail\MessageDetail.h" />
     <ClInclude Include="..\..\knet\EventManager.h" />
     <ClInclude Include="..\..\knet\FakeLog.h" />
     <ClInclude Include="..\..\knet\knet.h" />
