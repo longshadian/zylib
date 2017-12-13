@@ -30,6 +30,7 @@
       <Filter>detail</Filter>
     </ClCompile>
     <ClCompile Include="..\..\knet\Message.cpp" />
+    <ClCompile Include="..\..\knet\RPCFuture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="detail">
@@ -73,5 +74,6 @@
       <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="..\..\knet\Message.h" />
+    <ClInclude Include="..\..\knet\RPCFuture.h" />
   </ItemGroup>
 </Project>

@@ -47,6 +47,7 @@ TimerHdl TimerManager::AddTimer(Callback sync_cb, Duration d)
     auto tc = std::make_shared<Timer>();
     auto et = m_event_manager.AddTimer(std::bind(&TimerManager::EventCallback, this, tc), d);
     tc->m_sync_cb = std::move(sync_cb);
+    tc->m_et = std::move(et);
     m_timers.insert(tc);
     return tc;
 }

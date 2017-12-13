@@ -12,7 +12,7 @@ CallbackManager::~CallbackManager()
 {
 }
 
-void CallbackManager::SetMsgCallbackArray(Msg_Callback_Array msg_cb_array)
+void CallbackManager::SetMsgCallbackArray(MsgCallbackArray msg_cb_array)
 {
     m_msg_cb_array = std::move(msg_cb_array);
 }

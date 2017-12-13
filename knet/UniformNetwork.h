@@ -22,11 +22,11 @@ public:
 
     void                SetConsuerConf(std::unique_ptr<ConsumerConf> conf);
     void                SetProducerConf(std::unique_ptr<ProducerConf> conf);
-    void                SetMsgCallbackArray(Msg_Callback_Array arr);
+    void                SetMsgCallbackArray(MsgCallbackArray arr);
 
     bool                Init();
     void                Tick(DiffTime diff);
-    void                RPC(const ServiceID& sid, MsgID msg_id, MsgType msg, RPCContextUPtr cb);
+    void                RPC(ServiceID sid, MsgID msg_id, MsgType msg, RPCContextUPtr cb);
     void                Send(const ServiceID& sid, MsgID msg_id, MsgType msg);
 
     TimerManager&       GetTimerManager();
@@ -38,7 +38,7 @@ private:
 
     std::unique_ptr<ConsumerConf>   m_consumer_conf;
     std::unique_ptr<ProducerConf>   m_producer_conf;
-    Msg_Callback_Array              m_msg_cb_array;
+    MsgCallbackArray              m_msg_cb_array;
 };
 
 } // knet

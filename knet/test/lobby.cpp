@@ -41,7 +41,7 @@ void fun100(knet::ReceivedMsgCtxPtr p1, knet::ReceivedMsgPtr p2)
 
 int main()
 {
-    knet::Msg_Callback_Array arr = 
+    knet::MsgCallbackArray arr = 
     {
         { 100, std::bind(&fun100, std::placeholders::_1, std::placeholders::_2) }
     };

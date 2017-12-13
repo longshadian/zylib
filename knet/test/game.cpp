@@ -61,13 +61,14 @@ int main()
 
     auto tprevious = std::chrono::system_clock::now();
     auto tnow = tprevious;
-    bool is_send = false;
+    //bool is_send = false;
     while (true) {
         FAKE_LOG(DEBUG) << "sleep...";
         std::this_thread::sleep_for(std::chrono::seconds{1});
         //p->RPC("k.lobby", 100, "xxxxxxxx", std::make_unique<knet::RPCContext>());
         //p->RPC("k.lobby", 100, "xxxxxxxx", nullptr);
 
+        /*
         if (!is_send) {
             auto context = std::make_unique<knet::RPCContext>();
             context->SetSuccessCB(std::bind(&OnSuccess, std::placeholders::_1));
@@ -75,6 +76,12 @@ int main()
             p->RPC("k.lobby", 100, "xxxxxxxx", std::move(context));
             is_send = true;
         }
+        */
+
+        knet::MakeFuture(*p)
+            .RPC("k.lobby", 100, "xxxxx")
+            .OnSuccess(std::bind(&OnSuccess, std::placeholders::_1))
+            .OnTimeout(std::bind(&OnTimeout), std::chrono::seconds{2});
 
         tnow = std::chrono::system_clock::now();
         auto delta = std::chrono::duration_cast<knet::DiffTime>(tnow - tprevious);

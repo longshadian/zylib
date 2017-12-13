@@ -3,6 +3,7 @@
 #include <chrono>
 #include <memory>
 #include <functional>
+#include <unordered_map>
 
 namespace knet {
 
@@ -46,9 +47,14 @@ struct ProducerConf
 };
 using ProducerConfUPtr = std::unique_ptr<ProducerConf>;
 
-
 using Key = std::string;
 
 using ServiceID = std::string;
+
+using MsgCallback       = std::function<void(ReceivedMsgCtxPtr, ReceivedMsgPtr)>;
+using MsgCallbackArray  = std::unordered_map<int32_t, MsgCallback>;
+
+using RPCSuccessCB = std::function<void(ReceivedMsgPtr)>;
+using RPCTimeoutCB = std::function<void()>;
 
 } // knet

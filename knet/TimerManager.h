@@ -14,11 +14,7 @@ class EventManager;
 class Timer
 {
 public:
-    Timer()
-        : m_sync_cb()
-        , m_et() 
-    {}
-
+    Timer() = default;
     ~Timer() = default;
     Timer(const Timer&) = delete;
     Timer& operator=(const Timer&) = delete;

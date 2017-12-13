@@ -36,7 +36,7 @@ void UniformNetwork::SetProducerConf(std::unique_ptr<ProducerConf> conf)
     m_producer_conf = std::move(conf);
 }
 
-void UniformNetwork::SetMsgCallbackArray(Msg_Callback_Array arr)
+void UniformNetwork::SetMsgCallbackArray(MsgCallbackArray arr)
 {
     m_msg_cb_array = std::move(arr);
 }
@@ -66,9 +66,9 @@ void UniformNetwork::Tick(DiffTime diff)
     m_rpc_manager->Tick(diff);
 }
 
-void UniformNetwork::RPC(const ServiceID& sid, MsgID msg_id, MsgType msg, RPCContextUPtr cb)
+void UniformNetwork::RPC(ServiceID sid, MsgID msg_id, MsgType msg, RPCContextUPtr cb)
 {
-    m_rpc_manager->AsyncRPC(sid, msg_id, msg, std::move(cb));
+    m_rpc_manager->AsyncRPC(std::move(sid), msg_id, msg, std::move(cb));
 }
 
 void UniformNetwork::Send(const ServiceID& sid, MsgID msg_id, MsgType msg)

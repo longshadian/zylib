@@ -7,9 +7,6 @@
 
 namespace knet {
 
-using Msg_Callback          = std::function<void(ReceivedMsgCtxPtr, ReceivedMsgPtr)>;
-using Msg_Callback_Array    = std::unordered_map<int32_t, Msg_Callback>;
-
 class CallbackManager
 {
 public:
@@ -21,9 +18,9 @@ public:
     CallbackManager& operator=(CallbackManager&& rhs) = delete;
 
     bool                CallbackMsg(ReceivedMsgCtxPtr ctx, ReceivedMsgPtr msg);
-    void                SetMsgCallbackArray(Msg_Callback_Array msg_cb_array);
+    void                SetMsgCallbackArray(MsgCallbackArray msg_cb_array);
 private:
-    Msg_Callback_Array  m_msg_cb_array;
+    MsgCallbackArray  m_msg_cb_array;
 };
 
 } // knet

@@ -73,7 +73,7 @@ void RPCManager::Tick(DiffTime diff)
     ProcessMsg();
 }
 
-Key RPCManager::AsyncRPC(const ServiceID& sid, MsgID msg_id, MsgType msg, RPCContextUPtr context)
+Key RPCManager::AsyncRPC(ServiceID sid, MsgID msg_id, MsgType msg, RPCContextUPtr context)
 {
     auto key = NextKey();
     auto send_msg = std::make_shared<detail::SendMsg>(m_consumer->GetServiceID(), sid, msg_id, std::move(msg), key);
