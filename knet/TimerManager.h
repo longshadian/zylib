@@ -10,9 +10,11 @@
 namespace knet {
 
 class EventManager;
+class TimerManager;
 
-class Timer
+class Timer : public std::enable_shared_from_this<Timer>
 {
+    friend class TimerManager;
 public:
     Timer() = default;
     ~Timer() = default;
@@ -21,6 +23,11 @@ public:
     Timer(Timer&&) = delete;
     Timer& operator=(Timer&&) = delete;
 
+private:
+    void                Call();
+    void                SetCallback(Callback cb);
+    void                SetEventTimer(EventTimerPtr et);
+private:
     Callback            m_sync_cb;
     EventTimerPtr       m_et;
 };
@@ -41,12 +48,12 @@ public:
     void                CancelTimer(TimerHdl hdl);
 
 private:
-    void                EventCallback(TimerHdl hdl);
+    void                CB_Event(TimerHdl hdl);
 private:
     EventManager&                m_event_manager;
     std::unordered_set<TimerPtr> m_timers;
     std::mutex                   m_mtx;
-    std::queue<TimerPtr>         m_wait_cb;
+    std::queue<TimerHdl>         m_timeout_timers;
 };
 
 } // knet

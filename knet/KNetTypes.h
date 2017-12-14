@@ -21,7 +21,7 @@ using Callback = std::function<void()>;
 
 class Timer;
 using TimerPtr = std::shared_ptr<Timer>;
-using TimerHdl = std::shared_ptr<Timer>;
+using TimerHdl = std::weak_ptr<Timer>;
 
 struct EventTimer;
 using EventTimerPtr = std::shared_ptr<EventTimer>;

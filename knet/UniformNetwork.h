@@ -27,7 +27,6 @@ public:
     bool                Init();
     void                Tick(DiffTime diff);
     void                RPC(ServiceID sid, MsgID msg_id, MsgType msg, RPCContextUPtr cb);
-    void                Send(const ServiceID& sid, MsgID msg_id, MsgType msg);
 
     TimerManager&       GetTimerManager();
     const TimerManager& GetTimerManager() const;

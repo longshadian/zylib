@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="world">
+      <UniqueIdentifier>{4164e328-da76-475e-b41e-376b4f1638fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net">
+      <UniqueIdentifier>{e8866576-e397-4e84-b183-7a07f203a062}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\frontend_service\main.cpp" />
+    <ClCompile Include="..\..\frontend_service\Service.cpp" />
+    <ClCompile Include="..\..\frontend_service\FakeLog.cpp" />
+    <ClCompile Include="..\..\frontend_service\net\Message.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\frontend_service\net\RWHandler.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\frontend_service\net\StreamServer.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\frontend_service\world\World.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\frontend_service\world\WorldMsg.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\frontend_service\FESCallback.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\frontend_service\Service.h" />
+    <ClInclude Include="..\..\frontend_service\FakeLog.h" />
+    <ClInclude Include="..\..\frontend_service\net\Message.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\frontend_service\net\NetworkType.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\frontend_service\net\RWHandler.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\frontend_service\net\StreamServer.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\frontend_service\world\World.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\frontend_service\world\WorldDefine.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\frontend_service\world\WorldMsg.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\frontend_service\FESCallback.h" />
+  </ItemGroup>
+</Project>

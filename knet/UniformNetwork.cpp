@@ -71,13 +71,6 @@ void UniformNetwork::RPC(ServiceID sid, MsgID msg_id, MsgType msg, RPCContextUPt
     m_rpc_manager->AsyncRPC(std::move(sid), msg_id, msg, std::move(cb));
 }
 
-void UniformNetwork::Send(const ServiceID& sid, MsgID msg_id, MsgType msg)
-{
-    (void)sid;
-    (void)msg_id;
-    (void)msg;
-}
-
 TimerManager& UniformNetwork::GetTimerManager()
 {
     return *m_timer_manager;

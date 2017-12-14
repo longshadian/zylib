@@ -70,7 +70,6 @@ public:
     EventTimer(EventTimer&&) = delete;
     EventTimer& operator=(EventTimer&&) = delete;
 
-    Callback                                     m_async_cb;
     std::shared_ptr<boost::asio::deadline_timer> m_timer;
 };
 

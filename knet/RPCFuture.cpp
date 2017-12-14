@@ -5,7 +5,7 @@
 namespace knet {
 
 RPCFuture::RPCFuture(UniformNetwork& network)
-    : m_network(network)
+    : m_network(&network)
     , m_launch()
     , m_ctx()
 {
@@ -27,7 +27,7 @@ RPCFuture::RPCFuture(RPCFuture&& rhs)
 RPCFuture& RPCFuture::operator=(RPCFuture&& rhs)
 {
     if (this != &rhs) {
-        //std::swap(m_network, rhs.m_network);
+        std::swap(m_network, rhs.m_network);
         std::swap(m_launch, rhs.m_launch);
         std::swap(m_ctx, rhs.m_ctx);
     }
@@ -50,7 +50,7 @@ void RPCFuture::Launch()
         return;
     if (!m_pkg)
         return;
-    m_network.RPC(std::move(m_pkg->m_sid)
+    m_network->RPC(std::move(m_pkg->m_sid)
         , m_pkg->m_msg_id, std::move(m_pkg->m_msg_type)
         , std::move(m_ctx));
     m_launch = true;

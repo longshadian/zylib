@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2009
+VisualStudioVersion = 15.0.26430.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vsproject", "vsproject\vsproject.vcxproj", "{9C50B3A6-63B7-4880-A997-7B4D0B7B12FC}"
 EndProject
@@ -24,6 +24,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "rdkafkacpp", "rdkafkacpp\rdkafkacpp.vcxproj", "{6E231AE5-6A2B-41DF-A8CB-D6418E6A8AB5}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "knet", "knet\knet.vcxproj", "{73F863CE-8A19-4021-BEFF-84DB779AE5D3}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "frontend_service", "frontend_service\frontend_service.vcxproj", "{39AAC580-68AE-407E-9652-17500D28864E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -121,6 +123,14 @@ Global
 		{73F863CE-8A19-4021-BEFF-84DB779AE5D3}.Release|x64.Build.0 = Release|x64
 		{73F863CE-8A19-4021-BEFF-84DB779AE5D3}.Release|x86.ActiveCfg = Release|Win32
 		{73F863CE-8A19-4021-BEFF-84DB779AE5D3}.Release|x86.Build.0 = Release|Win32
+		{39AAC580-68AE-407E-9652-17500D28864E}.Debug|x64.ActiveCfg = Debug|x64
+		{39AAC580-68AE-407E-9652-17500D28864E}.Debug|x64.Build.0 = Debug|x64
+		{39AAC580-68AE-407E-9652-17500D28864E}.Debug|x86.ActiveCfg = Debug|Win32
+		{39AAC580-68AE-407E-9652-17500D28864E}.Debug|x86.Build.0 = Debug|Win32
+		{39AAC580-68AE-407E-9652-17500D28864E}.Release|x64.ActiveCfg = Release|x64
+		{39AAC580-68AE-407E-9652-17500D28864E}.Release|x64.Build.0 = Release|x64
+		{39AAC580-68AE-407E-9652-17500D28864E}.Release|x86.ActiveCfg = Release|Win32
+		{39AAC580-68AE-407E-9652-17500D28864E}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

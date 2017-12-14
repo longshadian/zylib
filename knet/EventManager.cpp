@@ -144,12 +144,11 @@ EventTimerPtr EventManager::AddTimer(Callback async_cb, Duration d)
     auto et = std::make_shared<EventTimer>();
     et->m_timer = std::make_shared<boost::asio::deadline_timer>(m_io_service);
     et->m_timer->expires_from_now(boost::posix_time::milliseconds{d.count()});
-    et->m_async_cb = std::move(async_cb);
-    et->m_timer->async_wait([this, et](const boost::system::error_code& ec) 
+    et->m_timer->async_wait([this, async_cb_ex = std::move(async_cb)](const boost::system::error_code& ec) 
         {
             if (ec)
                 return;
-            et->m_async_cb();
+            async_cb_ex();
         });
     return et;
 }

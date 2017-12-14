@@ -140,9 +140,8 @@ void RPCManager::RpcReceviedMsg(ReceivedMsgPtr msg)
     }
     auto& slot = it->second;
     slot->m_context->CB_Success(msg);
-    if (slot->m_timer_hdl) {
+    if (!slot->m_timer_hdl.expired())
         m_network.GetTimerManager().CancelTimer(slot->m_timer_hdl);
-    }
     m_slots.erase(it);
 }
 

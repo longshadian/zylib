@@ -31,7 +31,7 @@ public:
 private:
     RPCContext&             GetCtx();
 private:
-    UniformNetwork&         m_network;
+    UniformNetwork*         m_network;
     bool                    m_launch;
     RPCContextUPtr          m_ctx;
     std::unique_ptr<Pkg>    m_pkg;
