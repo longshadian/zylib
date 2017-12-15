@@ -10,12 +10,7 @@
 #include "net/NetworkType.h"
 #include "net/Message.h"
 
-class RWHandler;
-
-struct HandlerOption
-{
-    size_t m_read_timeout_seconds;
-};
+class StreamServer;
 
 class RWHandler : public std::enable_shared_from_this<RWHandler>
 {
@@ -30,7 +25,7 @@ public:
     };
 
 public:
-    RWHandler(boost::asio::ip::tcp::socket socket, const HandlerOption& opt);
+    RWHandler(boost::asio::ip::tcp::socket socket, StreamServer& server);
     ~RWHandler();
     RWHandler(const RWHandler&) = delete;
     RWHandler& operator=(const RWHandler&) = delete;
@@ -38,29 +33,29 @@ public:
     RWHandler& operator=(RWHandler&&) = delete;
 
     void init();
-    void sendMessage(MessagePtr msg);
+    void sendMessage(std::shared_ptr<SendMessage> msg);
     boost::asio::ip::tcp::socket& getSocket();
     boost::asio::io_service& getIOService();
     void shutdown();
     Hdl getHdl();
 
 private:
-    void doClosed(CLOSED_TYPE type);
+    void doClosed(CLOSED_TYPE type = CLOSED_TYPE::NORMAL);
     void doWrite();
     void doWriteCallback(boost::system::error_code ec, std::size_t length);
     void doReadHead();
     void doReadBody();
     void timeoutCancel(DeadlineTimerPtr timer);
+    size_t GetTimeoutTime() const;
 
-    static DeadlineTimerPtr setTimeoutTimer(size_t seconds);
+    DeadlineTimerPtr setTimeoutTimer(size_t seconds);
 
 private:
     StreamServer&                   m_stream_server;
     boost::asio::ip::tcp::socket    m_socket;
-    HandlerOption                   m_handler_opt;
     std::atomic<bool>               m_is_closed;
 
-    std::list<MessagePtr>           m_write_buffer;
+    std::list<std::shared_ptr<SendMessage>> m_write_buffer;
     std::array<uint8_t, MSG_HEAD_SIZE> m_read_head;
     std::vector<uint8_t>            m_read_body;
 };

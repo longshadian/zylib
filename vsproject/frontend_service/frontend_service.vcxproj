@@ -118,6 +118,9 @@
     <ClCompile Include="..\..\frontend_service\net\RWHandler.cpp" />
     <ClCompile Include="..\..\frontend_service\net\StreamServer.cpp" />
     <ClCompile Include="..\..\frontend_service\Service.cpp" />
+    <ClCompile Include="..\..\frontend_service\Utility.cpp" />
+    <ClCompile Include="..\..\frontend_service\world\MsgDispatcher.cpp" />
+    <ClCompile Include="..\..\frontend_service\world\Session.cpp" />
     <ClCompile Include="..\..\frontend_service\world\World.cpp" />
     <ClCompile Include="..\..\frontend_service\world\WorldMsg.cpp" />
   </ItemGroup>
@@ -128,7 +131,11 @@
     <ClInclude Include="..\..\frontend_service\net\NetworkType.h" />
     <ClInclude Include="..\..\frontend_service\net\RWHandler.h" />
     <ClInclude Include="..\..\frontend_service\net\StreamServer.h" />
+    <ClInclude Include="..\..\frontend_service\Queue.h" />
     <ClInclude Include="..\..\frontend_service\Service.h" />
+    <ClInclude Include="..\..\frontend_service\Utility.h" />
+    <ClInclude Include="..\..\frontend_service\world\MsgDispatcher.h" />
+    <ClInclude Include="..\..\frontend_service\world\Session.h" />
     <ClInclude Include="..\..\frontend_service\world\World.h" />
     <ClInclude Include="..\..\frontend_service\world\WorldDefine.h" />
     <ClInclude Include="..\..\frontend_service\world\WorldMsg.h" />

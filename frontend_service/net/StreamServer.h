@@ -5,6 +5,7 @@
 #include <numeric>
 #include <memory>
 #include <functional>
+#include <thread>
 
 #include <boost/asio.hpp>
 
@@ -22,15 +23,15 @@ class StreamServer
 {
     friend class RWHandler;
 public:
-    StreamServer(boost::asio::io_service& io_service, uint16_t port, const ServerOption& optin);
-    ~StreamServer() = default;
+    StreamServer(uint16_t port, ServerOption optin = {});
+    ~StreamServer();
     StreamServer(const StreamServer& rhs) = delete;
     StreamServer& operator=(const StreamServer& rhs) = delete;
     StreamServer(StreamServer&& rhs) = delete;
     StreamServer& operator=(StreamServer&& rhs) = delete;
 
-    void accept();
-    void stop();
+    void Start();
+    void Stop();
 
     boost::asio::io_service& getIOService();
     const ServerOption& getOption() const;
@@ -39,11 +40,16 @@ public:
     ServerCallback& GetCallback();
 
 private:
+    void Run();
     void acceptCallback(boost::system::error_code ec);
     void stopHandler(const RWHandlerPtr& handler);
     void stopAccept();
     RWHandlerPtr createHandler();
+            
 private:
+    std::thread                         m_thread;
+    boost::asio::io_service             m_io_service;
+    std::unique_ptr<boost::asio::io_service::work> m_work;
     boost::asio::ip::tcp::acceptor      m_acceptor;
     boost::asio::ip::tcp::socket        m_socket;
     std::unordered_set<RWHandlerPtr>    m_handlers;

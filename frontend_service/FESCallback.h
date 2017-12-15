@@ -7,10 +7,10 @@
 #include "net/NetworkType.h"
 #include "net/Message.h"
 
-class FESCallback : public network::ServerCallback
+class FESCallback : public ServerCallback
 {
 public:
-    FESCallback() = default
+    FESCallback() = default;
     virtual ~FESCallback() = default;
     FESCallback(const FESCallback& rhs) = delete;
     FESCallback& operator=(const FESCallback& rhs) = delete;
@@ -18,18 +18,18 @@ public:
     FESCallback& operator=(FESCallback&& rhs) = delete;
 
     // 新的handler创建了
-    virtual void HandlerAccept(network::Hdl hdl);
+    virtual void HandlerAccept(Hdl hdl) override;
 
     // handler关闭
-    virtual void HandlerClosed(Hdl hdl);
+    virtual void HandlerClosed(Hdl hdl) override;
 
     // handler超时
-    virtual void HandlerTimeout(Hdl hdl);
+    virtual void HandlerTimeout(Hdl hdl) override;
 
     // handler收到消息
-    virtual void ReceviedMessage(Hdl hdl, std::shared_ptr<Message> msg);
+    virtual void ReceviedMessage(Hdl hdl, std::shared_ptr<Message> msg) override;
 
     // server可以得accept的handler超出上限
-    virtual void HandlerAcceptOverflow();
+    virtual void HandlerAcceptOverflow() override;
 };
 

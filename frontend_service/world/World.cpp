@@ -2,16 +2,14 @@
 
 #include <memory>
 
-#include "WorldMsg.h"
-#include "WorldMsgDispatcher.h"
-
-const std::chrono::milliseconds WORLD_HEARTBEAT_RATE{50};
+#include "FakeLog.h"
+#include "Utility.h"
+#include "world/WorldMsg.h"
 
 World::World()
-	: m_mtx()
-	, m_world_msgs()
-	, m_is_running()
+    : m_is_running()
 	, m_thread()
+    , m_queue()
 {
 }
 
@@ -22,29 +20,34 @@ World::~World()
         m_thread.join();
 }
 
-void World::networkAccept(Hdl conn)
+void World::NetworkAccept(Hdl conn)
 {
     (void)conn;
     //LOG(DEBUG) << "networkAccept: [" << hdl << "] ip:" << conn_info->m_ip;
 }
 
-void World::networkReceviedMsg(Hdl conn, std::shared_ptr<Message> network_msg)
+void World::NetworkReceviedMsg(Hdl conn, std::shared_ptr<Message> network_msg)
 {
     (void)conn;
     (void)network_msg;
 }
 
-void World::networkTimeout(Hdl conn)
+void World::NetworkTimeout(Hdl conn)
 {
     (void)conn;
 }
 
-void World::networkClosed(Hdl conn)
+void World::NetworkClosed(Hdl conn)
 {
     (void)conn;
 }
 
-bool World::init()
+void World::PostTask(Task t)
+{
+    m_queue.push(std::move(t));
+}
+
+bool World::Init()
 {
     if (m_is_running)
         return false;
@@ -57,13 +60,25 @@ bool World::init()
     m_thread = std::thread([this]
         {
             m_is_running = true;
-            run();
+            Run();
         });
     return true;
 }
 
-void World::run()
+void World::Run()
 {
+    Task t{};
+    while (m_is_running) {
+        t = {};
+        m_queue.waitAndPop(t, std::chrono::seconds{1});
+        try {
+            if (t)
+                t();
+        } catch (std::exception& e) {
+            FAKE_LOG(WARNING) << "exception: " << e.what();
+        }
+    }
+
     /*
 	zylib::TimePoint tp_current{};
 	zylib::TimePoint tp_previous = zylib::getSteadyTimePoint();
@@ -96,62 +111,78 @@ void World::run()
     */
 }
 
-void World::stop()
+void World::processClientMessage(Hdl hdl, std::shared_ptr<Message> msg)
+{
+    auto ret = Utility::DecryptMessage(msg);
+    if (!ret) {
+        shutdownClientSession(std::move(hdl));
+        FAKE_LOG(WARNING) << "decrpyt fail.";
+        return;
+    }
+    auto sid = msg->GetSID();
+    if (sid.empty()) {
+        CallClientMessage(std::move(hdl), std::move(msg));
+    } else {
+        RouterClientMessage(std::move(hdl), std::move(msg));
+    }
+}
+
+void World::CallClientMessage(Hdl hdl, std::shared_ptr<Message> msg) const
+{
+    auto msg_id = msg->GetMsgID();
+    auto it = m_client_cb_array.find(msg_id);
+    if (it == m_client_cb_array.end()) {
+        FAKE_LOG(WARNING) << "can't find msg_id: " << msg_id;
+        return;
+    }
+    it->second(std::move(hdl), std::move(msg));
+}
+
+void World::RouterClientMessage(Hdl hdl, std::shared_ptr<Message> msg)
+{
+    (void)hdl;
+    (void)msg;
+}
+
+void World::Stop()
 {
     m_is_running.store(false);
 }
 
-void World::waitTheadExit()
+void World::WaitTheadExit()
 {
     if (m_thread.joinable())
         m_thread.join();
 }
 
-bool World::isRunning() const
+bool World::IsRunning() const
 {
     return m_is_running;
 }
 
-void World::shutdownSession(WorldSession* session)
+void World::SetClientCallback(ClientCB_Array arr)
 {
-    if (!session)
+    m_client_cb_array = std::move(arr);
+}
+
+void World::shutdownClientSession(Hdl hdl)
+{
+    auto handler = hdl.lock();
+    if (handler)
+        handler->shutdown();
+    auto it = m_client_sessions.find(hdl);
+    if (it == m_client_sessions.end())
         return;
-    auto conn = session->getConnection();
-    /*
-    if (!conn)
+    ClientSessionPtr cs = it->second;
+    if (cs->GetUserID() != 0)
+        m_clinet_users.erase(cs->GetUserID());
+    m_client_sessions.erase(hdl);
+}
+
+void World::SendMessage(uint64_t uid)
+{
+    auto it = m_clinet_users.find(uid);
+    if (it == m_clinet_users.end())
         return;
-    */
-    {
-        std::lock_guard<std::mutex> lk(m_mtx);
-        m_closed_conn.insert(conn);
-    }
-}
-
-void World::postTask(std::function<void()> task)
-{
-    std::lock_guard<std::mutex> lk(m_mtx);
-    m_task.push_back(std::move(task));
-}
-
-TimerManager& World::getTimerManager()
-{
-	return *m_timer_manager;
-}
-
-zylib::DefaultRandom& World::getRandom()
-{
-    return *m_random;
-}
-
-void World::heartbeat(DiffTime diff)
-{
-}
-
-void World::dispatchMsg()
-{
-    decltype(m_world_msgs) all_cbs{};
-    {
-        std::lock_guard<std::mutex> lk(m_mtx);
-        std::swap(all_cbs, m_world_msgs);
-    }
+    it->second->SendMessage();
 }

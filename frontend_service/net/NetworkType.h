@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <chrono>
+#include <array>
 #include <type_traits>
 
 class RWHandler;
@@ -22,8 +23,9 @@ struct MsgHead
     uint8_t                     m_unknown_3;
     uint64_t                    m_uid;
     std::array<uint8_t, 8>      m_sid;
+    int32_t                     m_msg_id;
 };
-static_assert(std::is_pod<MsgHead>::type, "MsgHead must be POD!");
+static_assert(std::is_pod<MsgHead>::value, "MsgHead must be POD!");
 
 #pragma pack(pop)
 

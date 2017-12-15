@@ -11,8 +11,9 @@
 
 #include "FakeLog.h"
 #include "world/World.h"
+#include "net/StreamServer.h"
 
-void serverAbort()
+void OutOfMemory()
 {
     std::abort();
 }
@@ -20,12 +21,14 @@ void serverAbort()
 void sigTerm(int signo)
 {
     if (signo == SIGTERM) {
-        Service::instance().stop();
+        Service::instance().Stop();
     }
 }
 
 Service::Service()
     : m_is_running(false)
+    , m_world()
+    , m_network()
 {
 }
 
@@ -39,7 +42,7 @@ Service& Service::instance()
     return _instance;
 }
 
-bool Service::start()
+bool Service::Start()
 {
     ::signal(SIGTERM, &::sigTerm);
     ::signal(SIGHUP, SIG_IGN);
@@ -53,16 +56,23 @@ bool Service::start()
     fake_log::initLog(std::make_unique<fake_log::ConsoleLog>());
 
     //ÄÚ´æ²»×ãÊ±±¼À£
-    std::set_new_handler(&::serverAbort);
+    std::set_new_handler(&::OutOfMemory);
 
     std::this_thread::sleep_for(std::chrono::seconds{1});
+    m_world = std::make_unique<World>();
+    if (m_world->Init()) {
+        FAKE_LOG(WARNING) << "world init fail.";
+        return false;
+    }
+
+    m_network = std::make_unique<StreamServer>(8087);
 
     m_is_running = true;
 	FAKE_LOG(INFO) << "every thing init ok";
     return true;
 }
 
-void Service::loop()
+void Service::Loop()
 {
     while (m_is_running) {
         std::this_thread::sleep_for(std::chrono::seconds{1});
@@ -70,9 +80,11 @@ void Service::loop()
 	FAKE_LOG(INFO) << "ServerApp exit successed";
 }
 
-void Service::stop()
+void Service::Stop()
 {
     m_is_running.exchange(false);
+    m_world->Stop();
+    m_world->WaitTheadExit();
 }
 
 Service& GetService()

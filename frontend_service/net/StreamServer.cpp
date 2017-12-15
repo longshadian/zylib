@@ -4,22 +4,39 @@
 #include "RWHandler.h"
 #include "FakeLog.h"
 
-StreamServer::StreamServer(boost::asio::io_service& io_service, uint16_t port, const ServerOption& option)
-    : m_acceptor(io_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port))
-    , m_socket(io_service)
+StreamServer::StreamServer(uint16_t port, ServerOption option)
+    : m_thread()
+    , m_io_service()
+    , m_work()
+    , m_acceptor(m_io_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port))
+    , m_socket(m_io_service)
     , m_handlers()
     , m_option(option)
+    , m_callback()
 {
 }
 
-void StreamServer::accept()
+StreamServer::~StreamServer()
 {
+    Stop();
+    if (m_thread.joinable())
+        m_thread.join();
+}
+
+void StreamServer::Start()
+{
+    if (m_work)
+        return;
+    m_work = std::make_unique<boost::asio::io_service::work>(m_io_service);
     m_acceptor.async_accept(m_socket, std::bind(&StreamServer::acceptCallback, this, std::placeholders::_1));
+    std::thread temp{std::bind(&StreamServer::Run, this)};
+    m_thread = std::move(temp);
 }
 
-void StreamServer::stop()
+void StreamServer::Stop()
 {
     stopAccept();
+    m_io_service.stop();
 }
 
 void StreamServer::stopAccept()
@@ -35,12 +52,18 @@ std::shared_ptr<RWHandler> StreamServer::createHandler()
         GetCallback().HandlerAcceptOverflow();
         return nullptr;
     }
-    HandlerOption opt{};
-    opt.m_read_timeout_seconds = m_option.m_timeout_seconds;
-    auto handler = std::make_shared<RWHandler>(std::move(m_socket), opt);
+    auto handler = std::make_shared<RWHandler>(std::move(m_socket), *this);
     handler->init();
     m_handlers.insert(handler);
     return handler;
+}
+
+void StreamServer::Run()
+{
+    try {
+        m_io_service.run();
+    } catch (...) {
+    }
 }
 
 void StreamServer::acceptCallback(boost::system::error_code ec)
@@ -56,19 +79,19 @@ void StreamServer::acceptCallback(boost::system::error_code ec)
             this_socket.shutdown(boost::asio::socket_base::shutdown_both, ec_2);
             this_socket.close(ec_2);
         }
-        LOG(DEBUG) << "current handler:" << m_handlers.size();
+        FAKE_LOG(DEBUG) << "current handler:" << m_handlers.size();
     } else {
-        LOG(DEBUG) << "accept error. server will stop accept. reason:" << ec.value() << " "  << ec.message();
+        FAKE_LOG(DEBUG) << "accept error. server will stop accept. reason:" << ec.value() << " "  << ec.message();
         stopAccept();
         return;
     }
-    accept();
+    Start();
 }
 
 void StreamServer::stopHandler(const RWHandlerPtr& handler)
 {
     m_handlers.erase(handler);
-    LOG(DEBUG) << "current connect count:" << m_handlers.size();
+    FAKE_LOG(DEBUG) << "current connect count:" << m_handlers.size();
 }
 
 boost::asio::io_service& StreamServer::getIOService()

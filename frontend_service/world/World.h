@@ -2,22 +2,16 @@
 
 #include <cstdint>
 #include <ctime>
-#include <map>
-#include <set>
-#include <unordered_map>
-#include <unordered_set>
-#include <string>
-#include <memory>
-#include <queue>
-#include <map>
-#include <mutex>
 #include <thread>
 #include <atomic>
 #include <functional>
-#include <list>
 
-#include "WorldDefine.h"
+#include "Queue.h"
 #include "net/NetworkType.h"
+#include "world/WorldDefine.h"
+#include "world/WorldDefine.h"
+#include "world/Session.h"
+#include "world/MsgDispatcher.h"
 
 class World
 {
@@ -28,28 +22,37 @@ public:
 	~World();
 	World(const World& rhs) = delete;
 	World& operator=(const World& rhs) = delete;
+	World(World&& rhs) = delete;
+	World& operator=(World&& rhs) = delete;
 
-    //网络层事件
-    void            networkAccept(Hdl hdl);
-    void            networkReceviedMsg(Hdl hdl, std::shared_ptr<Message> msg);
-    void            networkTimeout(Hdl hdl);
-    void            networkClosed(Hdl hdl);
+    // 网络层事件
+    void                    NetworkAccept(Hdl hdl);
+    void                    NetworkReceviedMsg(Hdl hdl, std::shared_ptr<Message> msg);
+    void                    NetworkTimeout(Hdl hdl);
+    void                    NetworkClosed(Hdl hdl);
 
+    void                    PostTask(Task t);
 public:
-    bool            init();
-	void            heartbeat(DiffTime diff);
-    void            stop();
-    void            waitTheadExit();
-    bool            isRunning() const;
-    void            shutdownSession(WorldSession* session);
+    bool                    Init();
+    void                    Stop();
+    void                    WaitTheadExit();
+    bool                    IsRunning() const;
+    void                    SetClientCallback(ClientCB_Array arr);
+
+    void                    shutdownClientSession(Hdl hdl);
+    void                    SendMessage(uint64_t uid);
 
 private:
-    void            run();
-    void            dispatchMsg();
+    void                    Run();
+    void                    processClientMessage(Hdl hdl, std::shared_ptr<Message> msg);
+    void                    CallClientMessage(Hdl hdl, std::shared_ptr<Message> msg) const;
+    void                    RouterClientMessage(Hdl hdl, std::shared_ptr<Message> msg);
 
 private:
-    mutable std::mutex                          m_mtx;
-    std::deque<std::shared_ptr<WorldMsg>>		m_world_msgs;     //网络库收到的协议包
-    std::atomic<bool>	                        m_is_running;
-    std::thread                                 m_thread;
+    std::atomic<bool>       m_is_running;
+    std::thread             m_thread;
+    ThreadSafeQueue<Task>   m_queue;        
+    std::unordered_map<Hdl, ClientSessionPtr, HdlLess> m_client_sessions;
+    std::unordered_map<uint64_t, ClientSessionPtr>     m_clinet_users;
+    ClientCB_Array          m_client_cb_array;
 };

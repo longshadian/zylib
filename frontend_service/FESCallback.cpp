@@ -1,30 +1,27 @@
-#include "net/Message.h"
+#include "FESCallback.h"
 
-namespace network {
-
-void ServerCallback::HandlerAccept(Hdl)
+void FESCallback::HandlerAccept(Hdl)
 {
 
 }
 
-void ServerCallback::HandlerClosed(Hdl)
+void FESCallback::HandlerClosed(Hdl)
 {
 
 }
 
-void ServerCallback::HandlerTimeout(Hdl)
+void FESCallback::HandlerTimeout(Hdl)
 {
 
 }
 
-void ServerCallback::ReceviedMessage(Hdl hdl, std::shared_ptr<Message> msg)
+void FESCallback::ReceviedMessage(Hdl hdl, std::shared_ptr<Message> msg)
+{
+    (void)hdl;
+    (void)msg;
+}
+
+void FESCallback::HandlerAcceptOverflow()
 {
 
 }
-
-void ServerCallback::HandlerAcceptOverflow()
-{
-
-}
-
-} // network

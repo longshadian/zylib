@@ -4,12 +4,12 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 #include "FakeLog.h"
-#include "StreamServer.h"
-#include "Message.h"
+#include "net/StreamServer.h"
+#include "net/Message.h"
 
-RWHandler::RWHandler(boost::asio::ip::tcp::socket socket, const HandlerOption& opt)
-    : m_socket(std::move(socket))
-    , m_handler_opt(opt)
+RWHandler::RWHandler(boost::asio::ip::tcp::socket socket, StreamServer& server)
+    : m_stream_server(server)
+    , m_socket(std::move(socket))
     , m_is_closed(false)
     , m_write_buffer()
     , m_read_head()
@@ -26,7 +26,7 @@ void RWHandler::init()
     doReadHead();
 }
 
-void RWHandler::sendMessage(MessagePtr msg)
+void RWHandler::sendMessage(std::shared_ptr<SendMessage> msg)
 {
     getIOService().post([this, self = shared_from_this(), msg]()
         {
@@ -49,7 +49,7 @@ void RWHandler::doWriteCallback(boost::system::error_code ec, std::size_t length
 {
     (void)length;
     if (ec) {
-        LOG(DEBUG) << " error: " << ec.value() << ":" << ec.message();
+        FAKE_LOG(DEBUG) << " error: " << ec.value() << ":" << ec.message();
         doClosed(CLOSED_TYPE::NORMAL);
         return;
     }
@@ -62,33 +62,52 @@ void RWHandler::doWriteCallback(boost::system::error_code ec, std::size_t length
 void RWHandler::doReadHead()
 {
     std::shared_ptr<boost::asio::deadline_timer> timer{};
-    if (m_handler_opt.m_read_timeout_seconds > 0)
-        timer = setTimeoutTimer(m_handler_opt.m_read_timeout_seconds);
+    if (GetTimeoutTime() > 0)
+        timer = setTimeoutTimer(GetTimeoutTime());
 
-    boost::asio::async_read(boost::asio::buffer(m_read_head)
-        , std::bind(&RWHandler::doReadBody, shared_from_this(), timer, std::placeholders::_1, std::placeholders::_2));
+    boost::asio::async_read(getSocket()
+        , boost::asio::buffer(m_read_head)
+        , [this, self = shared_from_this(), timer](boost::system::error_code ec, size_t length)
+        {
+            timeoutCancel(timer);
+            (void)length;
+            if (ec) {
+                doClosed();
+                FAKE_LOG(WARNING) << "doReadHead error:" << ec.value() << ":" << ec.message();
+                return;
+            }
+            MsgHead head{};
+            std::memcpy(&head, m_read_head.data(), MSG_HEAD_SIZE);
+            if (head.m_length <= MSG_HEAD_SIZE || head.m_length > 1024) {
+                doClosed();
+                FAKE_LOG(ERROR) << "doReadHead msg_len " << head.m_length;
+                return;
+            }
+            m_read_body.resize(head.m_length, 0);
+            doReadBody();
+        });
 }
 
 void RWHandler::doReadBody()
 {
     std::shared_ptr<boost::asio::deadline_timer> timer;
-    if (m_handler_opt.m_read_timeout_seconds > 0)
-        timer = setTimeoutTimer(m_handler_opt.m_read_timeout_seconds);
+    if (GetTimeoutTime() > 0)
+        timer = setTimeoutTimer(GetTimeoutTime());
     boost::asio::async_read(getSocket(), boost::asio::buffer(m_read_head),
         [this, self = shared_from_this(), timer](boost::system::error_code ec, size_t length)
         {
             timeoutCancel(timer);
             (void)length;
             if (ec) {
-                onClosed();
-                LOG(WARNING) << "readHead error:" << ec.value() << ":" << ec.message();
+                doClosed();
+                FAKE_LOG(WARNING) << "readHead error:" << ec.value() << ":" << ec.message();
                 return;
             }
             MsgHead head{};
             std::memcpy(&head, m_read_head.data(), MSG_HEAD_SIZE);
             if (head.m_length <= MSG_HEAD_SIZE || head.m_length > 1024) {
-                onClosed();
-                LOG(ERROR) << "readHead msg_len " << head.m_length;
+                doClosed();
+                FAKE_LOG(ERROR) << "readHead msg_len " << head.m_length;
                 return;
             }
 
@@ -108,7 +127,7 @@ boost::asio::ip::tcp::socket& RWHandler::getSocket()
 
 void RWHandler::doClosed(CLOSED_TYPE type)
 {
-    LOG(DEBUG) << "closed type:" << int(type);
+    FAKE_LOG(DEBUG) << "closed type:" << int(type);
     if (m_is_closed.exchange(true))
         return;
     if (type == CLOSED_TYPE::NORMAL) {
@@ -160,4 +179,9 @@ boost::asio::io_service& RWHandler::getIOService()
 Hdl RWHandler::getHdl()
 {
     return Hdl{shared_from_this()};
+}
+
+size_t RWHandler::GetTimeoutTime() const
+{
+    return m_stream_server.getOption().m_timeout_seconds;
 }

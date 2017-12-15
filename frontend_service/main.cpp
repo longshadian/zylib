@@ -44,17 +44,17 @@ struct SleepForLog
 
 int main(int argc, char** argv)
 {
+    (void)argc;
+    (void)argv;
     SleepForLog for_log{2};
     (void)for_log;
     if (argc == 1) {
-        if (!Service::instance().start()) {
+        if (!Service::instance().Start()) {
             return EXIT_FAILURE;
         }
-        Service::instance().loop();
+        Service::instance().Loop();
     } else {
-        ServerCmd cmd{};
-        cmd.exec(argc, argv);
     }
-    LOG(INFO) <<  "main EXIT_SUCCESS";
+    FAKE_LOG(INFO) <<  "main EXIT_SUCCESS";
     return EXIT_SUCCESS;
 }
