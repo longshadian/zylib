@@ -1,5 +1,4 @@
-#ifndef _MYSQLCPP_RESULTBIND_H
-#define _MYSQLCPP_RESULTBIND_H
+#pragma once
 
 #include <mysql.h>
 
@@ -9,6 +8,9 @@
 namespace mysqlcpp {
 
 class PreparedStatement;
+
+namespace detail {
+
 
 struct ResultBindBuffer
 {
@@ -56,6 +58,6 @@ private:
     std::vector<std::shared_ptr<ResultBindBuffer>> m_bind_buffer;
 };
 
-} // mysqlcpp
+} // detail
 
-#endif
+} // mysqlcpp

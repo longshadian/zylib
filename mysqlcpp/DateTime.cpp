@@ -1,11 +1,11 @@
-#include "DateTime.h"
+#include "mysqlcpp/DateTime.h"
 
 #include <ctime>
 #include <time.h>
 #include <cstring>
 #include <array>
 
-#include "Utils.h"
+#include "mysqlcpp/Utils.h"
 
 namespace mysqlcpp {
 

@@ -1,7 +1,4 @@
-#ifndef _MYSQLCPP_ASSERT_H
-#define _MYSQLCPP_ASSERT_H
+#pragma once
 
 #include <assert.h>
 #define MYSQLCPP_ASSERT assert
-
-#endif

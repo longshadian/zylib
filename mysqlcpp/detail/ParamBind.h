@@ -1,16 +1,18 @@
-#ifndef _MYSQLCPP_PARAMBIND_H
-#define _MYSQLCPP_PARAMBIND_H
+#pragma once
 
 #include <mysql.h>
 
 #include <vector>
 #include <memory>
 
-#include "Types.h"
+#include "mysqlcpp/Types.h"
 
 namespace mysqlcpp {
 
 class DateTime;
+
+namespace detail {
+
 
 class ParamBind
 {
@@ -52,6 +54,6 @@ private:
     std::vector<std::vector<uint8_t>> m_bind_buffer;
 };
 
-}
+} //detail
 
-#endif
+}

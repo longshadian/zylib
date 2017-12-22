@@ -1,10 +1,9 @@
-#ifndef _MYSQLCPP_RESULT_H
-#define _MYSQLCPP_RESULT_H
+#pragma once
 
 #include <mysql.h>
 
 #include <memory>
-#include "Types.h"
+#include "mysqlcpp/Types.h"
 
 namespace mysqlcpp {
 
@@ -48,6 +47,3 @@ private:
 };
 
 }
-
-#endif
-

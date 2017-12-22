@@ -1,10 +1,9 @@
-#ifndef _MYSQLCPP_FILEDMETA_H
-#define _MYSQLCPP_FILEDMETA_H
+#pragma once
 
 #include <memory>
 #include <mysql.h>
 
-#include "Field.h"
+#include "mysqlcpp/Field.h"
 
 namespace mysqlcpp {
 
@@ -30,6 +29,3 @@ public:
 };
 
 } // mysqlcpp
-
-#endif
-

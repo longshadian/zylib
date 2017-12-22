@@ -1,7 +1,7 @@
-#include "FieldMeta.h"
+#include "mysqlcpp/FieldMeta.h"
 
 #include <algorithm>
-#include "FakeLog.h"
+#include "mysqlcpp/FakeLog.h"
 
 namespace mysqlcpp {
 

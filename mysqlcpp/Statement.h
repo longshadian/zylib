@@ -1,11 +1,10 @@
-#ifndef _MYSQLCPP_STATEMENT_H
-#define _MYSQLCPP_STATEMENT_H
+#pragma once
 
 #include <mysql.h>
 #include <vector>
 
-#include "Types.h"
-#include "DateTime.h"
+#include "mysqlcpp/Types.h"
+#include "mysqlcpp/DateTime.h"
 
 namespace mysqlcpp {
 
@@ -37,5 +36,3 @@ private:
 };
 
 }
-
-#endif

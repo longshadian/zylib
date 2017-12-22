@@ -1,16 +1,17 @@
-#include "PreparedStatement.h"
+#include "mysqlcpp/PreparedStatement.h"
 
 #include <cstring>
 
-#include "Connection.h"
-#include "FakeLog.h"
-#include "Utils.h"
-#include "ParamBind.h"
-#include "ResultBind.h"
-#include "Field.h"
-#include "FieldMeta.h"
-#include "ResultSet.h"
-#include "Utils.h"
+#include "mysqlcpp/Connection.h"
+#include "mysqlcpp/FakeLog.h"
+#include "mysqlcpp/Utils.h"
+#include "mysqlcpp/Field.h"
+#include "mysqlcpp/FieldMeta.h"
+#include "mysqlcpp/ResultSet.h"
+#include "mysqlcpp/Utils.h"
+
+#include "mysqlcpp/detail/ParamBind.h"
+#include "mysqlcpp/detail/ResultBind.h"
 
 namespace mysqlcpp {
 
@@ -27,8 +28,8 @@ PreparedStatement::PreparedStatement(Connection& conn, MYSQL_STMT* stmt)
     ::mysql_stmt_attr_set(stmt, STMT_ATTR_UPDATE_MAX_LENGTH, &bool_tmp);
 
     m_param_count = ::mysql_stmt_param_count(m_stmt);
-    m_param_bind = std::make_shared<ParamBind>(m_param_count);
-    m_result_bind = std::make_shared<ResultBind>();
+    m_param_bind = std::make_shared<detail::ParamBind>(m_param_count);
+    m_result_bind = std::make_shared<detail::ResultBind>();
 }
 
 PreparedStatement::~PreparedStatement()

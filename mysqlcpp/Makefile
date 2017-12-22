@@ -1,7 +1,7 @@
 
 MYSQL_INCLUDE=/usr/local/mysql/include
 
-INC =  -I$(MYSQL_INCLUDE) -I./
+INC =  -I$(MYSQL_INCLUDE) -I../
 		
 LIB	= 
 		
@@ -14,6 +14,7 @@ CFLAGS  = -g -Wall -Wextra -Werror -std=c++11
 
 DIR_SRC= .
 SRC_CPP = $(wildcard $(DIR_SRC)/*.cpp)
+SRC_CPP += $(wildcard ./detail/*.cpp)
 
 OBJS = $(SRC_CPP:%.cpp=%.o)
 

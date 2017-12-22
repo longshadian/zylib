@@ -3,7 +3,7 @@
 #include <iostream>
 #include <memory>
 
-#include "mysqlcpp.h"
+#include "mysqlcpp/mysqlcpp.h"
 
 bool selectMinMaxUserID(mysqlcpp::Connection& conn, uint64_t* min_id, uint64_t* max_id);
 bool selectMinMaxUserIDEx(mysqlcpp::Connection& conn, uint64_t* min_id, uint64_t* max_id);
@@ -20,7 +20,6 @@ int fun(int argc, char** argv)
     conn_opt.database = "my_test";
     conn_opt.host = "192.168.207.128";
     conn_opt.port = 3306;
-    conn_opt.auto_reconn = true;
 
     mysqlcpp::Connection db_conn{ conn_opt };
     if (db_conn.open() != 0) {
@@ -69,9 +68,9 @@ int fun(int argc, char** argv)
 bool selectMinMaxUserID(mysqlcpp::Connection& conn, uint64_t* min_id, uint64_t* max_id)
 {
     const char* sql = "SELECT MAX(id) AS max_id, MIN(id) as min_id FROM test_string";
-    auto stmt = conn.createStatement();
+    auto stmt = conn.statement();
     if (!stmt) {
-        std::cout << "mysqlcpp query error:" << conn.getErrno() << ":" << conn.getError();
+        std::cout << "mysqlcpp query error:" << conn.getErrorNo() << ":" << conn.getErrorStr();
         return false;
     }
     auto rs = stmt->executeQuery(sql);

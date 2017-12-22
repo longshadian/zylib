@@ -4,12 +4,12 @@
 
 #include <cstring>
 
-#include "Connection.h"
-#include "FakeLog.h"
-#include "Utils.h"
-#include "ResultSet.h"
-#include "Field.h"
-#include "FieldMeta.h"
+#include "mysqlcpp/Connection.h"
+#include "mysqlcpp/FakeLog.h"
+#include "mysqlcpp/Utils.h"
+#include "mysqlcpp/ResultSet.h"
+#include "mysqlcpp/Field.h"
+#include "mysqlcpp/FieldMeta.h"
 
 namespace mysqlcpp {
 

@@ -1,11 +1,10 @@
-#ifndef _MYSQLCPP_CONNECTION_H
-#define _MYSQLCPP_CONNECTION_H
+#pragma once
 
 #include <string>
 
 #include <mysql.h>
 
-#include "Types.h"
+#include "mysqlcpp/Types.h"
 
 namespace mysqlcpp {
 
@@ -66,5 +65,3 @@ private:
 };
 
 }
-
-#endif

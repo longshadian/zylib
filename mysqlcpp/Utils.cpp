@@ -1,13 +1,13 @@
-#include "Utils.h"
+#include "mysqlcpp/Utils.h"
 
 #include <regex>
 #include <cstring>
 #include <algorithm>
 
-#include "DateTime.h"
-#include "FieldMeta.h"
-#include "Convert.h"
-#include "FakeLog.h"
+#include "mysqlcpp/DateTime.h"
+#include "mysqlcpp/FieldMeta.h"
+#include "mysqlcpp/FakeLog.h"
+#include "mysqlcpp/detail/Convert.h"
 
 namespace mysqlcpp {
 

@@ -1,9 +1,9 @@
-#include "Transaction.h"
+#include "mysqlcpp/Transaction.h"
 
 #include <algorithm>
 
-#include "Connection.h"
-#include "Statement.h"
+#include "mysqlcpp/Connection.h"
+#include "mysqlcpp/Statement.h"
 
 namespace mysqlcpp {
 

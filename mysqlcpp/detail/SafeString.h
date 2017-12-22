@@ -1,8 +1,7 @@
-#ifndef _MYSQLCPP_SAFESTRING_H
-#define _MYSQLCPP_SAFESTRING_H
+#pragma once
 
 #include <vector>
-#include "Types.h"
+#include "mysqlcpp/Types.h"
 
 namespace mysqlcpp {
 namespace detail {
@@ -70,5 +69,3 @@ private:
 
 } // detail
 } // mysqlcpp
-
-#endif

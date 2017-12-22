@@ -7,7 +7,7 @@
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
-#include "mysqlcpp.h"
+#include "mysqlcpp/mysqlcpp.h"
 
 std::shared_ptr<boost::uuids::random_generator> g_generator;
 

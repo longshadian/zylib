@@ -1,10 +1,10 @@
-#include "ResultSet.h"
+#include "mysqlcpp/ResultSet.h"
 
 #include <algorithm>
-#include "MysqlcppAssert.h"
-#include "FakeLog.h"
-#include "Field.h"
-#include "FieldMeta.h"
+#include "mysqlcpp/MysqlcppAssert.h"
+#include "mysqlcpp/FakeLog.h"
+#include "mysqlcpp/Field.h"
+#include "mysqlcpp/FieldMeta.h"
 
 namespace mysqlcpp {
 

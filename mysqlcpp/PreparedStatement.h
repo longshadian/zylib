@@ -1,16 +1,21 @@
-#ifndef _MYSQLCPP_PREPARED_STATEMENT_H
-#define _MYSQLCPP_PREPARED_STATEMENT_H
+#pragma once
 
 #include <mysql.h>
 #include <vector>
 
-#include "Types.h"
+#include "mysqlcpp/Types.h"
+
+namespace mysqlcpp {
+namespace detail {
+class ParamBind;
+class ResultBind;
+}
+}
+
 
 namespace mysqlcpp {
 
 class SQLString;
-class ResultBind;
-class ParamBind;
 class DateTime;
 class FieldMeta;
 class Field;
@@ -63,14 +68,12 @@ private:
 
     NEXT_ROW nextRow();
 private:
-    Connection&                     m_conn;
-    MYSQL_STMT*                     m_stmt;
-    MYSQL_RES*                      m_mysql_res;
-    unsigned long                   m_param_count;
-    std::shared_ptr<ParamBind>      m_param_bind;
-    std::shared_ptr<ResultBind>     m_result_bind;
+    Connection&                         m_conn;
+    MYSQL_STMT*                         m_stmt;
+    MYSQL_RES*                          m_mysql_res;
+    unsigned long                       m_param_count;
+    std::shared_ptr<detail::ParamBind>  m_param_bind;
+    std::shared_ptr<detail::ResultBind> m_result_bind;
 };
 
 }
-
-#endif

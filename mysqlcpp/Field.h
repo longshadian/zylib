@@ -1,13 +1,12 @@
-#ifndef _MYSQLCPP_FIELD_H
-#define _MYSQLCPP_FIELD_H
+#pragma once
 
-#include <mysql.h>
 #include <cstring>
-
 #include <vector>
 
-#include "Types.h"
-#include "SafeString.h"
+#include <mysql.h>
+
+#include "mysqlcpp/Types.h"
+#include "mysqlcpp/detail/SafeString.h"
 
 /**
 	MYSQL查询结果对应类型
@@ -81,6 +80,3 @@ private:
 };
 
 }
-
-#endif
-

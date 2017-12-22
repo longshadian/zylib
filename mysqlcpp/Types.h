@@ -1,6 +1,4 @@
-#ifndef _MYSQLCPP_TYPES_H
-#define _MYSQLCPP_TYPES_H
-
+#pragma once
 
 #include <memory>
 #include <vector>
@@ -31,5 +29,3 @@ using int32	= int32_t;
 using int64	= int64_t;
 
 }
-
-#endif

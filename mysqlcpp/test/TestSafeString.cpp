@@ -4,8 +4,8 @@
 #include <cstring>
 #include <limits>
 
-#include "SafeString.h"
-#include "Convert.h"
+#include "mysqlcpp/detail/Convert.h"
+#include "mysqlcpp/detail/SafeString.h"
 
 void printSafeString(const mysqlcpp::detail::SafeString& sf)
 {

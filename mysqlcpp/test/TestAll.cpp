@@ -6,7 +6,7 @@
 #include <thread>
 #include <chrono>
 
-#include "mysqlcpp.h"
+#include "mysqlcpp/mysqlcpp.h"
 
 using PoolPtr = std::shared_ptr<mysqlcpp::ConnectionPool>;
 const int32_t POOL_SIZE = 4;

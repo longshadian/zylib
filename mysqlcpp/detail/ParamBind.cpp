@@ -1,4 +1,4 @@
-#include "ParamBind.h"
+#include "mysqlcpp/detail/ParamBind.h"
 
 #include <mysql.h>
 
@@ -6,11 +6,13 @@
 #include <vector>
 #include <memory>
 
-#include "FakeLog.h"
-#include "DateTime.h"
-#include "MysqlcppAssert.h"
+#include "mysqlcpp/FakeLog.h"
+#include "mysqlcpp/DateTime.h"
+#include "mysqlcpp/MysqlcppAssert.h"
 
 namespace mysqlcpp {
+
+namespace detail {
 
 ParamBind::ParamBind(unsigned int param_count)
     : m_param_count(param_count)
@@ -249,5 +251,5 @@ bool ParamBind::checkValidIndex(uint32 index)
     return true;
 }
 
-
+} // detail
 } // mysqlcpp

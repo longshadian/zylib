@@ -1,5 +1,4 @@
-#ifndef _MYSQLCPP_DATETIME_H
-#define _MYSQLCPP_DATETIME_H
+#pragma once
 
 #include <mysql.h>
 #include <array>
@@ -8,7 +7,7 @@
 
 #include <boost/date_time/posix_time/ptime.hpp>
 
-#include "Types.h"
+#include "mysqlcpp/Types.h"
 
 namespace mysqlcpp {
 
@@ -45,5 +44,3 @@ private:
 };
 
 }
-
-#endif

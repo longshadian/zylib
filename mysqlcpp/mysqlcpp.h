@@ -1,17 +1,12 @@
-#ifndef _MYSQLCPP_MYSQLCPP_H
-#define _MYSQLCPP_MYSQLCPP_H
+#pragma once
 
-#include "Connection.h"
-#include "PreparedStatement.h"
-#include "FieldMeta.h"
-#include "Field.h"
-#include "Transaction.h"
-#include "ConnectionPool.h"
-#include "FakeLog.h"
-#include "PreparedStatement.h"
-#include "Statement.h"
-#include "ResultSet.h"
-#include "SafeString.h"
-#include "Convert.h"
-
-#endif
+#include "mysqlcpp/Connection.h"
+#include "mysqlcpp/PreparedStatement.h"
+#include "mysqlcpp/FieldMeta.h"
+#include "mysqlcpp/Field.h"
+#include "mysqlcpp/Transaction.h"
+#include "mysqlcpp/ConnectionPool.h"
+#include "mysqlcpp/FakeLog.h"
+#include "mysqlcpp/PreparedStatement.h"
+#include "mysqlcpp/Statement.h"
+#include "mysqlcpp/ResultSet.h"

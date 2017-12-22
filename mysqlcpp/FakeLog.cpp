@@ -1,4 +1,4 @@
-#include "FakeLog.h"
+#include "mysqlcpp/FakeLog.h"
 
 #include <iostream>
 

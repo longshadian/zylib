@@ -1,11 +1,13 @@
-#include "ResultBind.h"
+#include "mysqlcpp/detail/ResultBind.h"
 
 #include <cstring>
 
-#include "PreparedStatement.h"
-#include "FakeLog.h"
+#include "mysqlcpp/PreparedStatement.h"
+#include "mysqlcpp/FakeLog.h"
 
 namespace mysqlcpp {
+
+namespace detail {
 
 static 
 std::shared_ptr<ResultBindBuffer> createBindBufferForField(const MYSQL_FIELD* const field)
@@ -137,5 +139,7 @@ void ResultBind::clear()
     m_len.clear();
     m_bind_buffer.clear();
 }
+
+} // detail
 
 } // mysqlcpp 

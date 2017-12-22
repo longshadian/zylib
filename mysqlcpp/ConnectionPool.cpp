@@ -1,11 +1,11 @@
-#include "ConnectionPool.h"
+#include "mysqlcpp/ConnectionPool.h"
 
 #include <mysql.h>
 #include <algorithm>
 
-#include "MysqlcppAssert.h"
-#include "FakeLog.h"
-#include "Statement.h"
+#include "mysqlcpp/MysqlcppAssert.h"
+#include "mysqlcpp/FakeLog.h"
+#include "mysqlcpp/Statement.h"
 
 namespace mysqlcpp {
 

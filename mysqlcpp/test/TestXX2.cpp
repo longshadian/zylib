@@ -3,7 +3,7 @@
 #include <iostream>
 #include <memory>
 
-#include "mysqlcpp.h"
+#include "mysqlcpp/mysqlcpp.h"
 
 mysqlcpp::ConnectionOpt initOpt()
 {

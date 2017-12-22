@@ -1,5 +1,4 @@
-#ifndef _MYSQLCPP_UTILS_H
-#define _MYSQLCPP_UTILS_H
+#pragma once
 
 #include <mysql.h>
 
@@ -11,7 +10,7 @@
 #include <boost/date_time.hpp>
 #include <boost/date_time/c_local_time_adjustor.hpp>
 
-#include "Types.h"
+#include "mysqlcpp/Types.h"
 
 namespace mysqlcpp {
 
@@ -46,5 +45,3 @@ struct tm time_t_TO_tm(time_t t)
 
 }
 }
-
-#endif

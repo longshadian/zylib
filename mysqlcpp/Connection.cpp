@@ -1,12 +1,12 @@
-#include "Connection.h"
+#include "mysqlcpp/Connection.h"
 
 #include <mysql.h>
 #include <errmsg.h>
 
-#include "PreparedStatement.h"
-#include "Statement.h"
-#include "FakeLog.h"
-#include "Utils.h"
+#include "mysqlcpp/PreparedStatement.h"
+#include "mysqlcpp/Statement.h"
+#include "mysqlcpp/FakeLog.h"
+#include "mysqlcpp/Utils.h"
 
 namespace mysqlcpp {
 

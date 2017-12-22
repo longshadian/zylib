@@ -3,8 +3,8 @@
 #include <cstring>
 #include <string>
 
-#include "SafeString.h"
-#include "Convert.h"
+#include "mysqlcpp/detail/SafeString.h"
+#include "mysqlcpp/detail/Convert.h"
 
 void printSafeString(const mysqlcpp::detail::SafeString& sf)
 {

@@ -1,12 +1,13 @@
-#include "Field.h"
+#include "mysqlcpp/Field.h"
 
 #include <cstring>
 
-#include "FakeLog.h"
-#include "DateTime.h"
-#include "Utils.h"
-#include "MysqlcppAssert.h"
-#include "Convert.h"
+#include "mysqlcpp/FakeLog.h"
+#include "mysqlcpp/DateTime.h"
+#include "mysqlcpp/Utils.h"
+#include "mysqlcpp/MysqlcppAssert.h"
+
+#include "mysqlcpp/detail/Convert.h"
 
 namespace mysqlcpp {
 
