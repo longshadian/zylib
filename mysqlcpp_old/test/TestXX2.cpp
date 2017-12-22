@@ -3,7 +3,7 @@
 #include <iostream>
 #include <memory>
 
-#include "mysqlcpp.h"
+#include "MySqlCpp.h"
 
 mysqlcpp::ConnectionOpt initOpt()
 {
@@ -183,6 +183,8 @@ int testPool()
     mysqlcpp::ConnectionPoolOpt pool_opt{};
     pool_opt.m_thread_pool_size = 3;
     pool_opt.m_thread_pool_max_size = 3;
+    pool_opt.m_thread_pool_idle_timeout = 0;
+    pool_opt.m_mysql_ping_seconds = 2;
 
     mysqlcpp::ConnectionPool pool{conn_opt, pool_opt};
     if (!pool.init()) {

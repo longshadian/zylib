@@ -5,7 +5,7 @@ INC =	-I/usr/local/mysql/include		\
 LIB	=  -L/usr/local/mysql/lib	-lmysqlclient
 		
 CC      = g++
-CFLAGS  = -g -Wall -Werror -std=c++14
+CFLAGS  = -g -Wall -Werror -Wextra -std=c++14
 #  -Wshadow -Wunreachable-code -Wextra -Wconversion
 LDFLAGS = -Wl,--no-as-needed,-rpath=/usr/local/mysql/lib -lpthread
 

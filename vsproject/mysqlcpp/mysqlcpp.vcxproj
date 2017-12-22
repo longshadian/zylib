@@ -18,11 +18,58 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\mysqlcpp_old\Connection.h" />
+    <ClInclude Include="..\..\mysqlcpp_old\ConnectionPool.h" />
+    <ClInclude Include="..\..\mysqlcpp_old\Convert.h" />
+    <ClInclude Include="..\..\mysqlcpp_old\DateTime.h" />
+    <ClInclude Include="..\..\mysqlcpp_old\FakeLog.h" />
+    <ClInclude Include="..\..\mysqlcpp_old\Field.h" />
+    <ClInclude Include="..\..\mysqlcpp_old\FieldMeta.h" />
+    <ClInclude Include="..\..\mysqlcpp_old\MySqlCpp.h" />
+    <ClInclude Include="..\..\mysqlcpp_old\MysqlcppAssert.h" />
+    <ClInclude Include="..\..\mysqlcpp_old\ParamBind.h" />
+    <ClInclude Include="..\..\mysqlcpp_old\PreparedStatement.h" />
+    <ClInclude Include="..\..\mysqlcpp_old\ResultBind.h" />
+    <ClInclude Include="..\..\mysqlcpp_old\ResultSet.h" />
+    <ClInclude Include="..\..\mysqlcpp_old\SafeString.h" />
+    <ClInclude Include="..\..\mysqlcpp_old\Statement.h" />
+    <ClInclude Include="..\..\mysqlcpp_old\test\AsyncTask.h" />
+    <ClInclude Include="..\..\mysqlcpp_old\Transaction.h" />
+    <ClInclude Include="..\..\mysqlcpp_old\Types.h" />
+    <ClInclude Include="..\..\mysqlcpp_old\Utils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\mysqlcpp_old\Connection.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_old\ConnectionPool.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_old\DateTime.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_old\FakeLog.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_old\Field.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_old\FieldMeta.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_old\ParamBind.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_old\PreparedStatement.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_old\ResultBind.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_old\ResultSet.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_old\Statement.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_old\test\TestAll.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_old\test\TestBigTable.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_old\test\TestConvert.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_old\test\TestSafeString.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_old\test\TestThreads.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_old\test\TestXX.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_old\test\TestXX2.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_old\Transaction.cpp" />
+    <ClCompile Include="..\..\mysqlcpp_old\Utils.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\mysqlcpp_old\test\Makefile" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{0324F65F-1767-4851-9A8B-B4D6851CA050}</ProjectGuid>
     <RootNamespace>mysqlcpp</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
+    <ProjectName>mysqlcpp_old</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -111,52 +158,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\mysqlcpp\Connection.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\ConnectionPool.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\DateTime.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\FakeLog.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\Field.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\FieldMeta.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\ParamBind.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\PreparedStatement.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\ResultBind.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\ResultSet.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\Statement.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\test\TestAll.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\test\TestBigTable.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\test\TestConvert.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\test\TestSafeString.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\test\TestThreads.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\test\TestXX.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\test\TestXX2.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\Transaction.cpp" />
-    <ClCompile Include="..\..\mysqlcpp\Utils.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\mysqlcpp\Connection.h" />
-    <ClInclude Include="..\..\mysqlcpp\ConnectionPool.h" />
-    <ClInclude Include="..\..\mysqlcpp\Convert.h" />
-    <ClInclude Include="..\..\mysqlcpp\DateTime.h" />
-    <ClInclude Include="..\..\mysqlcpp\FakeLog.h" />
-    <ClInclude Include="..\..\mysqlcpp\Field.h" />
-    <ClInclude Include="..\..\mysqlcpp\FieldMeta.h" />
-    <ClInclude Include="..\..\mysqlcpp\MySqlCpp.h" />
-    <ClInclude Include="..\..\mysqlcpp\MysqlcppAssert.h" />
-    <ClInclude Include="..\..\mysqlcpp\ParamBind.h" />
-    <ClInclude Include="..\..\mysqlcpp\PreparedStatement.h" />
-    <ClInclude Include="..\..\mysqlcpp\ResultBind.h" />
-    <ClInclude Include="..\..\mysqlcpp\ResultSet.h" />
-    <ClInclude Include="..\..\mysqlcpp\SafeString.h" />
-    <ClInclude Include="..\..\mysqlcpp\Statement.h" />
-    <ClInclude Include="..\..\mysqlcpp\test\AsyncTask.h" />
-    <ClInclude Include="..\..\mysqlcpp\Transaction.h" />
-    <ClInclude Include="..\..\mysqlcpp\Types.h" />
-    <ClInclude Include="..\..\mysqlcpp\Utils.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\mysqlcpp\test\Makefile" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

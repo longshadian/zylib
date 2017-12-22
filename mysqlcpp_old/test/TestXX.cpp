@@ -3,7 +3,7 @@
 #include <iostream>
 #include <memory>
 
-#include "mysqlcpp.h"
+#include "MySqlCpp.h"
 
 bool selectMinMaxUserID(mysqlcpp::Connection& conn, uint64_t* min_id, uint64_t* max_id);
 bool selectMinMaxUserIDEx(mysqlcpp::Connection& conn, uint64_t* min_id, uint64_t* max_id);

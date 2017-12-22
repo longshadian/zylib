@@ -302,27 +302,12 @@ long double Field::getLongDouble() const
     return detail::Convert<long double>::cvt_noexcept(m_buffer.getCString());
 }
 
-/*
 char const* Field::getCString() const
 {
-    if (!data.value)
-        return NULL;
-
-    #ifdef TRINITY_DEBUG
-    if (isNumeric())
-    {
-        FAKE_LOG(ERROR) << "Warning: GetCString() on non-tinyint field " << meta.TableAlias
-            << " " << meta.Alias
-            << " " << meta.TableName
-            << " " << meta.Name
-            << " " << meta.Index
-            << " " << meta.Type;
-        return NULL;
-    }
-    #endif
-    return static_cast<char const*>(data.value);
+    if (isNull())
+        return "";
+    return m_buffer.getCString();
 }
-*/
 
 std::string Field::getString() const
 {
@@ -347,15 +332,23 @@ DateTime Field::getDateTime() const
 {
     if (isNull())
         return DateTime{};
+
+    MYSQL_TIME mysql_time{};
+    std::memset(&mysql_time, 0, sizeof(mysql_time));
     if (m_is_binary){
-        MYSQL_TIME mysql_time{};
-        std::memset(&mysql_time, 0, sizeof(mysql_time));
         std::memcpy(&mysql_time, m_buffer.getPtr(), m_buffer.getLength());
         return DateTime(mysql_time);
     }
-    DateTime tm{};
-    MYSQLCPP_ASSERT(util::datetimeFromString(&tm, getString()));
-    return tm;
+    if (m_type == MYSQL_TYPE_DATE) {
+        util::stringTo_Date(getString(), &mysql_time.year, &mysql_time.month, &mysql_time.day);
+    }
+    if (m_type == MYSQL_TYPE_DATETIME || m_type == MYSQL_TYPE_TIMESTAMP) {
+        util::stringTo_DateTime_Timestamp(getString()
+            , &mysql_time.year, &mysql_time.month, &mysql_time.day
+            , &mysql_time.hour, &mysql_time.minute, &mysql_time.second
+            , &mysql_time.second_part);
+    }
+    return DateTime{mysql_time};
 }
 
 }

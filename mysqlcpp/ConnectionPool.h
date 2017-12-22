@@ -39,10 +39,6 @@ struct ConnectionPoolOpt
 	ConnectionPoolOpt& operator=(ConnectionPoolOpt&& rhs) = default;
 
 	size_t m_thread_pool_size{3};           //线程池初始线程个数
-	size_t m_thread_pool_max_size{3};       //线程池最大线程个数
-    size_t m_mysql_ping_seconds{ 0 };       // 连接建立多少秒没被使用后，检查ping mysql
-	size_t m_thread_pool_idle_timeout{0};   //多余空闲线程等待多久销毁(秒)
-	//size_t m_thread_pool_stall_limit{0};    //无线程可用时等待多久创建线程
 };
 
 class ConnectionPool
@@ -70,17 +66,12 @@ public:
 	ConnectionPool& operator=(const ConnectionPool& rhs) = delete;
 
 	bool init();
-
     std::shared_ptr<Connection> getConn();
     void rleaseConn(std::shared_ptr<Connection> conn);
     size_t connectionCount() const;
 private:
-    SlotPtr getConnSlot();
-    void checkAutoReconn(SlotPtr& slot) const;
-
     std::shared_ptr<Connection> create() const;
     SlotPtr findEmptySlot();
-	//void destoryTimeout(time_t tnow);
 private:
     mutable std::mutex      m_mutex;
     std::list<SlotPtr>      m_pool;

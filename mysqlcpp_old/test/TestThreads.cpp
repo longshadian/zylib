@@ -12,7 +12,7 @@
 #include <future>
 #include <iostream>
 
-#include "mysqlcpp.h"
+#include "MySqlCpp.h"
 #include "AsyncTask.h"
 
 using PoolPtr = std::shared_ptr<mysqlcpp::ConnectionPool>;

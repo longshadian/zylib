@@ -63,7 +63,7 @@ public:
     float getFloat() const;
     double getDouble() const;
     long double getLongDouble() const;
-    char const* getCString() const;
+    //char const* getCString() const;
     std::string getString() const;
     std::vector<uint8> getBinary() const;
     bool isNull() const;

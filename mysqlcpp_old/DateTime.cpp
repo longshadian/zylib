@@ -16,33 +16,21 @@ DateTime::DateTime()
 }
 
 DateTime::DateTime(time_t t)
-    : DateTime(boost::posix_time::from_time_t(t))
+    : DateTime()
 {
+    setMysqlTime(getLocaltime(t));
 }
 
-DateTime::DateTime(const timeval& tv)
-    : DateTime(timevalToPtime(tv))
+DateTime::DateTime(const timeval& t)
+    :DateTime()
 {
+    setMysqlTime(getLocaltime(t.tv_sec));
+    m_mysql_time.second_part = t.tv_usec;
 }
 
 DateTime::DateTime(const MYSQL_TIME& mysql_time)
     : m_mysql_time(mysql_time)
 {
-}
-
-DateTime::DateTime(const boost::posix_time::ptime& pt)
-    : DateTime()
-{
-    auto date = pt.date();
-    m_mysql_time.year = date.year();
-    m_mysql_time.month = date.month();
-    m_mysql_time.day = date.day();
-
-    auto td = pt.time_of_day();
-    m_mysql_time.hour = td.hours();
-    m_mysql_time.minute = td.minutes();
-    m_mysql_time.second = td.seconds();
-    m_mysql_time.second_part = td.fractional_seconds();
 }
 
 DateTime::DateTime(const DateTime& rhs)
@@ -71,6 +59,7 @@ DateTime& DateTime::operator=(DateTime&& rhs)
     return *this;
 }
 
+
 DateTime::~DateTime()
 {
 
@@ -98,18 +87,10 @@ std::string DateTime::getString() const
 {
     std::array<char, 128> arr{};
     arr.fill(0);
-    if (m_mysql_time.second_part == 0) {
-        snprintf(arr.data(), arr.size(),"%04d-%02d-%02d %02d:%02d:%02d"
-            , m_mysql_time.year, m_mysql_time.month, m_mysql_time.day
-            , m_mysql_time.hour, m_mysql_time.minute, m_mysql_time.second
-            );
-    } else {
-        snprintf(arr.data(), arr.size(),"%04d-%02d-%02d %02d:%02d:%02d.%06ld"
-            , m_mysql_time.year, m_mysql_time.month, m_mysql_time.day
-            , m_mysql_time.hour, m_mysql_time.minute, m_mysql_time.second
-            , m_mysql_time.second_part
-            );
-    }
+    snprintf(arr.data(), arr.size(),"%04d-%02d-%02d %02d:%02d:%02d"
+        , m_mysql_time.year, m_mysql_time.month, m_mysql_time.day
+        , m_mysql_time.hour, m_mysql_time.minute, m_mysql_time.second
+        );
     return std::string{arr.data()};
 }
 
@@ -128,26 +109,33 @@ time_t DateTime::getTime() const
     return std::mktime(&tms);
 }
 
-void DateTime::set_Y_m_d_H_M_S(const struct tm& t)
+void DateTime::setMysqlTime(const std::array<unsigned long, 6>& arr)
 {
-    m_mysql_time.year   = static_cast<decltype(m_mysql_time.year)>(t.tm_year + 1900);
-    m_mysql_time.month  = static_cast<decltype(m_mysql_time.month)>(t.tm_mon + 1);
-    m_mysql_time.day    = static_cast<decltype(m_mysql_time.day)>(t.tm_mday);
-    m_mysql_time.hour   = static_cast<decltype(m_mysql_time.hour)>(t.tm_hour);
-    m_mysql_time.minute = static_cast<decltype(m_mysql_time.minute)>(t.tm_min);
-    m_mysql_time.second = static_cast<decltype(m_mysql_time.second)>(t.tm_sec);
-    /*
+    m_mysql_time.year   = static_cast<decltype(m_mysql_time.year)>(arr[0]);
+    m_mysql_time.month  = static_cast<decltype(m_mysql_time.month)>(arr[1]);
+    m_mysql_time.day    = static_cast<decltype(m_mysql_time.day)>(arr[2]);
+    m_mysql_time.hour   = static_cast<decltype(m_mysql_time.hour)>(arr[3]);
+    m_mysql_time.minute = static_cast<decltype(m_mysql_time.minute)>(arr[4]);
+    m_mysql_time.second = static_cast<decltype(m_mysql_time.second)>(arr[5]);
     m_mysql_time.second_part = 0;
     m_mysql_time.neg = 0;
     m_mysql_time.time_type = MYSQL_TIMESTAMP_DATETIME;
-    */
 }
 
-boost::posix_time::ptime DateTime::timevalToPtime(const struct timeval& tv)
+std::array<unsigned long, 6> DateTime::getLocaltime(time_t t)
 {
-    auto pt = boost::posix_time::from_time_t(tv.tv_sec);
-    pt += boost::posix_time::time_duration{0,0,0, tv.tv_usec};
-    return pt;
+    std::array<unsigned long, 6> val{0};
+    struct tm tms;
+    struct tm* ptm = localtime_r(&t, &tms);
+    //localtime_s(&tms, &t);
+    //struct tm* ptm = &tms;
+    val[0] = ptm->tm_year + 1900;
+    val[1] = ptm->tm_mon + 1;
+    val[2] = ptm->tm_mday;
+    val[3] = ptm->tm_hour;
+    val[4] = ptm->tm_min;
+    val[5] = ptm->tm_sec;
+    return val;
 }
 
 bool DateTime::isNull() const

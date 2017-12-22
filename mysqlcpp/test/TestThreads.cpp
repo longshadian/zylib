@@ -12,7 +12,7 @@
 #include <future>
 #include <iostream>
 
-#include "MySqlCpp.h"
+#include "mysqlcpp.h"
 #include "AsyncTask.h"
 
 using PoolPtr = std::shared_ptr<mysqlcpp::ConnectionPool>;
@@ -204,7 +204,6 @@ PoolPtr initPool()
 {
     mysqlcpp::ConnectionPoolOpt pool_opt{};
     pool_opt.m_thread_pool_size = POOL_SIZE;
-    pool_opt.m_thread_pool_max_size = POOL_SIZE;
     mysqlcpp::ConnectionOpt conn_opt = initConn();
 
     auto pool = std::make_shared<mysqlcpp::ConnectionPool>(conn_opt, pool_opt);
