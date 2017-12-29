@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 
+#include "cs/CSMessage.h"
 #include "net/NetworkType.h"
 
 class SendMessage
@@ -24,23 +25,27 @@ public:
     std::vector<uint8_t> m_buffer;
 };
 
-class Message
+class CSMessage
 {
 public:
-    Message() = default;
-    ~Message() = default;
-    Message(const Message& rhs) = delete;
-    Message& operator=(const Message& rhs) = delete;
-    Message(Message&& rhs) = delete;
-    Message& operator=(Message&& rhs) = delete;
+    CSMessage() = default;
+    ~CSMessage() = default;
+    CSMessage(const CSMessage& rhs) = delete;
+    CSMessage& operator=(const CSMessage& rhs) = delete;
+    CSMessage(CSMessage&& rhs) = delete;
+    CSMessage& operator=(CSMessage&& rhs) = delete;
 
-    MsgHead                 m_head;
+    cs::CSMsgHead           m_head;
     std::vector<uint8_t>    m_body;
     std::chrono::system_clock::time_point m_timestamp;
 
     int32_t     GetMsgID() const;
     std::string GetSID() const;
 };
+
+std::shared_ptr<CSMessage> CSDecode(const uint8_t* data, size_t len);
+bool CSEncode();
+
 
 class ServerCallback
 {
@@ -62,7 +67,7 @@ public:
     virtual void HandlerTimeout(Hdl hdl);
 
     // handler收到消息
-    virtual void ReceviedMessage(Hdl hdl, std::shared_ptr<Message> msg);
+    virtual void ReceviedMessage(Hdl hdl, std::shared_ptr<CSMessage> msg);
 
     // server可以得accept的handler超出上限
     virtual void HandlerAcceptOverflow();

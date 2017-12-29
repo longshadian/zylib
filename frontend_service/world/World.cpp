@@ -2,9 +2,13 @@
 
 #include <memory>
 
+#include "Service.h"
+#include "SIDManager.h"
 #include "FakeLog.h"
 #include "Utility.h"
 #include "world/WorldMsg.h"
+
+#include <knet/knet.h>
 
 World::World()
     : m_is_running()
@@ -22,24 +26,36 @@ World::~World()
 
 void World::NetworkAccept(Hdl conn)
 {
-    (void)conn;
-    //LOG(DEBUG) << "networkAccept: [" << hdl << "] ip:" << conn_info->m_ip;
+    PostTask(std::bind(&World::OnClientAccept, this, std::move(conn)));
 }
 
-void World::NetworkReceviedMsg(Hdl conn, std::shared_ptr<Message> network_msg)
+void World::NetworkReceviedMsg(Hdl conn, std::shared_ptr<CSMessage> msg)
 {
-    (void)conn;
-    (void)network_msg;
+    // 发送给自己
+    auto sid = msg->GetSID();
+    if (sid.empty() || sid == ::GetKNet().GetServiceID()) {
+        PostTask(std::bind(&World::OnReceivedClientMsg, this, std::move(conn), std::move(msg)));
+        return;
+    }
+
+    // 判断sid 是否合法
+    if (!::GetSIDManager().IsValidSID(sid)) {
+        LOG(WARNING) << "unknown sid: " << sid;
+        return;
+    }
+
+    // 转发
+    ::GetKNet().RouteMessage(std::move(sid), msg->GetMsgID(), msg->m_body);
 }
 
 void World::NetworkTimeout(Hdl conn)
 {
-    (void)conn;
+    PostTask(std::bind(&World::OnClientTimeout, this, std::move(conn)));
 }
 
 void World::NetworkClosed(Hdl conn)
 {
-    (void)conn;
+    PostTask(std::bind(&World::OnClientClosed, this, std::move(conn)));
 }
 
 void World::PostTask(Task t)
@@ -53,9 +69,6 @@ bool World::Init()
         return false;
 
     // 1.初始化基础管理功能
-
-    // 2.启动游戏服务
-	// 镇江麻将
 
     m_thread = std::thread([this]
         {
@@ -111,7 +124,7 @@ void World::Run()
     */
 }
 
-void World::processClientMessage(Hdl hdl, std::shared_ptr<Message> msg)
+void World::OnReceivedClientMsg(Hdl hdl, std::shared_ptr<CSMessage> msg)
 {
     auto ret = Utility::DecryptMessage(msg);
     if (!ret) {
@@ -119,15 +132,30 @@ void World::processClientMessage(Hdl hdl, std::shared_ptr<Message> msg)
         FAKE_LOG(WARNING) << "decrpyt fail.";
         return;
     }
-    auto sid = msg->GetSID();
-    if (sid.empty()) {
-        CallClientMessage(std::move(hdl), std::move(msg));
-    } else {
-        RouterClientMessage(std::move(hdl), std::move(msg));
-    }
+    CallClientMessage(std::move(hdl), std::move(msg));
 }
 
-void World::CallClientMessage(Hdl hdl, std::shared_ptr<Message> msg) const
+void World::OnClientAccept(Hdl hdl)
+{
+    auto conn_id = ++m_conn_id;
+    auto client_session = std::make_shared<ClientSession>(hdl, conn_id);
+    m_client_sessions.insert({hdl, std::move(client_session)});
+    m_client_conns.insert({conn_id, client_session});
+}
+
+void World::OnClientClosed(Hdl hdl)
+{
+    (void)hdl;
+    // TODO 广播消息
+}
+
+void World::OnClientTimeout(Hdl hdl)
+{
+    (void)hdl;
+    // TODO 广播消息
+}
+
+void World::CallClientMessage(Hdl hdl, std::shared_ptr<CSMessage> msg) const
 {
     auto msg_id = msg->GetMsgID();
     auto it = m_client_cb_array.find(msg_id);
@@ -136,12 +164,6 @@ void World::CallClientMessage(Hdl hdl, std::shared_ptr<Message> msg) const
         return;
     }
     it->second(std::move(hdl), std::move(msg));
-}
-
-void World::RouterClientMessage(Hdl hdl, std::shared_ptr<Message> msg)
-{
-    (void)hdl;
-    (void)msg;
 }
 
 void World::Stop()
@@ -175,14 +197,22 @@ void World::shutdownClientSession(Hdl hdl)
         return;
     ClientSessionPtr cs = it->second;
     if (cs->GetUserID() != 0)
-        m_clinet_users.erase(cs->GetUserID());
+        m_client_conns.erase(cs->GetUserID());
     m_client_sessions.erase(hdl);
 }
 
 void World::SendMessage(uint64_t uid)
 {
-    auto it = m_clinet_users.find(uid);
-    if (it == m_clinet_users.end())
+    auto it = m_client_conns.find(uid);
+    if (it == m_client_conns.end())
         return;
     it->second->SendMessage();
+}
+
+ClientSessionPtr World::FindSession(const Hdl& hdl)
+{
+    auto it = m_sessions.find(hdl);
+    if (it == m_sessions.end())
+        return nullptr;
+    return it->second;
 }

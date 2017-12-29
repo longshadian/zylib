@@ -7,7 +7,7 @@
 class ClientSession
 {
 public:
-    ClientSession();
+    ClientSession(Hdl hdl, ConnID conn_id);
     ~ClientSession();
     ClientSession(const ClientSession& rhs) = delete;
     ClientSession& operator=(const ClientSession& rhs) = delete;
@@ -18,8 +18,9 @@ public:
     void                SetUserID(uint64_t user_id);
 
 private:
-    uint64_t    m_user_id;
     Hdl         m_hdl;
+    ConnID      m_conn_id;
+    uint64_t    m_user_id;
 };
 
 using ClientSessionPtr = std::shared_ptr<ClientSession>;

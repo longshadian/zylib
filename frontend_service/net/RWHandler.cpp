@@ -76,9 +76,9 @@ void RWHandler::doReadHead()
                 FAKE_LOG(WARNING) << "doReadHead error:" << ec.value() << ":" << ec.message();
                 return;
             }
-            MsgHead head{};
-            std::memcpy(&head, m_read_head.data(), MSG_HEAD_SIZE);
-            if (head.m_length <= MSG_HEAD_SIZE || head.m_length > 1024) {
+            cs::CSMsgHead head{};
+            std::memcpy(&head, m_read_head.data(), sizeof(head));
+            if (head.m_length <= sizeof(head) || head.m_length > 1024 * 1024) {
                 doClosed();
                 FAKE_LOG(ERROR) << "doReadHead msg_len " << head.m_length;
                 return;
@@ -103,16 +103,10 @@ void RWHandler::doReadBody()
                 FAKE_LOG(WARNING) << "readHead error:" << ec.value() << ":" << ec.message();
                 return;
             }
-            MsgHead head{};
+            cs::CSMsgHead head{};
             std::memcpy(&head, m_read_head.data(), MSG_HEAD_SIZE);
-            if (head.m_length <= MSG_HEAD_SIZE || head.m_length > 1024) {
-                doClosed();
-                FAKE_LOG(ERROR) << "readHead msg_len " << head.m_length;
-                return;
-            }
-
             auto msg = std::make_shared<Message>(); 
-            std::memcpy(&msg->m_head, &head, MSG_HEAD_SIZE);
+            std::memcpy(&msg->m_head, &head, sizeof(head));
             msg->m_body = std::move(m_read_body);
             msg->m_timestamp = std::chrono::system_clock::now();
             m_stream_server.GetCallback().ReceviedMessage(getHdl(), std::move(msg));

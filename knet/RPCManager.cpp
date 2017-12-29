@@ -73,6 +73,14 @@ void RPCManager::Tick(DiffTime diff)
     ProcessMsg();
 }
 
+void RPCManager::RouteMessage(ServiceID sid, MsgID msg_id, MsgType msg)
+{
+    std::string key = m_consumer->GetServiceID() + "0";
+    auto send_msg = std::make_shared<detail::SendMsg>(m_consumer->GetServiceID()
+        , std::move(sid), std::move(msg_id), std::move(msg), std::move(key));
+    m_producer->SendTo(std::move(send_msg));
+}
+
 Key RPCManager::AsyncRPC(ServiceID sid, MsgID msg_id, MsgType msg, RPCContextUPtr context)
 {
     auto key = NextKey();
@@ -171,6 +179,11 @@ void RPCManager::CB_ReceviedMsg(const void* p, size_t p_len, const void* key, si
 CallbackManager& RPCManager::GetCallbackManager()
 {
     return *m_cb_mgr;
+}
+
+const ServiceID& RPCManager::GetServiceID() const
+{
+    return m_consumer->GetServiceID();
 }
 
 TimerManager& RPCManager::GetTimerManager()

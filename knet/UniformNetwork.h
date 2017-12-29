@@ -27,7 +27,9 @@ public:
     bool                Init();
     void                Tick(DiffTime diff);
     void                RPC(ServiceID sid, MsgID msg_id, MsgType msg, RPCContextUPtr cb);
+    void                RouteMessage(ServiceID sid, MsgID msg_id, MsgType msg);
 
+    const ServiceID&    GetServiceID() const;
     TimerManager&       GetTimerManager();
     const TimerManager& GetTimerManager() const;
 private:
@@ -37,7 +39,7 @@ private:
 
     std::unique_ptr<ConsumerConf>   m_consumer_conf;
     std::unique_ptr<ProducerConf>   m_producer_conf;
-    MsgCallbackArray              m_msg_cb_array;
+    MsgCallbackArray                m_msg_cb_array;
 };
 
 } // knet

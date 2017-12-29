@@ -9,6 +9,7 @@
 #include <thread>
 #include <chrono>
 
+#include "SIDManager.h"
 #include "FakeLog.h"
 #include "world/World.h"
 #include "net/StreamServer.h"
@@ -28,6 +29,8 @@ void sigTerm(int signo)
 Service::Service()
     : m_is_running(false)
     , m_world()
+    , m_sid_mgr(std::make_unique<SIDManager>())
+    , m_knet(std::make_unique<::knet::UniformNetwork>())
     , m_network()
 {
 }
@@ -65,6 +68,8 @@ bool Service::Start()
         return false;
     }
 
+    // TODO knet
+
     m_network = std::make_unique<StreamServer>(8087);
 
     m_is_running = true;
@@ -87,9 +92,19 @@ void Service::Stop()
     m_world->WaitTheadExit();
 }
 
+SIDManager& Service::GetSIDManager()
+{
+    return *m_sid_mgr;
+}
+
 Service& GetService()
 {
     return Service::instance();
+}
+
+SIDManager& GetSIDManager()
+{
+    return ::GetService().GetSIDManager();
 }
 
 World& Service::GetWorld()
@@ -97,7 +112,17 @@ World& Service::GetWorld()
     return *m_world;
 }
 
+::knet::UniformNetwork& Service::GetKNet()
+{
+    return *m_knet;
+}
+
 World& GetWorld()
 {
     return ::GetService().GetWorld();
+}
+
+::knet::UniformNetwork& GetKNet()
+{
+    return ::GetService().GetKNet();
 }

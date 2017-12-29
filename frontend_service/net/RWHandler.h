@@ -7,6 +7,8 @@
 
 #include <boost/asio.hpp>
 
+#include "cs/CSMessage.h"
+
 #include "net/NetworkType.h"
 #include "net/Message.h"
 
@@ -56,6 +58,6 @@ private:
     std::atomic<bool>               m_is_closed;
 
     std::list<std::shared_ptr<SendMessage>> m_write_buffer;
-    std::array<uint8_t, MSG_HEAD_SIZE> m_read_head;
-    std::vector<uint8_t>            m_read_body;
+    std::array<uint8_t, cs::HEAD_LENGTH>    m_read_head;
+    std::vector<uint8_t>                    m_read_body;
 };

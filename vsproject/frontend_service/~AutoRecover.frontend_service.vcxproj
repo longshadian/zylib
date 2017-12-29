@@ -111,6 +111,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\frontend_service\cs\CSMessage.cpp" />
     <ClCompile Include="..\..\frontend_service\FakeLog.cpp" />
     <ClCompile Include="..\..\frontend_service\FESCallback.cpp" />
     <ClCompile Include="..\..\frontend_service\main.cpp" />
@@ -118,6 +119,8 @@
     <ClCompile Include="..\..\frontend_service\net\RWHandler.cpp" />
     <ClCompile Include="..\..\frontend_service\net\StreamServer.cpp" />
     <ClCompile Include="..\..\frontend_service\Service.cpp" />
+    <ClCompile Include="..\..\frontend_service\SIDManager.cpp" />
+    <ClCompile Include="..\..\frontend_service\ss\SSMessage.cpp" />
     <ClCompile Include="..\..\frontend_service\Utility.cpp" />
     <ClCompile Include="..\..\frontend_service\world\MsgDispatcher.cpp" />
     <ClCompile Include="..\..\frontend_service\world\Session.cpp" />
@@ -125,6 +128,7 @@
     <ClCompile Include="..\..\frontend_service\world\WorldMsg.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\frontend_service\cs\CSMessage.h" />
     <ClInclude Include="..\..\frontend_service\FakeLog.h" />
     <ClInclude Include="..\..\frontend_service\FESCallback.h" />
     <ClInclude Include="..\..\frontend_service\net\Message.h" />
@@ -133,6 +137,8 @@
     <ClInclude Include="..\..\frontend_service\net\StreamServer.h" />
     <ClInclude Include="..\..\frontend_service\Queue.h" />
     <ClInclude Include="..\..\frontend_service\Service.h" />
+    <ClInclude Include="..\..\frontend_service\SIDManager.h" />
+    <ClInclude Include="..\..\frontend_service\ss\SSMessage.h" />
     <ClInclude Include="..\..\frontend_service\Utility.h" />
     <ClInclude Include="..\..\frontend_service\world\MsgDispatcher.h" />
     <ClInclude Include="..\..\frontend_service\world\Session.h" />

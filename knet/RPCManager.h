@@ -69,9 +69,11 @@ public:
 
     bool                Init(std::unique_ptr<ConsumerConf> c_conf, std::unique_ptr<ProducerConf> p_conf);
     void                Tick(DiffTime diff);
+    void                RouteMessage(ServiceID sid, MsgID msg_id, MsgType msg);
     Key                 AsyncRPC(ServiceID sid, MsgID msg_id, MsgType msg, RPCContextUPtr context);
     void                RPCResponse(const ReceivedMsgCtx& ctx, MsgID msg_id, MsgType msg);
     CallbackManager&    GetCallbackManager();
+    const ServiceID&    GetServiceID() const;
 private:
     Key                 NextKey();
     void                AppendRPCContext(const Key& key, RPCContextUPtr context);

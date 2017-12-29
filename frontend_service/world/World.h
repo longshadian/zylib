@@ -27,7 +27,7 @@ public:
 
     // ÍøÂç²ãÊÂ¼þ
     void                    NetworkAccept(Hdl hdl);
-    void                    NetworkReceviedMsg(Hdl hdl, std::shared_ptr<Message> msg);
+    void                    NetworkReceviedMsg(Hdl hdl, std::shared_ptr<CSMessage> msg);
     void                    NetworkTimeout(Hdl hdl);
     void                    NetworkClosed(Hdl hdl);
 
@@ -44,15 +44,21 @@ public:
 
 private:
     void                    Run();
-    void                    processClientMessage(Hdl hdl, std::shared_ptr<Message> msg);
-    void                    CallClientMessage(Hdl hdl, std::shared_ptr<Message> msg) const;
-    void                    RouterClientMessage(Hdl hdl, std::shared_ptr<Message> msg);
+    void                    OnReceivedClientMsg(Hdl hdl, std::shared_ptr<CSMessage> msg);
+    void                    OnClientAccept(Hdl hdl);
+    void                    OnClientClosed(Hdl hdl);
+    void                    OnClientTimeout(Hdl hdl);
+
+    void                    CallClientMessage(Hdl hdl, std::shared_ptr<CSMessage> msg) const;
+
+    ClientSessionPtr        FindSession(const Hdl& hdl);
 
 private:
     std::atomic<bool>       m_is_running;
     std::thread             m_thread;
     ThreadSafeQueue<Task>   m_queue;        
-    std::unordered_map<Hdl, ClientSessionPtr, HdlLess> m_client_sessions;
-    std::unordered_map<uint64_t, ClientSessionPtr>     m_clinet_users;
+    std::unordered_map<Hdl, ClientSessionPtr, HdlLess>  m_client_sessions;
+    std::unordered_map<ConnID, ClientSessionPtr>        m_client_conns;
     ClientCB_Array          m_client_cb_array;
+    ConnID                  m_conn_id;
 };

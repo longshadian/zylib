@@ -27,7 +27,7 @@ public:
     virtual void HandlerTimeout(Hdl hdl) override;
 
     // handler收到消息
-    virtual void ReceviedMessage(Hdl hdl, std::shared_ptr<Message> msg) override;
+    virtual void ReceviedMessage(Hdl hdl, std::shared_ptr<CSMessage> msg) override;
 
     // server可以得accept的handler超出上限
     virtual void HandlerAcceptOverflow() override;
