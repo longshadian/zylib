@@ -80,48 +80,33 @@ bool World::Init()
 
 void World::Run()
 {
-    Task t{};
-    while (m_is_running) {
-        t = {};
-        m_queue.waitAndPop(t, std::chrono::seconds{1});
-        try {
-            if (t)
-                t();
-        } catch (std::exception& e) {
-            FAKE_LOG(WARNING) << "exception: " << e.what();
-        }
-    }
-
-    /*
 	zylib::TimePoint tp_current{};
 	zylib::TimePoint tp_previous = zylib::getSteadyTimePoint();
 	zylib::Delta previous_sleep_time{};
+    const std::chrono::milliseconds WORLD_TICK_HZ = 10_MS;
 
     // 监控主循环压力
-	zylib::TimingWheel tw(30_s);
-
     while (m_is_running) {
 		tp_current = zylib::getSteadyTimePoint();
 		auto diff_time = zylib::getDelta(tp_previous, tp_current);
-		heartbeat(diff_time);
+        Tick(diff_time);
 
         tp_previous = tp_current;
-		if (diff_time < WORLD_HEARTBEAT_RATE + previous_sleep_time) {
-			previous_sleep_time = WORLD_HEARTBEAT_RATE + previous_sleep_time - diff_time;
+		if (diff_time < WORLD_TICK_HZ + previous_sleep_time) {
+			previous_sleep_time = WORLD_TICK_HZ + previous_sleep_time - diff_time;
             std::this_thread::sleep_for(previous_sleep_time);
         } else {
 			previous_sleep_time = {};
-            auto delta = diff_time - (WORLD_HEARTBEAT_RATE + previous_sleep_time);
+            auto delta = diff_time - (WORLD_TICK_HZ + previous_sleep_time);
             (void)delta;
         }
-
-        tw.update(diff_time);
-        if (tw.passed()) {
-			tw.reset();
-			//LOG(DEBUG) << "performance countor";
-        }
     }
-    */
+}
+
+void World::Tick(DiffTime diff)
+{
+    (void)diff;
+    ProcessTask();
 }
 
 void World::OnReceivedClientMsg(Hdl hdl, std::shared_ptr<CSMessage> msg)
@@ -153,6 +138,20 @@ void World::OnClientTimeout(Hdl hdl)
 {
     (void)hdl;
     // TODO 广播消息
+}
+
+void World::ProcessTask()
+{
+    decltype(m_queue) queue_cp{};
+    {
+        std::lock_guard<std::mutex> lk{m_mtx};
+        queue_cp = std::move(m_queue);
+    }
+    while (!queue_cp.empty()) {
+        Task t = std::move(m_queue.front());
+        m_queue.pop();
+        t();
+    }
 }
 
 void World::CallClientMessage(Hdl hdl, std::shared_ptr<CSMessage> msg) const

@@ -44,10 +44,12 @@ public:
 
 private:
     void                    Run();
+    void                    Tick(DiffTime diff);
     void                    OnReceivedClientMsg(Hdl hdl, std::shared_ptr<CSMessage> msg);
     void                    OnClientAccept(Hdl hdl);
     void                    OnClientClosed(Hdl hdl);
     void                    OnClientTimeout(Hdl hdl);
+    void                    ProcessTask();
 
     void                    CallClientMessage(Hdl hdl, std::shared_ptr<CSMessage> msg) const;
 
@@ -56,9 +58,11 @@ private:
 private:
     std::atomic<bool>       m_is_running;
     std::thread             m_thread;
-    ThreadSafeQueue<Task>   m_queue;        
     std::unordered_map<Hdl, ClientSessionPtr, HdlLess>  m_client_sessions;
     std::unordered_map<ConnID, ClientSessionPtr>        m_client_conns;
     ClientCB_Array          m_client_cb_array;
     ConnID                  m_conn_id;
+
+    std::mutex              m_mtx;
+    std::queue<Task>        m_queue;
 };

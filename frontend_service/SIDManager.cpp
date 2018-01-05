@@ -1,6 +1,6 @@
 #include "SIDManager.h"
 
-void SIDManager::ReplaceSID(SID_Set s)
+void SIDManager::ReplaceSID(std::unordered_set<std::string> s)
 {
     std::lock_guard<std::mutex> lk{m_mtx};
     m_set = std::move(s);

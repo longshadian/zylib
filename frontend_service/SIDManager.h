@@ -4,8 +4,8 @@
 #include <mutex>
 #include <unordered_set>
 
-using SID_Set = std::unordered_set<std::string>;
 
+// 必须是先线程安全的
 class SIDManager
 {
 public:
@@ -16,10 +16,9 @@ public:
     SIDManager(SIDManager&& rhs) = delete;
     SIDManager& operator=(SIDManager&& rhs) = delete;
 
-    void ReplaceSID(SID_Set s);
+    void ReplaceSID(std::unordered_set<std::string> s);
     bool IsValidSID(const std::string& sid) const;
-
 private:
     mutable std::mutex m_mtx;
-    SID_Set    m_set;
+    std::unordered_set<std::string>  m_set;
 };
