@@ -5,41 +5,34 @@
       <UniqueIdentifier>{60a0f61b-40ac-46bd-a25b-7b156402adfc}</UniqueIdentifier>
     </Filter>
     <Filter Include="rdkafkacpp\test">
-      <UniqueIdentifier>{ac5d4ac9-8e16-4601-95d8-2bb94c174501}</UniqueIdentifier>
+      <UniqueIdentifier>{f1c1ef5f-430c-4145-8444-d24fe187e0f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rdkafkacpp\test_ex">
+      <UniqueIdentifier>{9a8d0bf4-d329-4424-bcfa-8c923bc42a36}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestConsumer.cpp">
-      <Filter>rdkafkacpp\test</Filter>
+    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestOffsetConsumer.cpp">
+      <Filter>rdkafkacpp\test_ex</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestProducer.cpp">
-      <Filter>rdkafkacpp\test</Filter>
+    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestOffsetConsumerOther.cpp">
+      <Filter>rdkafkacpp\test_ex</Filter>
     </ClCompile>
     <ClCompile Include="..\..\rdkafkacpp\test_ex\Utility.cpp">
-      <Filter>rdkafkacpp\test</Filter>
+      <Filter>rdkafkacpp\test_ex</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestPingConsumer.cpp">
-      <Filter>rdkafkacpp\test</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestPingProducer.cpp">
-      <Filter>rdkafkacpp\test</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestKeyConsumer.cpp">
-      <Filter>rdkafkacpp\test</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestKeyProducer.cpp">
-      <Filter>rdkafkacpp\test</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestServerConsumer.cpp">
-      <Filter>rdkafkacpp\test</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestServerProducer.cpp">
-      <Filter>rdkafkacpp\test</Filter>
+    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestOffsetProducer.cpp">
+      <Filter>rdkafkacpp\test_ex</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\rdkafkacpp\test_ex\Utility.h">
-      <Filter>rdkafkacpp\test</Filter>
+      <Filter>rdkafkacpp\test_ex</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\rdkafkacpp\test_ex\Makefile">
+      <Filter>rdkafkacpp\test_ex</Filter>
+    </None>
   </ItemGroup>
 </Project>

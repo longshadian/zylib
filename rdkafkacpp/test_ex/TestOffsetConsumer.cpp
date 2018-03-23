@@ -7,6 +7,15 @@
 
 #include "rdkafkacpp.h"
 
+#define CHECK_SET(conf_ret) \
+do { \
+    if (conf_ret != ::RdKafka::Conf::CONF_OK) { \
+        std::cerr << __LINE__ << ":error. " << conf_ret << " " << errstr <<  std::endl; \
+        return 0; \
+    } \
+} while (0)
+
+
 static bool run = true;
 static bool exit_eof = false;
 static int eof_cnt = 0;
@@ -72,14 +81,12 @@ void msg_consume(RdKafka::Message* message, void* opaque) {
         if (verbosity >= 2 && message->key()) {
             std::cout << "Key: " << *message->key() << std::endl;
         }
-        if (verbosity >= 1) {
-            //std::cout << (const char*)message->payload() << " offset " << message->offset() << "\n";
+        std::cout << (const char*)message->payload() << " offset " << message->offset() << "\n";
             /*
             printf("%.*s\n",
                 static_cast<int>(message->len()),
                 static_cast<const char *>(message->payload()));
                 */
-        }
         break;
 
     case RdKafka::ERR__PARTITION_EOF:
@@ -116,35 +123,37 @@ int main()
 {
     std::string brokers = "127.0.0.1:9092";
     std::string errstr;
-    std::string topic_str;
-    std::string mode;
-    std::string debug;
+    ::RdKafka::Conf::ConfResult conf_ret = ::RdKafka::Conf::CONF_OK;
 
     /*
     * Create configuration objects
     */
     RdKafka::Conf *conf = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
     RdKafka::Conf *tconf = RdKafka::Conf::create(RdKafka::Conf::CONF_TOPIC);
-    conf->set("group.id", "xxx", errstr);
+    conf_ret = conf->set("group.id", "group", errstr);
+    CHECK_SET(conf_ret);
 
     ExampleRebalanceCb ex_rebalance_cb;
-    conf->set("rebalance_cb", &ex_rebalance_cb, errstr);
-    std::vector<std::string> topics = { "tp.test" };
+    conf_ret = conf->set("rebalance_cb", &ex_rebalance_cb, errstr);
+    CHECK_SET(conf_ret);
+    //std::vector<std::string> topics = { "tp.test" };
 
-    /*
-    * Set configuration properties
-    */
-    conf->set("metadata.broker.list", brokers, errstr);
+    /* * Set configuration properties */
+    conf_ret = conf->set("metadata.broker.list", brokers, errstr);
+    CHECK_SET(conf_ret);
+
     //conf->set("enable.auto.commit", "true", errstr);
     //tconf->set("auto.offset.reset", "end", errstr);
     std::cout << "tconf error : " << errstr << "\n";
 
     ExampleConsumeCb ex_consume_cb;
-    conf->set("consume_cb", &ex_consume_cb, errstr);
+    conf_ret = conf->set("consume_cb", &ex_consume_cb, errstr);
+    CHECK_SET(conf_ret);
 
     //ExampleEventCb ex_event_cb;
     //conf->set("event_cb", &ex_event_cb, errstr);
-    conf->set("default_topic_conf", tconf, errstr);
+    conf_ret = conf->set("default_topic_conf", tconf, errstr);
+    CHECK_SET(conf_ret);
     delete tconf;
 
     signal(SIGINT, sigterm);
@@ -162,7 +171,7 @@ int main()
     delete conf;
 
     std::cout << "% Created consumer " << consumer->name() << std::endl;
-    auto* p = RdKafka::TopicPartition::create("tp.test2", 0); //RdKafka::Topic::PARTITION_UA
+    auto* p = RdKafka::TopicPartition::create("test.1", 0); //RdKafka::Topic::PARTITION_UA
         //, RdKafka::Topic::OFFSET_END);
     auto err3 = consumer->assign({ p });
     if (err3) {

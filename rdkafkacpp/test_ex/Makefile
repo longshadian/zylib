@@ -2,11 +2,11 @@
 ##########################################################
 ##########################################################
 ##########################################################
-LIBRDKAFKA_INCLUDE=/home/cgy/libs/librdkafka-0.11.1/src
-LIBRDKAFKA_LIB=/home/cgy/libs/librdkafka-0.11.1/src
+LIBRDKAFKA_INCLUDE=/home/cgy/libs/librdkafka-0.11.3/src
+LIBRDKAFKA_LIB=/home/cgy/libs/librdkafka-0.11.3/src
 
-LIBRDKAFKAcpp_INCLUDE=/home/cgy/libs/librdkafka-0.11.1/src-cpp
-LIBRDKAFKACPP_LIB=/home/cgy/libs/librdkafka-0.11.1/src-cpp
+LIBRDKAFKAcpp_INCLUDE=/home/cgy/libs/librdkafka-0.11.3/src-cpp
+LIBRDKAFKACPP_LIB=/home/cgy/libs/librdkafka-0.11.3/src-cpp
 
 ##########################################################
 ##########################################################
@@ -37,39 +37,20 @@ INC += -I$(SRC_DIR)
 OBJS = $(SRC_CPP:%.cpp=%.o)
 OBJS += $(SRC_CC:%.cc=%.o)
 
-OUTPUT = test_consumer test_producer \
-         ping_producer ping_consumer \
-         key_producer key_consumer   \
-         server_producer server_consumer
+OUTPUT = offset_consumer offset_consumer_other \
+         offset_producer 
 
 all:$(OBJS) $(OUTPUT)
 
-test_consumer:TestConsumer.cpp
+offset_consumer:TestOffsetConsumer.cpp Utility.cpp
+	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
+
+offset_consumer_other:TestOffsetConsumerOther.cpp Utility.cpp
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
     
-test_producer:TestProducer.cpp
+offset_producer:TestOffsetProducer.cpp Utility.cpp
 	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
 
-ping_producer:TestPingProducer.cpp Utility.cpp
-	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
-
-ping_consumer:TestPingConsumer.cpp Utility.cpp
-	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
-
-key_consumer:TestKeyConsumer.cpp Utility.cpp
-	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
-
-key_producer:TestKeyProducer.cpp Utility.cpp
-	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
-
-server_producer:TestServerProducer.cpp Utility.cpp
-	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
-
-server_consumer:TestServerConsumer.cpp Utility.cpp
-	$(CC) $(CFLAGS) $(INC) $^ $(LIB) $(LDFLAGS) -o $@
-
-#test_consumer:TestConsumer.cpp
-	#$(CC) $(CFLAGS) $(INC) $^ -I/home/cgy/libs/librdkafka/src-cpp -L/home/cgy/libs/librdkafka/src-cpp $(LIB) -lrdkafka++ -lrdkafka -Wl,-rpath=/home/cgy/libs/librdkafka/src-cpp,-rpath=/home/cgy/libs/librdkafka/src -o $@
 
 .cpp.o:
 	@echo [  $(shell expr $(shell echo $(OBJS)|sed 's#$@.*$$#$@#'|wc -w) \* 100 / $(words $(OBJS)))%] $(CC) -c $< -o $@ 

@@ -16,8 +16,8 @@ static void sigterm(int sig) {
     run = false;
 }
 
-static int32_t data_size = 200;
-static int32_t send_count = 100;
+static int32_t data_size = 10;
+static int32_t send_count = 10;
 static int32_t send_dr_count = 0;
 static std::chrono::system_clock::time_point tnow{};
 
@@ -92,6 +92,14 @@ public:
     }
 };
 
+#define CHECK_SET(conf_ret) \
+do { \
+    if (conf_ret != ::RdKafka::Conf::CONF_OK) { \
+        std::cerr << __LINE__ << ":error. " << conf_ret << " " << errstr <<  std::endl; \
+        return 0; \
+    } \
+} while (0)
+
 int main() 
 {
     std::string brokers = "127.0.0.1:9092";
@@ -99,37 +107,40 @@ int main()
     std::string topic_str;
     std::string mode;
     std::string debug;
+    ::RdKafka::Conf::ConfResult conf_ret = ::RdKafka::Conf::CONF_OK;
 
     /*
     * Create configuration objects
     */
     ::RdKafka::Conf *conf = ::RdKafka::Conf::create(::RdKafka::Conf::CONF_GLOBAL);
     ::RdKafka::Conf *tconf = ::RdKafka::Conf::create(::RdKafka::Conf::CONF_TOPIC);
-    conf->set("group.id", "xxx", errstr);
 
-    std::vector<std::string> topics = { "tp.test2" };
-
-    conf->set("metadata.broker.list", brokers, errstr);
+    conf_ret = conf->set("metadata.broker.list", brokers, errstr);
+    CHECK_SET(conf_ret);
     //conf->set("enable.auto.commit", "true", errstr);
     //tconf->set("auto.offset.reset", "end", errstr);
 
     ExampleEventCb ex_event_cb;
-    conf->set("event_cb", &ex_event_cb, errstr);
+    conf_ret = conf->set("event_cb", &ex_event_cb, errstr);
+    CHECK_SET(conf_ret);
 
-    tconf->set("request.required.acks", "all", errstr);
+    conf_ret = tconf->set("request.required.acks", "all", errstr);
+    CHECK_SET(conf_ret);
 
     signal(SIGINT, sigterm);
     signal(SIGTERM, sigterm);
 
     ExampleDeliveryReportCb ex_dr_cb{};
-    conf->set("dr_cb", &ex_dr_cb, errstr);
+    conf_ret = conf->set("dr_cb", &ex_dr_cb, errstr);
+    CHECK_SET(conf_ret);
+
     ::RdKafka::Producer* producer = ::RdKafka::Producer::create(conf, errstr);
     if (!producer) {
         std::cerr << "Failed to create producer: " << errstr << std::endl;
         exit(1);
     }
 
-    ::RdKafka::Topic* topic = ::RdKafka::Topic::create(producer, topics[0], tconf, errstr);
+    ::RdKafka::Topic* topic = ::RdKafka::Topic::create(producer, "test.1", tconf, errstr);
     if (!topic) {
         std::cerr << ": Failed to create topic: " << errstr << std::endl;
         exit(1);
@@ -146,13 +157,13 @@ int main()
     );
 
     std::string str_msg = {};
-    str_msg.resize(data_size, 'a');
-
     tnow = std::chrono::system_clock::now();
     for (int i = 0; i != send_count; ++i) {
+        str_msg = "aaaa   " + std::to_string(i);
         producer->produce(topic, 0, ::RdKafka::Producer::RK_MSG_COPY
             , const_cast<char*>(str_msg.c_str()), str_msg.size(), nullptr, nullptr);
     }
+    std::cout << "send finish. count: " << send_count << std::endl;
 
     while (run) {
         if (false) {

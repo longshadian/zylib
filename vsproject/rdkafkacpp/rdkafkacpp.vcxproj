@@ -18,6 +18,18 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestOffsetConsumer.cpp" />
+    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestOffsetConsumerOther.cpp" />
+    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestOffsetProducer.cpp" />
+    <ClCompile Include="..\..\rdkafkacpp\test_ex\Utility.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\rdkafkacpp\test_ex\Utility.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\rdkafkacpp\test_ex\Makefile" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{6E231AE5-6A2B-41DF-A8CB-D6418E6A8AB5}</ProjectGuid>
@@ -75,7 +87,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\vsinclude\librdkafka\src;..\..\..\vsinclude\librdkafka\src-cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\vs_include\librdkafka\src;..\..\..\vs_include\librdkafka\src-cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -111,20 +123,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestConsumer.cpp" />
-    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestKeyConsumer.cpp" />
-    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestKeyProducer.cpp" />
-    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestPingConsumer.cpp" />
-    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestPingProducer.cpp" />
-    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestProducer.cpp" />
-    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestServerConsumer.cpp" />
-    <ClCompile Include="..\..\rdkafkacpp\test_ex\TestServerProducer.cpp" />
-    <ClCompile Include="..\..\rdkafkacpp\test_ex\Utility.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\rdkafkacpp\test_ex\Utility.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
