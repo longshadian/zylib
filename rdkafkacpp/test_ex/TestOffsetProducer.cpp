@@ -59,6 +59,7 @@ public:
                 auto delta = std::chrono::duration_cast<std::chrono::milliseconds>(tend - tnow).count();
                 std::cout << "cb len: " << data_size << " count: " << send_count
                     << " cost: " << delta << "ms\n";
+                run = false;
             }
         }
     }
@@ -185,6 +186,6 @@ int main()
     delete producer;
     delete conf;
     delete tconf;
-    ::RdKafka::wait_destroyed(5000);
+    ::RdKafka::wait_destroyed(2000);
     return 0;
 }

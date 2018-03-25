@@ -142,7 +142,7 @@ int main()
     conf_ret = conf->set("metadata.broker.list", brokers, errstr);
     CHECK_SET(conf_ret);
 
-    //conf->set("enable.auto.commit", "true", errstr);
+    //conf->set("enable.auto.commit", "false", errstr);
     //tconf->set("auto.offset.reset", "end", errstr);
     std::cout << "tconf error : " << errstr << "\n";
 
@@ -171,8 +171,19 @@ int main()
     delete conf;
 
     std::cout << "% Created consumer " << consumer->name() << std::endl;
-    auto* p = RdKafka::TopicPartition::create("test.1", 0); //RdKafka::Topic::PARTITION_UA
+    auto* p = RdKafka::TopicPartition::create("test.1", 0); 
+    std::cout << "PARTITION_UA: " <<  RdKafka::Topic::PARTITION_UA << "\n";
+    std::cout << "OFFSET_BEGINNING: " <<  RdKafka::Topic::OFFSET_BEGINNING << "\n";
+    std::cout << "OFFSET_END: " <<  RdKafka::Topic::OFFSET_END << "\n";
+    std::cout << "OFFSET_STORED: " <<  RdKafka::Topic::OFFSET_STORED << "\n";
+    std::cout << "OFFSET_INVALID: " <<  RdKafka::Topic::OFFSET_INVALID << "\n";
+    std::cout << "default: " <<  p->offset() << "\n";
+
+    p->offset();
+    //RdKafka::Topic::PARTITION_UA
         //, RdKafka::Topic::OFFSET_END);
+    //auto* p = RdKafka::TopicPartition::create("test.1", 0, RdKafka::Topic::OFFSET_END);
+    //auto* p = RdKafka::TopicPartition::create("test.1", 0, RdKafka::Topic::OFFSET_BEGINNING);
     auto err3 = consumer->assign({ p });
     if (err3) {
         std::cout << "consumer assign error " << RdKafka::err2str(err3) << "\n";
