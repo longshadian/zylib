@@ -6,11 +6,11 @@
 ###third party
 LOCAL_LIBS=/home/cgy/libs
 
-RDKAFKA_INCLUDE=$(LOCAL_LIBS)/librdkafka-0.11.1/src
-RDKAFKA_LIB=$(LOCAL_LIBS)/librdkafka-0.11.1/src
+RDKAFKA_INCLUDE=$(LOCAL_LIBS)/librdkafka-0.11.3/src
+RDKAFKA_LIB=$(LOCAL_LIBS)/librdkafka-0.11.3/src
 
-RDKAFKACPP_INCLUDE=$(LOCAL_LIBS)/librdkafka-0.11.1/src-cpp
-RDKAFKACPP_LIB=$(LOCAL_LIBS)/librdkafka-0.11.1/src-cpp
+RDKAFKACPP_INCLUDE=$(LOCAL_LIBS)/librdkafka-0.11.3/src-cpp
+RDKAFKACPP_LIB=$(LOCAL_LIBS)/librdkafka-0.11.3/src-cpp
 
 
 ###############################################################################################

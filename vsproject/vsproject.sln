@@ -17,7 +17,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "rediscpp", "rediscpp\redisc
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "stream_server", "stream_server\stream_server.vcxproj", "{8E6AAD2E-9149-4509-AA87-42CACD827D2F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mysqlcpp_v2", "mysqlcpp_v2\mysqlcpp_v2.vcxproj", "{342C7480-7994-4E14-AC25-27774D991669}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mysqlcpp", "mysqlcpp_v2\mysqlcpp_v2.vcxproj", "{342C7480-7994-4E14-AC25-27774D991669}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "kafkacpp", "kafkacpp\kafkacpp.vcxproj", "{A4E2FBFB-07ED-4A63-BD56-C3144D751C61}"
 EndProject
@@ -26,6 +26,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "knet", "knet\knet.vcxproj", "{73F863CE-8A19-4021-BEFF-84DB779AE5D3}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "frontend_service", "frontend_service\frontend_service.vcxproj", "{39AAC580-68AE-407E-9652-17500D28864E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zookeeper", "zookeeper\zookeeper.vcxproj", "{BACED3F7-8A46-4852-91BA-82A109050D9E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -131,6 +133,14 @@ Global
 		{39AAC580-68AE-407E-9652-17500D28864E}.Release|x64.Build.0 = Release|x64
 		{39AAC580-68AE-407E-9652-17500D28864E}.Release|x86.ActiveCfg = Release|Win32
 		{39AAC580-68AE-407E-9652-17500D28864E}.Release|x86.Build.0 = Release|Win32
+		{BACED3F7-8A46-4852-91BA-82A109050D9E}.Debug|x64.ActiveCfg = Debug|x64
+		{BACED3F7-8A46-4852-91BA-82A109050D9E}.Debug|x64.Build.0 = Debug|x64
+		{BACED3F7-8A46-4852-91BA-82A109050D9E}.Debug|x86.ActiveCfg = Debug|Win32
+		{BACED3F7-8A46-4852-91BA-82A109050D9E}.Debug|x86.Build.0 = Debug|Win32
+		{BACED3F7-8A46-4852-91BA-82A109050D9E}.Release|x64.ActiveCfg = Release|x64
+		{BACED3F7-8A46-4852-91BA-82A109050D9E}.Release|x64.Build.0 = Release|x64
+		{BACED3F7-8A46-4852-91BA-82A109050D9E}.Release|x86.ActiveCfg = Release|Win32
+		{BACED3F7-8A46-4852-91BA-82A109050D9E}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
