@@ -6,13 +6,19 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\zookeeper\main.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\zookeeper\ZooKeeper.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\..\zookeeper\test.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\zookeeper\client.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\zookeeper\server.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\zookeeper\client2.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

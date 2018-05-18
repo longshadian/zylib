@@ -2,11 +2,11 @@
 ##########################################################
 ##########################################################
 ##########################################################
-LIBRDKAFKA_INCLUDE=/home/cgy/libs/librdkafka/src
-LIBRDKAFKA_LIB=/home/cgy/libs/librdkafka/src
+LIBRDKAFKA_INCLUDE=/home/cgy/libs/librdkafka-0.11.3/src
+LIBRDKAFKA_LIB=/home/cgy/libs/librdkafka-0.11.3/src
 
-LIBRDKAFKAcpp_INCLUDE=/home/cgy/libs/librdkafka/src-cpp
-LIBRDKAFKACPP_LIB=/home/cgy/libs/librdkafka/src-cpp
+LIBRDKAFKAcpp_INCLUDE=/home/cgy/libs/librdkafka-0.11.3/src-cpp
+LIBRDKAFKACPP_LIB=/home/cgy/libs/librdkafka-0.11.3/src-cpp
 
 ##########################################################
 ##########################################################

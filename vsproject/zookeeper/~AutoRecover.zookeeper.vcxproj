@@ -76,7 +76,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\..\..\vs_include\zookeeper\src\c\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\vs_include</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -116,7 +116,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\zookeeper\main.cpp" />
+    <ClCompile Include="..\..\zookeeper\client.cpp" />
+    <ClCompile Include="..\..\zookeeper\client2.cpp" />
+    <ClCompile Include="..\..\zookeeper\server.cpp" />
     <ClCompile Include="..\..\zookeeper\test.cpp" />
     <ClCompile Include="..\..\zookeeper\ZooKeeper.cpp" />
   </ItemGroup>

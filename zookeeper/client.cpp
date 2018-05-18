@@ -1,8 +1,8 @@
-#include <zookeeper.h>
-#include <proto.h>
+#include <zookeeper/zookeeper.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <signal.h>
 
 #include <time.h>
 #include <errno.h>
@@ -13,6 +13,14 @@
 #include <chrono>
 #include <thread>
 #include <sstream>
+
+bool run = true;
+
+static void sigTerm(int v)
+{
+    std::cout << "xxxxx sigterm\n";
+    run = false;
+}
 
 void QueryServer_watcher_g(zhandle_t* zh, int type, int state, const char* path, void* WATCHER_CTX)
 {
@@ -48,6 +56,9 @@ void QueryServer_string_completion(int rc, const char* name, const void* data)
 
 int main(int argc, char **argv) 
 {
+    ::signal(SIGTERM, sigTerm);
+    ::signal(SIGINT, sigTerm);
+
     ::zoo_set_debug_level(ZOO_LOG_LEVEL_WARN);
     //::zoo_deterministic_conn_order(1); // enable deterministic order
     std::string hostPort = "127.0.0.1:2181";
@@ -60,7 +71,7 @@ int main(int argc, char **argv)
         std::cout << "ERROR: zookeeper_init \n";
         return errno;
     }
-    int ret = ::zoo_acreate(zh, "/QueryServer", "alive", 5,
+    int ret = ::zoo_acreate(zh, "/knet/mytest", "alive", 5,
         &ZOO_OPEN_ACL_UNSAFE, ZOO_EPHEMERAL,
         QueryServer_string_completion, "zoo_acreate data");
     if (ret) {
@@ -74,7 +85,10 @@ int main(int argc, char **argv)
         // 然后休眠 5 秒，程序主动退出(即假设此时已经崩溃).
         std::cout << "sleep " << std::this_thread::get_id() << "\n";
         std::this_thread::sleep_for(std::chrono::seconds{ 5 });
-    } while (true);
+    } while (run);
+
     ::zookeeper_close(zh);
+
+    std::cout << "main exit\n";
     return 0;
 }
