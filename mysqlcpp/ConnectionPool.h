@@ -37,7 +37,7 @@ struct ConnectionPoolOpt
 	ConnectionPoolOpt(ConnectionPoolOpt&& rhs) = default;
 	ConnectionPoolOpt& operator=(ConnectionPoolOpt&& rhs) = default;
 
-	size_t m_thread_pool_size{3};           //�̳߳س�ʼ�̸߳���
+	size_t m_thread_pool_size{3};           //线程池初始线程个数
 };
 
 class ConnectionPool

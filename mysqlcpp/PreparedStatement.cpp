@@ -147,7 +147,7 @@ bool PreparedStatement::bindResult(std::vector<RowData>* all_rows, size_t num_fi
     }
 
     unsigned long long num_rows = ::mysql_stmt_num_rows(getMYSQL_STMT());
-    // Ã»ÓĞ·µ»Ø½á¹û£¬ÀıÈçinsert update, delete
+    // æ²¡æœ‰è¿”å›ç»“æœï¼Œä¾‹å¦‚insert update, delete
     if (num_rows == 0 || num_field == 0) {
         ::mysql_stmt_free_result(getMYSQL_STMT());
         return true;
@@ -180,7 +180,7 @@ bool PreparedStatement::bindResult(std::vector<RowData>* all_rows, size_t num_fi
         all_rows_temp.emplace_back(std::move(row));
         ++row_pos;
     }
-    //»á²»»á´æÔÚÊµ¼ÊĞĞÊı±ÈÔ¤¶¨ÉÙ??
+    //ä¼šä¸ä¼šå­˜åœ¨å®é™…è¡Œæ•°æ¯”é¢„å®šå°‘??
     if (row_pos < num_rows) {
         // TODO
     }
@@ -201,15 +201,15 @@ PreparedStatement::NEXT_ROW PreparedStatement::nextRow()
     */
     int ret = ::mysql_stmt_fetch(getMYSQL_STMT());
     if (ret == 0) {
-        return NEXT_ROW::SUCCESS;   // ÓĞÊı¾İ
+        return NEXT_ROW::SUCCESS;   // æœ‰æ•°æ®
     } else if (ret == 1) {
-        return NEXT_ROW::FAILED;    // ³ö´í
+        return NEXT_ROW::FAILED;    // å‡ºé”™
     } else if (ret == MYSQL_NO_DATA) {
-        return NEXT_ROW::NO_DATA_;   // Ã»Êı¾İ
+        return NEXT_ROW::NO_DATA_;   // æ²¡æ•°æ®
     } else if (ret == MYSQL_DATA_TRUNCATED) {
-        return NEXT_ROW::TRUNCATED; // ½Ø¶Ï
+        return NEXT_ROW::TRUNCATED; // æˆªæ–­
     }
-    return NEXT_ROW::FAILED;    // ³ö´í
+    return NEXT_ROW::FAILED;    // å‡ºé”™
 }
 
 

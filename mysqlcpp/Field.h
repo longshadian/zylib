@@ -9,7 +9,7 @@
 #include "mysqlcpp/detail/SafeString.h"
 
 /**
-	MYSQL查询结果对应类型
+	MYSQL鏌ヨ缁撴灉瀵瑰簲绫诲瀷
     |------------------------|----------------------------|
     | TINYINT                | getBool, getInt8, getUInt8 |
     | SMALLINT               | getInt16, getUInt16        |
@@ -26,9 +26,9 @@
     | DATE, TIME			 | getDateTime()			  |
 	| DATETIME, TIMESTAMP    | getDateTime()              |
 
-	聚合函数返回值：
+	鑱氬悎鍑芥暟杩斿洖鍊硷細
     |----------|------------|
-    | MIN, MAX | 和Field类似 |
+    | MIN, MAX | 鍜孎ield绫讳技 |
     | SUM, AVG | getDouble  |
     | COUNT    | getInt64   |
 */

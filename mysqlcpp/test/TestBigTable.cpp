@@ -65,7 +65,7 @@ mysqlcpp::ConnectionOpt initOpt()
 
 int initBigTable()
 {
-    // ´´½¨Êı¾İ¿âÁ¬½Ó
+    // åˆ›å»ºæ•°æ®åº“è¿æ¥
     auto pool = initPool();
     if (!pool) {
         std::cout << "init pool error\n";

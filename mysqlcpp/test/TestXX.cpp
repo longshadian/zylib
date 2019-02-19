@@ -13,7 +13,7 @@ int fun(int argc, char** argv)
     (void)argc;
     (void)argv;
 
-    // ´´½¨Êı¾İ¿âÁ¬½Ó
+    // åˆ›å»ºæ•°æ®åº“è¿æ¥
     mysqlcpp::ConnectionOpt conn_opt{};
     conn_opt.user = "root";
     conn_opt.password = "123456";

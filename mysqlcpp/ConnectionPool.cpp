@@ -89,7 +89,7 @@ void ConnectionPool::rleaseConn(std::shared_ptr<Connection> conn)
         auto slot = *it;
         slot->m_in_use = false;
         slot->m_last_used = tnow;
-        // ·Åµ½ÁĞ±íµÄ×îºó
+        // æ”¾åˆ°åˆ—è¡¨çš„æœ€å
         m_pool.erase(it);
         m_pool.push_back(slot);
     }

@@ -25,10 +25,10 @@ class PreparedStatement
 {
     enum class NEXT_ROW : int32_t
     {
-        FAILED = 0,     // ³ö´í
-        SUCCESS = 1,    // ÓĞÊı¾İ
-        NO_DATA_ = 2,    // Ã»Êı¾İ
-        TRUNCATED = 3,  // Êı¾İ±»½Ø¶Ï
+        FAILED = 0,     // å‡ºé”™
+        SUCCESS = 1,    // æœ‰æ•°æ®
+        NO_DATA_ = 2,    // æ²¡æ•°æ®
+        TRUNCATED = 3,  // æ•°æ®è¢«æˆªæ–­
     };
 
 public:

@@ -18,7 +18,7 @@ mysqlcpp::ConnectionOpt initOpt()
 
 int fun()
 {
-    // ´´½¨Êı¾İ¿âÁ¬½Ó
+    // åˆ›å»ºæ•°æ®åº“è¿æ¥
     mysqlcpp::ConnectionOpt conn_opt = initOpt();
     mysqlcpp::Connection db_conn{ conn_opt };
     if (db_conn.open() != 0) {
@@ -74,7 +74,7 @@ int fun()
 
 int funStmt()
 {
-    // ´´½¨Êı¾İ¿âÁ¬½Ó
+    // åˆ›å»ºæ•°æ®åº“è¿æ¥
     mysqlcpp::ConnectionOpt conn_opt = initOpt();
     mysqlcpp::Connection db_conn{ conn_opt };
     if (db_conn.open() != 0) {
@@ -103,7 +103,7 @@ int funStmt()
 
 int funPreparedStmt()
 {
-    // ´´½¨Êı¾İ¿âÁ¬½Ó
+    // åˆ›å»ºæ•°æ®åº“è¿æ¥
     mysqlcpp::ConnectionOpt conn_opt = initOpt();
     mysqlcpp::Connection db_conn{ conn_opt };
     if (db_conn.open() != 0) {
@@ -144,7 +144,7 @@ int funPreparedStmt()
 
 int testTransaction()
 {
-    // ´´½¨Êı¾İ¿âÁ¬½Ó
+    // åˆ›å»ºæ•°æ®åº“è¿æ¥
     mysqlcpp::ConnectionOpt conn_opt = initOpt();
     mysqlcpp::Connection db_conn{ conn_opt };
     if (db_conn.open() != 0) {
@@ -177,7 +177,7 @@ int testTransaction()
 
 int testPool()
 {
-    // ´´½¨Êı¾İ¿âÁ¬½Ó
+    // åˆ›å»ºæ•°æ®åº“è¿æ¥
     mysqlcpp::ConnectionOpt conn_opt = initOpt();
 
     mysqlcpp::ConnectionPoolOpt pool_opt{};

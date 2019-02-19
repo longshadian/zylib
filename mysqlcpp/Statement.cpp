@@ -123,7 +123,7 @@ bool Statement::storeResult(MYSQL_RES* mysql_res, std::vector<RowData>* all_row,
     if (row_count == (my_ulonglong)~0)
         return false;
 
-    // »ñÈ¡ĞĞÊı¾İ
+    // è·å–è¡Œæ•°æ®
     std::vector<RowData> all_row_temp{};
     all_row_temp.reserve(row_count);
 

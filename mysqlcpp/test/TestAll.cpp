@@ -128,7 +128,7 @@ void testBasic(mysqlcpp::ConnectionGuard& conn)
         assert(row["fbigint"]->getInt64() == 100000);
     }
 
-    //²âÊÔintÀàÐÍ
+    //æµ‹è¯•intç±»åž‹
     {
         sql = "DELETE FROM `test_integer`";
         assert(stmt->execute(sql));
@@ -183,7 +183,7 @@ void testBasic(mysqlcpp::ConnectionGuard& conn)
     }
 
     {
-        //²âÊÔstringÀàÐÍ
+        //æµ‹è¯•stringç±»åž‹
         sql = "DELETE FROM `test_string`";
         assert(stmt->execute(sql));
 
@@ -218,7 +218,7 @@ void testBasic(mysqlcpp::ConnectionGuard& conn)
     }
 
     {
-        //²âÊÔfloatÀàÐÍ
+        //æµ‹è¯•floatç±»åž‹
         sql = "DELETE FROM `test_float`";
         assert(stmt->execute(sql));
 
@@ -237,7 +237,7 @@ void testBasic(mysqlcpp::ConnectionGuard& conn)
     }
 
     {
-        //²âÊÔdatetimeÀàÐÍ
+        //æµ‹è¯•datetimeç±»åž‹
         sql = "DELETE FROM `test_datetime`";
         auto stmt_ex = conn->statement();
         assert(stmt_ex->execute(sql));
@@ -248,10 +248,10 @@ void testBasic(mysqlcpp::ConnectionGuard& conn)
             " (1, ?, ?, ?, ?)";
         auto ps = conn->preparedStatement(sql);
         assert(ps);
-        ps->setDateTime(0, mysqlcpp::DateTime(tnow));     //±£´ædateÀàÐÍ
-        ps->setDateTime(1, mysqlcpp::DateTime(tnow));     //±£´ætimeÀàÐÍ
-        ps->setDateTime(2, mysqlcpp::DateTime(tnow));     //±£´ædatetimeÀàÐÍ
-        ps->setNull(3);                                   //±£´ædatetimeÀàÐÍ
+        ps->setDateTime(0, mysqlcpp::DateTime(tnow));     //ä¿å­˜dateç±»åž‹
+        ps->setDateTime(1, mysqlcpp::DateTime(tnow));     //ä¿å­˜timeç±»åž‹
+        ps->setDateTime(2, mysqlcpp::DateTime(tnow));     //ä¿å­˜datetimeç±»åž‹
+        ps->setNull(3);                                   //ä¿å­˜datetimeç±»åž‹
 
         assert(ps->execute());
 
@@ -260,15 +260,15 @@ void testBasic(mysqlcpp::ConnectionGuard& conn)
         assert(rs);
         auto row = rs->getRow(0);
 
-        //assert(row["fdate"]->getDateTime().getString() == "2016-10-07");        //dateÀàÐÍ
-        //assert(row["ftime"]->getDateTime().getString() == "06:08:50");          //timeÀàÐÍ
-        assert(row["fdatetime"]->getDateTime().getString() == "2016-10-07 06:08:50");   //datetimeÀàÐÍ
-        assert(row["fdatetime"]->getDateTime().getTime() == tnow);                      //»ñÈ¡time_t
-        assert(row["ftimestamp"]->isNull());  // Ä¬ÈÏÖµ
+        //assert(row["fdate"]->getDateTime().getString() == "2016-10-07");        //dateç±»åž‹
+        //assert(row["ftime"]->getDateTime().getString() == "06:08:50");          //timeç±»åž‹
+        assert(row["fdatetime"]->getDateTime().getString() == "2016-10-07 06:08:50");   //datetimeç±»åž‹
+        assert(row["fdatetime"]->getDateTime().getTime() == tnow);                      //èŽ·å–time_t
+        assert(row["ftimestamp"]->isNull());  // é»˜è®¤å€¼
     }
 
     {
-        //²âÊÔbinaryÀàÐÍ
+        //æµ‹è¯•binaryç±»åž‹
         sql = "DELETE FROM `test_binary`";
         auto stmt_ex = conn->statement();
         assert(stmt_ex->execute(sql));

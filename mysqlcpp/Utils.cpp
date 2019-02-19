@@ -96,7 +96,7 @@ void bindFiledsMeta(MYSQL_RES* mysql_res, std::vector<FieldMeta>* fields_data)
     MYSQL_FIELD* mysql_fields = ::mysql_fetch_fields(mysql_res);
     fields_data->reserve(field_count);
     for (unsigned int i = 0; i != field_count; ++i) {
-        //保存列元数据
+        //淇濆瓨鍒楀厓鏁版嵁
         fields_data->push_back(FieldMeta(&mysql_fields[i], i));
     }
 }
