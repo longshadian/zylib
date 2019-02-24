@@ -5,10 +5,9 @@ SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS On)
 ###########################################################
 ## project output 
 ###########################################################
-PROJECT(mysqlcpp)
-SET(OUTPUT mysqlcpp)
+PROJECT(test)
+SET(OUTPUT test)
 SET(OUTPUT_DIR ${CMAKE_BINARY_DIR}/output)
-OPTION(MYSQLCPP_SHARD "output type is shared" ON)
 
 IF(WIN32)
     SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG ${OUTPUT_DIR}/debug/lib)
@@ -43,45 +42,31 @@ INCLUDE_DIRECTORIES(${MYSQL_INCLUDE_DIR})
 ###########################################################
 ## cpp 
 ###########################################################
-FILE(GLOB MYSQLCPP	./*.cpp ./*.h)
-FILE(GLOB MYSQLCPP_DETAIL detail/*.cpp detail/*.h)
+FILE(GLOB TEST	./*.cpp ./*.h)
 
-SOURCE_GROUP("" FILES ${MYSQLCPP})
-SOURCE_GROUP(TREE ${PROJECT_SOURCE_DIR} FILES ${MYSQLCPP_DETAIL})
+SOURCE_GROUP("" FILES ${TEST})
+#SOURCE_GROUP(TREE ${PROJECT_SOURCE_DIR} FILES ${MYSQLCPP_DETAIL})
 
-SET(SRC_LIST ${MYSQLCPP} 
-        ${MYSQLCPP_DETAIL} 
+SET(SRC_LIST ${TEST} 
         )
 
 
 ###########################################################
-## statis or dynamic
+## exe
 ###########################################################
-IF(MYSQLCPP_SHARD)
-    IF(WIN32)
-        #ADD_DEFINITIONS(/std:c++17)
-        #ADD_DEFINITIONS("/D _WIN32_WINNT=0x0601")
-        #ADD_DEFINITIONS("/D _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS")
-        #ADD_DEFINITIONS("/utf-8")     ### utf-8 no-bom warning C4819: 
-        #ADD_DEFINITIONS("/D KNET_EXPORT=__declspec(dllexport)")
-    ELSEIF(UNIX)
-        #ADD_DEFINITIONS(-g -Wall -Wextra -Werror -std=c++17)
-        #ADD_DEFINITIONS(-DBOOST_LOG_DYN_LINK)
-        #SET(THIRD_LIBRARIES ${THIRD_LIBRARIES} pthread)
-        ADD_DEFINITIONS(-g -Wall -Wextra  -std=c++17)
-    ENDIF()
-
-    ## third libraries
-	#[[
-    SET(THIRD_LIBRARIES 
-        ${BOOST_LIBRARIES}
-        ${MYSQL_LIBRARIES}
-        )
-	##	]]
-    ADD_LIBRARY(${OUTPUT} SHARED ${SRC_LIST})
-    #TARGET_LINK_LIBRARIES(${OUTPUT} ${THIRD_LIBRARIES})
-    TARGET_LINK_LIBRARIES(${OUTPUT})
-ELSE()
-        
+IF(WIN32)
+    ADD_DEFINITIONS(/std:c++17)
+    #ADD_DEFINITIONS("/D _WIN32_WINNT=0x0601")
+    #ADD_DEFINITIONS("/D _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS")
+    ADD_DEFINITIONS("/utf-8")     ### utf-8 no-bom warning C4819: 
+    #ADD_DEFINITIONS("/D MYSQL_EXPORT=__declspec(dllexport)")
+ELSEIF(UNIX)
+    #ADD_DEFINITIONS(-g -Wall -Wextra -Werror -std=c++17)
+    #ADD_DEFINITIONS(-DBOOST_LOG_DYN_LINK)
+    #SET(THIRD_LIBRARIES ${THIRD_LIBRARIES} pthread)
+    ADD_DEFINITIONS(-g -Wall -Wextra  -std=c++17)
 ENDIF()
+
+ADD_EXECUTABLE(${OUTPUT} ${SRC_LIST})
+TARGET_LINK_LIBRARIES(${OUTPUT} mysqlcpp ${BOOST_LIBRARIES} ${MYSQL_LIBRARIES})
 

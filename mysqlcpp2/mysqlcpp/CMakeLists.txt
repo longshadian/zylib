@@ -59,11 +59,12 @@ SET(SRC_LIST ${MYSQLCPP}
 ###########################################################
 IF(MYSQLCPP_SHARD)
     IF(WIN32)
-        #ADD_DEFINITIONS(/std:c++17)
+        ADD_DEFINITIONS(/std:c++17)
         #ADD_DEFINITIONS("/D _WIN32_WINNT=0x0601")
         #ADD_DEFINITIONS("/D _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS")
-        #ADD_DEFINITIONS("/utf-8")     ### utf-8 no-bom warning C4819: 
-        #ADD_DEFINITIONS("/D KNET_EXPORT=__declspec(dllexport)")
+        ADD_DEFINITIONS("/utf-8")     ### utf-8 no-bom warning C4819: 
+        ADD_DEFINITIONS("/D MYSQLCPP_EXPORT=__declspec(dllexport)")
+        ADD_DEFINITIONS(/wd4251)    ### protocolbuf warning
     ELSEIF(UNIX)
         #ADD_DEFINITIONS(-g -Wall -Wextra -Werror -std=c++17)
         #ADD_DEFINITIONS(-DBOOST_LOG_DYN_LINK)
