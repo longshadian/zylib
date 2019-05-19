@@ -6,26 +6,64 @@
 #include <limits>
 
 #define BOOST_TEST_MODULE MysqlcppTest
-//#include <boost/test/included/unit_test.hpp>
 #include <boost/test/unit_test.hpp>
 
-mysqlcpp::ConnectionOpt initConn()
+const std::string g_database_name = "mysqlcpp_test";
+
+const char* g_create_schema_sql =
+    "CREATE SCHEMA `mysqlcpp_test` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
+
+const char* g_create_table_sql =
+    " CREATE TABLE `test` ( \
+        `fpk` int(11) NOT NULL AUTO_INCREMENT, \
+        `tinyint` tinyint(11) NOT NULL DEFAULT '0', \
+        `smallint` smallint(11) NOT NULL DEFAULT '0', \
+        `int` int(11) NOT NULL DEFAULT '0', \
+        `bigint` bigint(20) NOT NULL DEFAULT '0', \
+        `tinyint_u` tinyint(11) unsigned NOT NULL DEFAULT '0', \
+        `smallint_u` smallint(11) unsigned NOT NULL DEFAULT '0', \
+        `int_u` int(11) unsigned NOT NULL DEFAULT '0', \
+        `bigint_u` bigint(20) unsigned NOT NULL DEFAULT '0', \
+        `float` float(10, 2) DEFAULT NULL, \
+        `double` double(10, 4) DEFAULT NULL, \
+        `decimal` decimal(10, 6) DEFAULT NULL, \
+        `char` char(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '', \
+        `varchar` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '', \
+        `ftext` text COLLATE utf8mb4_unicode_ci, \
+        `date` date NOT NULL DEFAULT '1970-01-01', \
+        `time` time NOT NULL DEFAULT '08:00:00', \
+        `datetime` datetime NOT NULL DEFAULT '1970-01-01 08:00:00', \
+        `timestamp` timestamp NULL DEFAULT NULL, \
+        PRIMARY KEY(`fpk`) \
+        ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci; \
+    ";
+
+const char* g_delete_from_table = "DELETE FROM mysqlcpp_test";
+
+const std::string& DatabaseName()
+{
+    return g_database_name;
+}
+
+std::shared_ptr<mysqlcpp::Connection> CreateConnection(std::string database_name)
 {
     mysqlcpp::ConnectionOpt conn_opt{};
     conn_opt.user = "root";
     conn_opt.password = "123456";
-    conn_opt.database = "mysqlcpp_test";
-    conn_opt.host = "127.0.0.1";
+    conn_opt.database = database_name;
+    conn_opt.host = "192.168.32.128";
     conn_opt.port = 3306;
-    return conn_opt;
+    auto conn = std::make_shared<mysqlcpp::Connection>(conn_opt);
+    conn->Init();
+    if (!conn->Open()) {
+        std::cout << "conn open error: " << conn->GetErrorNo() << " " << conn->GetErrorStr() << "\n";
+        return nullptr;
+    }
+    return conn;
 }
 
-void CreateSchema() 
-{
-    const char* sql = 
-        "CREATE SCHEMA `mysqlcpp_test` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
-}
 
+/*
 void testCreate_Schema_Table(PoolPtr pool)
 {
     const char* sql_integer = 
@@ -100,14 +138,29 @@ void testCreate_Schema_Table(PoolPtr pool)
     assert(stmt->execute(sql_datetime));
     assert(stmt->execute(sql_binary));
 }
+*/
 
+bool DeleteFromTable()
+{
+    auto conn = CreateConnection();
+    auto stmt = conn->CreateStatement();
+    return stmt->Execute(g_delete_from_table);
+}
 
 BOOST_AUTO_TEST_CASE(TestMain)
 {
+    std::cout << "start test main\n";
+
+    {
+        auto conn = CreateConnection();
+        BOOST_TEST(conn);
+        auto stmt = conn->CreateStatement();
+        BOOST_TEST(stmt);
+        BOOST_REQUIRE(stmt->Execute(g_create_schema_sql));
+        BOOST_REQUIRE(stmt->Execute("use " + DatabaseName()));
+        BOOST_REQUIRE(stmt->Execute(g_create_table_sql));
+    }
+
     int i = 1;
     BOOST_TEST(i);
-
-    BOOST_TEST(i != 2);
-
-
 }

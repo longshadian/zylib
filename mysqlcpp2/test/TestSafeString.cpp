@@ -7,7 +7,6 @@
 #include "mysqlcpp/detail/Convert.h"
 #include "mysqlcpp/detail/SafeString.h"
 
-#define BOOST_TEST_MODULE MyFirstTest
 //#include <boost/test/included/unit_test.hpp>
 #include <boost/test/unit_test.hpp>
 

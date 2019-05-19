@@ -1,111 +1,17 @@
-#include <cassert>
-#include <ctime>
-#include <iostream>
-#include <string>
-#include <memory>
-#include <thread>
-#include <chrono>
-
 #include "mysqlcpp/mysqlcpp.h"
 #include "test/TestMain.h"
 
-using PoolPtr = std::shared_ptr<mysqlcpp::ConnectionPool>;
-const int32_t POOL_SIZE = 4;
 
-PoolPtr initPool()
+//#include <boost/test/unit_test.hpp>
+BOOST_AUTO_TEST_CASE(TestStatement)
 {
-    mysqlcpp::ConnectionPoolOpt pool_opt{};
-    mysqlcpp::ConnectionOpt conn_opt = ::initConn();
+    BOOST_REQUIRE(DeleteFromTable());
+    auto conn = CreateConnection(DatabaseName());
+    BOOST_REQUIRE(conn);
+    auto stmt = conn->CreateStatement();
+    BOOST_REQUIRE(stmt);
 
-    auto pool = std::make_shared<mysqlcpp::ConnectionPool>(conn_opt, pool_opt);
-    if (!pool->init()) {
-        std::cout << "pool init fail\n";
-        return nullptr;
-    }
-    return pool;
-}
-
-void testCreate_Schema_Table(PoolPtr pool)
-{
-    const char* sql_integer = 
-        "   CREATE TABLE `mysqlcpp_test`.`test_integer` ("
-        "   `fpk` INT NOT NULL,"
-        "   `ftinyint` TINYINT(11) NULL,"
-        "   `fsmallint` SMALLINT(11) NULL,"
-        "   `fint` INT(11) NULL,"
-        "   `fbigint` BIGINT(20) NULL,"
-        "   `ftinyint_u` TINYINT(11) UNSIGNED NULL,"
-        "   `fsmallint_u` SMALLINT(11) UNSIGNED NULL,"
-        "   `fint_u` INT(11) UNSIGNED NULL,"
-        "   `fbigint_u` BIGINT(20) UNSIGNED NULL,"
-        "   PRIMARY KEY(`fpk`))"
-        "   ENGINE = InnoDB"
-        "   DEFAULT CHARACTER SET = utf8";
-
-    const char* sql_float =
-        "   CREATE TABLE `mysqlcpp_test`.`test_float` ("
-        "   `fpk` INT NOT NULL,"
-        "   `ffloat` FLOAT(10, 2) NULL,"
-        "   `fdouble` DOUBLE(10, 4) NULL,"
-        "   `fdecimal` DECIMAL(10, 6) NULL,"
-        "   PRIMARY KEY(`fpk`))"
-        "   ENGINE = InnoDB"
-        "   DEFAULT CHARACTER SET = utf8";
-
-    const char* sql_string =
-        "   CREATE TABLE `mysqlcpp_test`.`test_string` ("
-        "   `fpk` INT NOT NULL,"
-        "   `fchar` CHAR(10) NULL,"
-        "   `fvarchar` VARCHAR(10) NULL,"
-        "   `ftext` TEXT NULL,"
-        "   PRIMARY KEY(`fpk`))"
-        "   ENGINE = InnoDB"
-        "   DEFAULT CHARACTER SET = utf8";
-
-    const char* sql_datetime = 
-        "   CREATE TABLE `mysqlcpp_test`.`test_datetime` ("
-        "   `fpk` INT NOT NULL,"
-        "   `fdate` DATE NULL,"
-        "   `ftime` TIME NULL,"
-        "   `fdatetime` DATETIME NULL,"
-        "   `ftimestamp` TIMESTAMP NULL,"
-        "   PRIMARY KEY(`fpk`))"
-        "   ENGINE = InnoDB"
-        "   DEFAULT CHARACTER SET = utf8";
-
-    const char* sql_binary =
-        "   CREATE TABLE `mysqlcpp_test`.`test_binary` ("
-        "   `fpk` INT NOT NULL,"
-        "   `fblob` BLOB NULL,"
-        "   `fvarbinary` VARBINARY(100) NULL,"
-        "   PRIMARY KEY(`fpk`))"
-        "   ENGINE = InnoDB"
-        "   DEFAULT CHARACTER SET = utf8";
-
-    mysqlcpp::ConnectionGuard conn{ *pool };
-    auto stmt = conn->statement();
-    //assert(stmt->execute("CREATE DATABASE IF NOT EXISTS mysqlcpp_test DEFAULT CHARACTER SET utf8;"));
-    //assert(stmt->execute("use mysqlcpp_test;"));
-
-    assert(stmt->execute("DROP TABLE IF EXISTS test_integer;"));
-    assert(stmt->execute("DROP TABLE IF EXISTS test_string;"));
-    assert(stmt->execute("DROP TABLE IF EXISTS test_float;"));
-    assert(stmt->execute("DROP TABLE IF EXISTS test_datetime;"));
-    assert(stmt->execute("DROP TABLE IF EXISTS test_binary;"));
-
-    assert(stmt->execute(sql_integer));
-    assert(stmt->execute(sql_float));
-    assert(stmt->execute(sql_string));
-    assert(stmt->execute(sql_datetime));
-    assert(stmt->execute(sql_binary));
-}
-
-void testBasic(mysqlcpp::ConnectionGuard& conn)
-{
-    const char* sql = "DELETE FROM `test_integer`";
-    auto stmt = conn->statement();
     assert(stmt->execute(sql));
-
     sql = "INSERT INTO `test_integer` (`fpk`, `fint`, `fbigint`) "
         " VALUES (1, 100, 100000), (2, 100, 100000)";
     {
