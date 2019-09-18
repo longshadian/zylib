@@ -19,25 +19,25 @@ public:
     Random& operator=(Random&& rhs) = default;
 
     template <typename T>
-    T rand()
+    T Rand()
     {
         return std::uniform_int_distribution<T>()(m_engine);
     }
 
     template <typename T>
-    T rand(T closed_begin, T closed_end)
+    T Rand(T closed_begin, T closed_end)
     {
         return std::uniform_int_distribution<T>(closed_begin, closed_end)(m_engine);
     }
 
     template <class RandomAccessIterator>
-    void shuffle(RandomAccessIterator first, RandomAccessIterator last)
+    void Shuffle(RandomAccessIterator first, RandomAccessIterator last)
     {
         std::shuffle(first, last, m_engine);
     }
 
-    E& engine() { return m_engine; }
-    const E& engine() const { return m_engine; }
+    E& Engine() { return m_engine; }
+    const E& Engine() const { return m_engine; }
 private:
     E m_engine;
 };

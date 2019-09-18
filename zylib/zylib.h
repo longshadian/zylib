@@ -1,14 +1,14 @@
 #pragma once
 
-#include "AsyncTask.h"
-#include "BoostPTime.h"
-#include "Code.h"
-#include "Convert.h"
-#include "Future.h"
-#include "Logger.h"
-#include "Queue.h"
-#include "Random.h"
-#include "String.h"
-#include "Timer.h"
-#include "Tools.h"
-#include "PersistentContainer.h"
+#include "zylib/AsyncTask.h"
+#include "zylib/Base64.h"
+#include "zylib/Random.h"
+#include "zylib/Timer.h"
+#include "zylib/Tools.h"
+
+#include "zylib/hashing/CRC32.h"
+#include "zylib/hashing/MD5.h"
+
+#ifdef ZYLIB_UBOOST
+#include "zylib/uboost/BoostPTime.h"
+#endif

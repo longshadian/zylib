@@ -22,27 +22,27 @@ struct BasicTimer
 	{
 	}
 
-	void update(Duration delta)
+	void Update(Duration delta)
 	{
 		m_start += delta;
 	}
 
-	bool passed() const
+	bool Passed() const
 	{
 		return m_expire <= m_start;
 	}
 
-	void reset()
+	void Reset()
 	{
 		m_start = Duration::zero();
 	}
 
-	Duration remain() const
+	Duration Remain() const
 	{
 		return m_expire - m_start;
 	}
 
-    bool valid() const { return m_valid; }
+    bool Valid() const { return m_valid; }
 
     bool     m_valid;
 	Duration m_start;
@@ -54,12 +54,12 @@ using Delta = milliseconds;
 
 using TimePoint = std::chrono::steady_clock::time_point;
 
-inline TimePoint getSteadyTimePoint()
+inline TimePoint SteadyTimePoint()
 {
 	return std::chrono::steady_clock::now();
 }
 
-inline Delta getDelta(TimePoint b, TimePoint e)
+inline Delta GetDelta(TimePoint b, TimePoint e)
 {
 	return std::chrono::duration_cast<Delta>(e - b);
 }

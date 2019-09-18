@@ -1,8 +1,8 @@
 #pragma once
 
 #include <cstring>
+#include <ctime>
 #include <string>
-#include <map>
 #include <vector>
 #include <memory>
 #include <algorithm>
@@ -11,13 +11,15 @@
 
 namespace zylib {
 
-std::vector<std::string> stringSplit(const std::string& s, char c);
+void Init();
 
-//×Ö·û´®Ìæ»»,×Ö·û´®strÖĞµÄsrc×Ö·ûÌæ»»³Édest,·µ»ØÌæ»»¸öÊı
-size_t stringReplace(std::string* str, char src, char dest);
+std::vector<std::string> StringSplit(const std::string& s, char c);
+
+//å­—ç¬¦ä¸²æ›¿æ¢,å­—ç¬¦ä¸²strä¸­çš„srcå­—ç¬¦æ›¿æ¢æˆdest,è¿”å›æ›¿æ¢ä¸ªæ•°
+std::size_t StringReplace(std::string* str, char src, char dest);
 
 template <class RandomAccessIterator>
-void linear_random_shuffle(RandomAccessIterator first, RandomAccessIterator last)
+void LinearRandomShuffle(RandomAccessIterator first, RandomAccessIterator last)
 {
     typename std::iterator_traits<RandomAccessIterator>::difference_type n = (last - first);
     if (n <= 0)
@@ -28,11 +30,49 @@ void linear_random_shuffle(RandomAccessIterator first, RandomAccessIterator last
 }
 
 template <typename T>
-void bzero(T* t)
+void BZzero(T* t)
 {
     static_assert(std::is_pod<T>::value, "T must be pod!");
     std::memset(t, 0, sizeof(T));
 }
 
+std::string CatFile(const char* f);
+bool CatFile(const std::string& path, std::string* out);
+
+std::string ToUpperCase(const std::string& src);
+std::string ToLowerCase(const std::string& src);
+std::string ToHex(const void* data, std::size_t len);
+
+struct tm* Localtime(const std::time_t* t, struct tm* output);
+std::string LocaltimeYYYMMDD_HHMMSS(std::time_t t);
+
+
+// little/big endian conversion
+short	BigShort(short l);
+short	LittleShort(short l);
+int		BigLong(int l);
+int		LittleLong(int l);
+float	BigFloat(float l);
+float	LittleFloat(float l);
+void	BigRevBytes(void *bp, int elsize, int elcount);
+void	LittleRevBytes(void *bp, int elsize, int elcount);
+void	LittleBitField(void *bp, int elsize);
+
+
+template <typename E>
+static std::underlying_type_t<E> EnumValue(E e)
+{
+    //static_assert(std::is_enum<E>::value, "E must be enum or enum class !");
+    return static_cast<std::underlying_type_t<E>>(e);
+}
+
 //////////////////////////////////////////////////////////////////////////
 }
+
+
+namespace zylib {
+namespace detail {
+void	Swap_Init();
+
+} // namespace detail
+} // namespace zylib
