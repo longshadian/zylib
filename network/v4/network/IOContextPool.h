@@ -6,6 +6,9 @@
 #include <memory>
 #include <boost/asio.hpp>
 
+namespace network
+{
+
 class IOContext
 {
 public:
@@ -45,3 +48,5 @@ private:
     std::atomic<std::uint64_t>      m_next_index;
     std::vector<IOContextPtr>       m_iocxt_vec;
 };
+
+} // namespace network

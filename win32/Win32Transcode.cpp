@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Win32Transcode.h"
 #include <Windows.h>
 #include <mbstring.h>
@@ -127,4 +126,32 @@ void Win32Transcode::UTF8_to_ANSI(const char* in, size_t len, std::string& out)
 	std::wstring wstrWrite;
 	UTF8_to_Unicode(in, len, wstrWrite);
 	Unicode_to_ANSI(wstrWrite.c_str(), wstrWrite.length(), out);
+}
+
+std::string Win32Transcode::ANSI_to_UTF8(const char* in, size_t len)
+{
+    std::string dst;
+    ANSI_to_UTF8(in, len, dst);
+    return dst;
+}
+
+std::string Win32Transcode::UTF8_to_ANSI(const char* in, size_t len)
+{
+    std::string dst;
+    UTF8_to_ANSI(in, len, dst);
+    return dst;
+}
+
+std::string Win32Transcode::ANSI_to_UTF8(const std::string& in)
+{
+    std::string dst;
+    ANSI_to_UTF8(in.data(), in.length(), dst);
+    return dst;
+}
+
+std::string Win32Transcode::UTF8_to_ANSI(const std::string& in)
+{
+    std::string dst;
+    UTF8_to_ANSI(in.data(), in.length(), dst);
+    return dst;
 }

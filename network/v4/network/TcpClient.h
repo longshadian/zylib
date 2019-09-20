@@ -1,39 +1,41 @@
 #pragma once
 
+#include <cstdint>
 #include <atomic>
+#include <string>
+#include <unordered_set>
 #include <boost/asio.hpp>
 
 #include "network/Message.h"
 #include "network/Channel.h"
 #include "network/IOContextPool.h"
 #include "network/Event.h"
+#include "network/TcpConnector.h"
 
-class NetworkEvent;
-class MessageDecoder;
+namespace network
+{
 
 class TcpClient
 {
 public:
-    TcpClient(std::int64_t index, std::shared_ptr<TcpClientEvent> event, MessageDecoderPtr decoder, const std::string& str_ip, std::uint16_t port);
+    TcpClient(NetworkFactoryPtr fac);
     ~TcpClient();
     TcpClient(const TcpClient& rhs) = delete;
     TcpClient& operator=(const TcpClient& rhs) = delete;
     TcpClient(TcpClient&& rhs) = delete;
     TcpClient& operator=(TcpClient&& rhs) = delete;
 
-    bool Start();
-    bool IsConnected() const;
-    void SendMsg(Message msg);
-    void Close();
-    bool Reconnect();
+    bool Start(std::int32_t n);
+    TcpConnectorPtr CreateConnector();
+
+    void AsyncConnect(TcpConnectorPtr& conn, std::string host, std::uint16_t port);
+    void SyncConnect(TcpConnectorPtr& conn, std::string host, std::uint16_t port);
+    void SyncConnectWaitFor(TcpConnectorPtr& conn, std::string host, std::uint16_t port, std::chrono::seconds sec);
+
 private:
-    std::shared_ptr<TcpClientEvent> m_event;
-    MessageDecoderPtr               m_decoder;
-    std::atomic<bool>               m_inited;
-    IOContextPool                   m_io_pool;
-    boost::asio::ip::tcp::endpoint  m_server_addr;
-    std::atomic<bool>               m_is_connected;
-    std::int64_t                    m_index;
-    ChannelPtr                      m_channel;
+    NetworkFactoryPtr                           m_event_factory;
+    NetworkEventPtr                             m_event;
+    IOContextPool                               m_io_pool;
 };
 
+} // namespace network

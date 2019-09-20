@@ -1,4 +1,7 @@
-#include "Utilities.h"
+#include "network/Utilities.h"
+
+namespace network
+{
 
 const char* Utilities::NullString()
 {
@@ -11,3 +14,5 @@ boost::asio::ip::tcp::endpoint Utilities::CreateEndpoint(const std::string& host
     auto addr = boost::asio::ip::address_v4::from_string(host);
     return boost ::asio::ip::tcp::endpoint{addr, port};
 }
+
+} // namesapce network

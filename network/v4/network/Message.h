@@ -8,6 +8,9 @@
 
 #include "network/Buffer.h"
 
+namespace network
+{
+
 #pragma pack(push, 1)
 struct MessageHead
 {
@@ -42,18 +45,4 @@ public:
     FlatBuffer m_buffer;
 };
 
-class MessageDecoder
-{
-public:
-    MessageDecoder() = default;
-    ~MessageDecoder() = default;
-    MessageDecoder(const MessageDecoder& rhs) = delete;
-    MessageDecoder& operator=(const MessageDecoder& rhs) = delete;
-    MessageDecoder(MessageDecoder&& rhs) = delete;
-    MessageDecoder& operator=(MessageDecoder&& rhs) = delete;
-
-    void Encode(const void* data, std::size_t length) const;
-    void Decode(FlatBuffer& buffer, std::vector<Message>* out) const;
-};
-
-using MessageDecoderPtr = std::shared_ptr<MessageDecoder>;
+} // namespace network

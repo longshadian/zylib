@@ -10,15 +10,25 @@
 #include "network/Message.h"
 #include "network/Buffer.h"
 #include "network/Event.h"
+#include "network/MessageDecoder.h"
+#include "network/Define.h"
+#include "network/Timer.h"
+
+namespace network
+{
 
 class Channel;
 using ChannelHdl = std::weak_ptr<Channel>;
 using ChannelPtr = std::shared_ptr<Channel>;
 
+struct ChannelOption
+{
+    std::uint32_t m_read_timeout_seconds{};
+    std::uint32_t m_write_timeout_seconds{};
+};
+
 class Channel : public std::enable_shared_from_this<Channel>
 {
-    using TimerPtr = std::shared_ptr<boost::asio::steady_timer>;
-
     enum { READ_BUFFER =  1024 * 16 };
 
 public:
@@ -30,40 +40,40 @@ public:
     };
 
 public:
-    Channel(NetworkEventPtr event, MessageDecoderPtr decoder, std::int64_t meta_index, std::int64_t index);
+    Channel(NetworkFactoryPtr fac, ChannelOption opt);
     ~Channel();
     Channel(const Channel&) = delete;
     Channel& operator=(const Channel&) = delete;
     Channel(Channel&&) = delete;
     Channel& operator=(Channel&&) = delete;
 
-    void                            Init(std::shared_ptr<boost::asio::ip::tcp::socket> socket);
-    void                            SendMessage(Message msg);
+    void                            Init(TcpSocketPtr socket);
+    void                            SendMsg(Message msg);
+    void                            SendMsg(const void* data, std::size_t length);
+    void                            SendMsg(const std::string& str);
     void                            Shutdown();
     ChannelHdl                      Handle();
-    std::int64_t                    MetaIndex() const;
-    std::int64_t                    Index() const;
 
 private:
     void                            DoClosed(CLOSED_TYPE type = CLOSED_TYPE::NORMAL);
     void                            DoWrite();
     void                            DoRead();
-    void                            TimeoutCancel(TimerPtr timer);
-    std::size_t                     GetTimeoutTime() const;
     void                            TryDecode();
 
     TimerPtr                        CreateTimer(std::uint32_t seconds);
+
 private:
+    ChannelOption                                   m_opt;
+    NetworkFactoryPtr                               m_factory;
     NetworkEventPtr                                 m_event;
     MessageDecoderPtr                               m_decoder;
-    std::int64_t                                    m_meta_index;
-    std::int64_t                                    m_index;
-    std::shared_ptr<NetworkEvent>                   m_callback;
-    std::shared_ptr<boost::asio::ip::tcp::socket>   m_socket;
+    TcpSocketPtr                                    m_socket;
     std::atomic<bool>                               m_is_closed;
 
     std::list<Message>                              m_write_buffer;
     std::array<std::uint8_t, READ_BUFFER>           m_read_fixed_buffer;
     FlatBuffer                                      m_read_buffer;
 };
+
+} // namespace network
 

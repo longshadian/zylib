@@ -3,7 +3,10 @@
 #include "network/TcpServer.h"
 #include "network/Utilities.h"
 
-void NetworkEvent::OnConnect(const boost::system::error_code& ec, Channel& channel)
+namespace network
+{
+
+void NetworkEvent::OnConnect(const boost::system::error_code& ec, TcpConnector& connector)
 {
 }
 
@@ -168,3 +171,6 @@ std::shared_ptr<MessageDecoder> NetworkFactory::CreateMessageDecoder()
     // TODO
     return nullptr;
 }
+
+} // namespace network
+

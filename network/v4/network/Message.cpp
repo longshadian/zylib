@@ -3,6 +3,8 @@
 #include <cstring>
 #include <array>
 
+namespace network
+{
 
 Message::Message()
     : m_buffer()
@@ -77,15 +79,5 @@ std::size_t Message::BodyLength() const
     return m_buffer.Length() - HEAD_LENGTH;
 }
 
+} // namespace network
 
-//--------------------------------------------------------------------------------
-//--------------------------------------------------------------------------------
-//--------------------------------------------------------------------------------
-void MessageDecoder::Encode(const void* data, std::size_t length) const
-{
-
-}
-
-void MessageDecoder::Decode(FlatBuffer& buffer, std::vector<Message>* out) const
-{
-}

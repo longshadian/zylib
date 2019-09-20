@@ -3,6 +3,9 @@
 #include <cstdint>
 #include <vector>
 
+namespace network
+{
+
 class FlatBuffer
 {
 public:
@@ -20,9 +23,11 @@ public:
     void Append(const void* data, std::size_t length);
     bool Consume(std::size_t length);
     void Resize(std::size_t length);
+    void Reverse(std::size_t length);
     void Clear();
 
 private:
     std::vector<std::uint8_t> m_buffer;
 };
 
+} // namespace network

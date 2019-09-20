@@ -1,5 +1,8 @@
 #include "network/IOContextPool.h"
 
+namespace network
+{
+
 IOContext::IOContext(std::int32_t index)
     : m_index(index)
     , m_thread()
@@ -71,4 +74,6 @@ IOContextPtr IOContextPool::NextIOContext()
     auto idx = (++m_next_index) % m_iocxt_vec.size();
     return m_iocxt_vec[idx];
 }
+
+} // namespace network
 

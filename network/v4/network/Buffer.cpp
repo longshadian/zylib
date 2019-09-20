@@ -1,5 +1,9 @@
 #include "network/Buffer.h"
 
+namespace network
+{
+
+
 bool FlatBuffer::Empty() const
 {
     return m_buffer.empty();
@@ -44,7 +48,14 @@ void FlatBuffer::Resize(std::size_t length)
     m_buffer.resize(length);
 }
 
+void FlatBuffer::Reverse(std::size_t length)
+{
+    m_buffer.reserve(length);
+}
+
 void FlatBuffer::Clear()
 {
-
+    m_buffer.clear();
 }
+
+} // namespace network

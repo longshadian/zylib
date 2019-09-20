@@ -9,10 +9,14 @@
 #include <atomic>
 
 #include <boost/asio.hpp>
+#include "network/Define.h"
 #include "network/Event.h"
 #include "network/IOContextPool.h"
 #include "network/Message.h"
 #include "network/Channel.h"
+
+namespace network
+{
 
 class TcpServer;
 
@@ -25,14 +29,14 @@ struct ServerOption
 class TcpServer
 {
 public:
-    TcpServer(std::shared_ptr<NetworkFactory> fac, std::string host, std::uint16_t port, ServerOption option = {});
+    TcpServer(NetworkFactoryPtr fac, std::string host, std::uint16_t port, ServerOption option = {});
     ~TcpServer();
     TcpServer(const TcpServer& rhs) = delete;
     TcpServer& operator=(const TcpServer& rhs) = delete;
     TcpServer(TcpServer&& rhs) = delete;
     TcpServer& operator=(TcpServer&& rhs) = delete;
 
-    bool Start();
+    bool Start(std::int32_t n);
     void Stop();
 
     const ServerOption& GetOption() const;
@@ -42,15 +46,16 @@ private:
     void DoAccept();
             
 private:
-    std::shared_ptr<NetworkFactory>             m_event_factory;
     std::string                                 m_host;
     std::uint16_t                               m_port;
     ServerOption                                m_option;
     std::atomic<bool>                           m_inited;
     IOContextPool                               m_accept_pool;
     IOContextPool                               m_io_pool;
-    std::shared_ptr<boost::asio::ip::tcp::acceptor> m_acceptor;
-    std::unordered_set<ChannelPtr>              m_channel_set;
-    std::shared_ptr<NetworkEvent>               m_network_event;
+    NetworkFactoryPtr                           m_event_factory;
+    NetworkEventPtr                             m_event;
+    TcpAcceptorPtr                              m_acceptor;
 };
+
+} // namespace network
 
