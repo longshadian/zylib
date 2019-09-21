@@ -51,10 +51,13 @@ std::size_t Message::Length() const
     return m_buffer.Length();
 }
 
-void Message::GetHead(MessageHead* head) const
+bool Message::GetHead(MessageHead* head) const
 {
-    const auto* pos = m_buffer.Ptr();
-    std::memcpy(&head, pos, HEAD_LENGTH);
+    if (Length() < HeadLength())
+        return false;
+    const auto* pos = HeadPtr();
+    std::memcpy(&head, pos, HeadLength());
+    return true;
 }
 
 const std::uint8_t* Message::HeadPtr() const

@@ -58,7 +58,11 @@ void TcpServer::DoAccept()
 {
     auto ioc = m_io_pool.NextIOContext();
     auto new_socket = std::make_shared<boost::asio::ip::tcp::socket>(ioc->m_ioctx);
-    auto channel = std::make_shared<Channel>(m_event_factory, ChannelOption{});
+
+    ChannelOption opt{};
+    opt.m_read_timeout_seconds = m_option.m_read_timeout_seconds;
+    opt.m_write_timeout_seconds = m_option.m_write_timeout_seconds;
+    auto channel = std::make_shared<Channel>(m_event_factory, opt);
     m_acceptor->async_accept(*new_socket,
         [this, new_socket, channel](const boost::system::error_code& ec) 
         { 

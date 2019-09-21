@@ -4,10 +4,10 @@
 #include <memory>
 #include <vector>
 #include <boost/system/system_error.hpp>
+#include "network/Define.h"
 
 namespace network
 {
-
 
 class TcpServer;
 class TcpClient;
@@ -26,25 +26,18 @@ public:
     NetworkEvent(NetworkEvent&& rhs) = delete;
     NetworkEvent& operator=(NetworkEvent&& rhs) = delete;
 
-    // 新的handler创建了
     virtual void OnConnect(const boost::system::error_code& ec, TcpConnector& connector);
 
-    // 新的handler创建了
     virtual void OnAccept(const boost::system::error_code& ec, TcpServer& server, Channel& channel);
 
-    // handler关闭
-    virtual void OnClosed(Channel& channel);
+    virtual void OnClosed(Channel& channel, ECloseType type);
 
     virtual void OnRead(const boost::system::error_code& ec, std::size_t length, Channel& channel);
 
     virtual void OnWrite(const boost::system::error_code& ec, std::size_t length, Channel& channel, const Message& msg);
 
-    virtual void OnReceivedMessage(Channel& channel, std::vector<Message> msg_list);
+    virtual void OnReceivedMessage(Channel& channel, std::vector<Message> msg_vec);
 
-    // handler超时
-    virtual void OnTimeout(Channel& channel);
-
-    // server可以得accept的handler超出上限
     virtual void OnAcceptOverflow();
 };
 

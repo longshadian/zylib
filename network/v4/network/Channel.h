@@ -32,14 +32,6 @@ class Channel : public std::enable_shared_from_this<Channel>
     enum { READ_BUFFER =  1024 * 16 };
 
 public:
-    enum class CLOSED_TYPE : int
-    {
-        NORMAL   = 0,    //正常关闭
-        TIMEOUT  = 1,    //超时关闭
-        ACTIVITY = 2,    //主动关闭
-    };
-
-public:
     Channel(NetworkFactoryPtr fac, ChannelOption opt);
     ~Channel();
     Channel(const Channel&) = delete;
@@ -53,22 +45,23 @@ public:
     void                            SendMsg(const std::string& str);
     void                            Shutdown();
     ChannelHdl                      Handle();
+    bool                            IsOpened() const;
 
 private:
-    void                            DoClosed(CLOSED_TYPE type = CLOSED_TYPE::NORMAL);
+    void                            DoClosed(ECloseType type);
     void                            DoWrite();
     void                            DoRead();
     void                            TryDecode();
 
-    TimerPtr                        CreateTimer(std::uint32_t seconds);
+    TimerPtr                        CreateTimer(std::uint32_t seconds, bool read);
 
 private:
     ChannelOption                                   m_opt;
-    NetworkFactoryPtr                               m_factory;
+    NetworkFactoryPtr                               m_event_factory;
     NetworkEventPtr                                 m_event;
     MessageDecoderPtr                               m_decoder;
     TcpSocketPtr                                    m_socket;
-    std::atomic<bool>                               m_is_closed;
+    bool                                            m_is_opened;
 
     std::list<Message>                              m_write_buffer;
     std::array<std::uint8_t, READ_BUFFER>           m_read_fixed_buffer;

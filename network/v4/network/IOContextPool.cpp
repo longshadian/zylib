@@ -15,7 +15,7 @@ IOContext::IOContext(std::int32_t index)
 
 IOContext::~IOContext()
 {
-    m_work.reset();
+    Stop();
     if (m_thread.joinable()) {
         m_thread.join();
     }
@@ -24,7 +24,8 @@ IOContext::~IOContext()
 void IOContext::Stop()
 {
     m_work.reset();
-    // TODO
+    if (!m_ioctx.stopped())
+        m_ioctx.stop();
 }
 
 void IOContext::Run()
@@ -45,6 +46,8 @@ void IOContext::Run()
  * class IOContextPool
  ******************************************************************************************/
 IOContextPool::IOContextPool()
+    : m_next_index()
+    , m_iocxt_vec()
 {
 }
 

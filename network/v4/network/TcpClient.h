@@ -28,9 +28,9 @@ public:
     bool Start(std::int32_t n);
     TcpConnectorPtr CreateConnector();
 
-    void AsyncConnect(TcpConnectorPtr& conn, std::string host, std::uint16_t port);
-    void SyncConnect(TcpConnectorPtr& conn, std::string host, std::uint16_t port);
-    void SyncConnectWaitFor(TcpConnectorPtr& conn, std::string host, std::uint16_t port, std::chrono::seconds sec);
+    void AsyncConnect(TcpConnectorPtr& conn, const std::string& host, std::uint16_t port);
+    bool SyncConnect(TcpConnectorPtr& conn, const std::string& host, std::uint16_t port);
+    bool SyncConnectWaitFor(TcpConnectorPtr& conn, const std::string& host, std::uint16_t port, std::uint32_t sec);
 
 private:
     NetworkFactoryPtr                           m_event_factory;

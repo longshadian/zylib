@@ -32,19 +32,19 @@ TcpConnectorPtr TcpClient::CreateConnector()
     return conn;
 }
 
-void TcpClient::AsyncConnect(TcpConnectorPtr& conn, std::string host, std::uint16_t port)
+void TcpClient::AsyncConnect(TcpConnectorPtr& conn, const std::string& host, std::uint16_t port)
 {
-    conn->Connect(std::move(host), port);
+    conn->AsyncConnect(host, port);
 }
 
-void TcpClient::SyncConnect(TcpConnectorPtr& conn, std::string host, std::uint16_t port)
+bool TcpClient::SyncConnect(TcpConnectorPtr& conn, const std::string& host, std::uint16_t port)
 {
-
+    return conn->SyncConnect(host, port);
 }
 
-void TcpClient::SyncConnectWaitFor(TcpConnectorPtr& conn, std::string host, std::uint16_t port, std::chrono::seconds sec)
+bool TcpClient::SyncConnectWaitFor(TcpConnectorPtr& conn, const std::string& host, std::uint16_t port, std::uint32_t sec)
 {
-
+    return conn->SyncConnectWaitFor(host, port, sec);
 }
 
 } // namespace network

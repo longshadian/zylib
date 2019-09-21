@@ -6,8 +6,8 @@
 
 #include "network/Network.h"
 
-#define DPrint(fmt, ...) printf("[%d] [DEBUG  ] [%s] " fmt "\n", __LINE__, __FUNCTION__, ##__VA_ARGS__)
-#define WPrint(fmt, ...) printf("[%d] [WARNING] [%s] " fmt "\n", __LINE__, __FUNCTION__, ##__VA_ARGS__)
+#define DPrintf(fmt, ...) printf("[%4d] [DEBUG  ] [%s] " fmt "\n", __LINE__, __FUNCTION__, ##__VA_ARGS__)
+#define WPrintf(fmt, ...) printf("[%4d] [WARNING] [%s] " fmt "\n", __LINE__, __FUNCTION__, ##__VA_ARGS__)
 
 class TestServerEvent : public network::NetworkEvent
 {
@@ -23,32 +23,32 @@ public:
     virtual void OnAccept(const boost::system::error_code& ec, network::TcpServer& server, network::Channel& channel) override
     {
         if (ec) {
-            WPrint("error: %d ", ec.value());
+            WPrintf("error: %d ", ec.value());
         } else {
-            DPrint("success ");
+            DPrintf("success ");
         }
     }
 
     virtual void OnClosed(network::Channel& channel) override
     {
-        DPrint(" closed ");
+        DPrintf(" closed ");
     }
 
     virtual void OnRead(const boost::system::error_code& ec, std::size_t length, network::Channel& channel) override
     {
         if (ec) {
-            WPrint(" code:%d length: %d ", ec.value(), (int)length);
+            WPrintf(" code:%d length: %d ", ec.value(), (int)length);
         } else {
-            DPrint(" code:%d length: %d ", ec.value(), (int)length);
+            DPrintf(" code:%d length: %d ", ec.value(), (int)length);
         }
     }
 
     virtual void OnWrite(const boost::system::error_code& ec, std::size_t length, network::Channel& channel, const network::Message& msg) override
     {
         if (ec) {
-            WPrint(" code:%d length: %d ", ec.value(), (int)length);
+            WPrintf(" code:%d length: %d ", ec.value(), (int)length);
         } else {
-            DPrint(" code:%d length: %d ", ec.value(), (int)length);
+            DPrintf(" code:%d length: %d ", ec.value(), (int)length);
         }
     }
 
@@ -56,20 +56,20 @@ public:
     {
         for (const auto& msg : msg_list) {
             std::string s(msg.BodyPtr(), msg.BodyPtr() + msg.BodyLength());
-            DPrint(" msg:%s ", s.c_str());
+            DPrintf(" msg:%s ", s.c_str());
         }
     }
 
     // handler超时
     virtual void OnTimeout(network::Channel& channel) override
     {
-        WPrint(" xxx ");
+        WPrintf(" xxx ");
     }
 
     // server可以得accept的handler超出上限
     virtual void OnAcceptOverflow() override
     {
-        WPrint(" xxx2 ");
+        WPrintf(" xxx2 ");
     }
 
 };
@@ -83,41 +83,41 @@ public:
     virtual void OnConnect(const boost::system::error_code& ec, network::TcpConnector& connector) override
     {
         if (ec) {
-            WPrint("client connect error: %d ", ec.value());
+            WPrintf("client connect error: %d ", ec.value());
         } else {
-            DPrint("client success ");
+            DPrintf("client success ");
         }
     }
 
     virtual void OnAccept(const boost::system::error_code& ec, network::TcpServer& server, network::Channel& channel) override
     {
         if (ec) {
-            WPrint("error: %d ", ec.value());
+            WPrintf("error: %d ", ec.value());
         } else {
-            DPrint("success ");
+            DPrintf("success ");
         }
     }
 
     virtual void OnClosed(network::Channel& channel) override
     {
-        DPrint(" closed ");
+        DPrintf(" closed ");
     }
 
     virtual void OnRead(const boost::system::error_code& ec, std::size_t length, network::Channel& channel) override
     {
         if (ec) {
-            WPrint(" code:%d length: %d ", ec.value(), (int)length);
+            WPrintf(" code:%d length: %d ", ec.value(), (int)length);
         } else {
-            DPrint(" code:%d length: %d ", ec.value(), (int)length);
+            DPrintf(" code:%d length: %d ", ec.value(), (int)length);
         }
     }
 
     virtual void OnWrite(const boost::system::error_code& ec, std::size_t length, network::Channel& channel, const network::Message& msg) override
     {
         if (ec) {
-            WPrint(" code:%d length: %d ", ec.value(), (int)length);
+            WPrintf(" code:%d length: %d ", ec.value(), (int)length);
         } else {
-            DPrint(" code:%d length: %d ", ec.value(), (int)length);
+            DPrintf(" code:%d length: %d ", ec.value(), (int)length);
         }
     }
 
@@ -125,20 +125,20 @@ public:
     {
         for (const auto& msg : msg_list) {
             std::string s(msg.BodyPtr(), msg.BodyPtr() + msg.BodyLength());
-            DPrint(" msg:%s ", s.c_str());
+            DPrintf(" msg:%s ", s.c_str());
         }
     }
 
     // handler超时
     virtual void OnTimeout(network::Channel& channel) override
     {
-        WPrint(" xxx ");
+        WPrintf(" xxx ");
     }
 
     // server可以得accept的handler超出上限
     virtual void OnAcceptOverflow() override
     {
-        WPrint(" xxx2 ");
+        WPrintf(" xxx2 ");
     }
 };
 
@@ -186,7 +186,12 @@ int main()
         StartClient();
 
         auto conn = g_client->CreateConnector();
-        g_client->Connect(conn, "127.0.0.1", 8080);
+        if (1) {
+            g_client->AsyncConnect(conn, "127.0.0.1", 8080);
+        } else {
+            bool succ = g_client->SyncConnect(conn, "127.0.0.1", 8080);
+            DPrintf("sync connect succ: %d", (int)succ);
+        }
 
         std::this_thread::sleep_for(std::chrono::seconds{ 2 });
         int n = 0;
@@ -196,7 +201,7 @@ int main()
             std::this_thread::sleep_for(std::chrono::seconds{ 3 });
         }
     } catch (const std::exception& e) {
-        WPrint("exception: %s ", e.what());
+        WPrintf("exception: %s ", e.what());
     }
 
     system("pause");

@@ -10,11 +10,11 @@ namespace network
 
 Channel::Channel(NetworkFactoryPtr fac, ChannelOption opt)
     : m_opt(opt)
-    , m_factory(fac)
+    , m_event_factory(fac)
     , m_event(fac->CreateNetworkEvent())
     , m_decoder(fac->CreateMessageDecoder())
     , m_socket()
-    , m_is_closed(false)
+    , m_is_opened(false)
     , m_write_buffer()
     , m_read_fixed_buffer()
     , m_read_buffer()
@@ -27,6 +27,7 @@ Channel::~Channel()
 
 void Channel::Init(TcpSocketPtr socket)
 {
+    m_is_opened = true;
     m_socket = socket;
     DoRead();
 }
@@ -66,7 +67,7 @@ void Channel::SendMsg(const std::string& str)
 
 void Channel::DoWrite()
 {
-    TimerPtr timer = CreateTimer(m_opt.m_write_timeout_seconds);
+    TimerPtr timer = CreateTimer(m_opt.m_write_timeout_seconds, false);
     boost::asio::async_write(*m_socket
         , boost::asio::buffer(m_write_buffer.front().HeadPtr(), m_write_buffer.front().Length()),
         [this, pthis = shared_from_this(), timer](boost::system::error_code ec, std::size_t length)
@@ -78,7 +79,7 @@ void Channel::DoWrite()
             Message msg = std::move(m_write_buffer.front());
             if (ec) {
                 m_event->OnWrite(ec, length, *this, msg);
-                DoClosed(CLOSED_TYPE::NORMAL);
+                DoClosed(ECloseType::ByWrite);
                 return;
             }
             m_event->OnWrite(ec, length, *this, msg);
@@ -91,7 +92,7 @@ void Channel::DoWrite()
 
 void Channel::DoRead()
 {
-    TimerPtr timer = CreateTimer(m_opt.m_read_timeout_seconds);
+    TimerPtr timer = CreateTimer(m_opt.m_read_timeout_seconds, true);
     m_socket->async_read_some(boost::asio::buffer(m_read_fixed_buffer),
         [this, pthis = shared_from_this(), timer](boost::system::error_code ec, std::size_t read_length)
         {
@@ -100,7 +101,7 @@ void Channel::DoRead()
             }
             if (ec) {
                 m_event->OnRead(ec, read_length, *this);
-                DoClosed();
+                DoClosed(ECloseType::ByRead);
                 return;
             }
             m_read_buffer.Append(m_read_fixed_buffer.data(), read_length);
@@ -110,17 +111,15 @@ void Channel::DoRead()
         });
 }
 
-void Channel::DoClosed(CLOSED_TYPE type)
+void Channel::DoClosed(ECloseType type)
 {
-    if (m_is_closed.exchange(true))
+    if (!m_is_opened)
         return;
-    if (type == CLOSED_TYPE::NORMAL) {
-    } else if (type == CLOSED_TYPE::TIMEOUT) {
-    }
+    m_is_opened = false;
     boost::system::error_code ec;
     m_socket->shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
     m_socket->close(ec);
-    m_event->OnClosed(*this);
+    m_event->OnClosed(*this, type);
 }
 
 void Channel::Shutdown()
@@ -130,20 +129,24 @@ void Channel::Shutdown()
     boost::asio::post(m_socket->get_executor(),
         [this, pthis = shared_from_this()]() 
         {
-            DoClosed(CLOSED_TYPE::ACTIVITY);
+            DoClosed(ECloseType::Active);
         });
 }
 
-TimerPtr Channel::CreateTimer(std::uint32_t seconds)
+TimerPtr Channel::CreateTimer(std::uint32_t seconds, bool read)
 {
     if (seconds == 0)
         return nullptr;
     auto timer = std::make_shared<boost::asio::steady_timer>(m_socket->get_executor());
     timer->expires_from_now(std::chrono::seconds(seconds));
-    timer->async_wait([this, pthis = shared_from_this()](const boost::system::error_code& ec) 
+    timer->async_wait([this, pthis = shared_from_this(), read](const boost::system::error_code& ec) 
         {
             if (!ec) {
-                DoClosed(CLOSED_TYPE::TIMEOUT);
+                if (read) {
+                    DoClosed(ECloseType::ByReadTimeout);
+                } else {
+                    DoClosed(ECloseType::ByWriteTimeout);
+                }
             }
         });
     return timer;
@@ -152,6 +155,11 @@ TimerPtr Channel::CreateTimer(std::uint32_t seconds)
 ChannelHdl Channel::Handle()
 {
     return ChannelHdl(shared_from_this());
+}
+
+bool Channel::IsOpened() const
+{
+    return m_is_opened;
 }
 
 void Channel::TryDecode()

@@ -27,12 +27,11 @@ public:
     TcpConnector& operator=(TcpConnector&&) = delete;
 
     ChannelPtr& GetChannel();
+    bool IsConnected() const; 
 private:
-    void Connect(std::string host, std::uint16_t port);
-    void SyncConnect(std::string host, std::uint16_t port, boost::system::error_code* ec);
-    void SyncConnectWaitFor(std::string host, std::uint16_t port, std::uint32_t sec, boost::system::error_code* ec);
-
-    TimerPtr CreateConnectTimer(std::uint32_t sec);
+    void AsyncConnect(const std::string& host, std::uint16_t port);
+    bool SyncConnect(const std::string& host, std::uint16_t port);
+    bool SyncConnectWaitFor(const std::string& host, std::uint16_t port, std::uint32_t sec);
 
 private:
     TcpSocketPtr                m_socket;

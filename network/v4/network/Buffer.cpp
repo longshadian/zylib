@@ -3,7 +3,6 @@
 namespace network
 {
 
-
 bool FlatBuffer::Empty() const
 {
     return m_buffer.empty();

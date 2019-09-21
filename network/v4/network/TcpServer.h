@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <unordered_map>
 #include <unordered_set>
 #include <numeric>
@@ -22,8 +23,9 @@ class TcpServer;
 
 struct ServerOption
 {
-    size_t m_max_connection{65535};    //0:unlimited
-    size_t m_timeout_seconds{0};       //0:never timeout
+    std::size_t     m_max_connection{65535};    //0:unlimited
+    std::uint32_t   m_read_timeout_seconds{0};
+    std::uint32_t   m_write_timeout_seconds{0};
 };
 
 class TcpServer

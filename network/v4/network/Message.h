@@ -36,7 +36,7 @@ public:
 
     bool Empty() const;
     std::size_t Length() const;
-    void GetHead(MessageHead* head) const;
+    bool GetHead(MessageHead* head) const;
     const std::uint8_t* HeadPtr() const;
     const std::uint8_t* BodyPtr() const;
     std::size_t HeadLength() const;
