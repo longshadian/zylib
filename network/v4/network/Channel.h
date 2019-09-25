@@ -46,7 +46,8 @@ public:
     void                            Shutdown();
     ChannelHdl                      Handle();
     bool                            IsOpened() const;
-
+    std::string                     GetIP() const;
+    std::uint16_t                   GetPort() const;
 private:
     void                            DoClosed(ECloseType type);
     void                            DoWrite();

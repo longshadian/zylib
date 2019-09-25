@@ -162,6 +162,32 @@ bool Channel::IsOpened() const
     return m_is_opened;
 }
 
+std::string Channel::GetIP() const
+{
+    if (!m_socket)
+        return "";
+    try {
+        auto ep = m_socket->remote_endpoint();
+        return ep.address().to_string();
+    } catch (const std::exception& e) {
+        (void)e;
+        return "";
+    }
+}
+
+std::uint16_t Channel::GetPort() const
+{
+    if (!m_socket)
+        return 0;
+    try {
+        auto ep = m_socket->remote_endpoint();
+        return ep.port();
+    } catch (const std::exception& e) {
+        (void)e;
+        return 0;
+    }
+}
+
 void Channel::TryDecode()
 {
     std::vector<Message> out;
