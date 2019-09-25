@@ -51,7 +51,6 @@ private:
     std::string                                 m_host;
     std::uint16_t                               m_port;
     ServerOption                                m_option;
-    std::atomic<bool>                           m_inited;
     IOContextPool                               m_accept_pool;
     IOContextPool                               m_io_pool;
     NetworkFactoryPtr                           m_event_factory;

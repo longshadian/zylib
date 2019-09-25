@@ -22,7 +22,6 @@ std::string TimeString()
 #define DPrintf(fmt, ...) printf("[%s] [%4d] [DEBUG  ] [%s] " fmt "\n", TimeString().c_str(), __LINE__, __FUNCTION__, ##__VA_ARGS__)
 #define WPrintf(fmt, ...) printf("[%s] [%4d] [WARNING] [%s] " fmt "\n", TimeString().c_str(), __LINE__, __FUNCTION__, ##__VA_ARGS__)
 
-std::shared_ptr<network::TcpClient> g_client = nullptr;
 
 class TestClientEvent : public network::NetworkEvent
 {
@@ -55,6 +54,7 @@ public:
 
     virtual void OnRead(const boost::system::error_code& ec, std::size_t length, network::Channel& channel) override
     {
+        return;
         if (ec) {
             WPrintf(" code:%d length: %d ", ec.value(), (int)length);
         } else {
@@ -64,6 +64,7 @@ public:
 
     virtual void OnWrite(const boost::system::error_code& ec, std::size_t length, network::Channel& channel, const network::Message& msg) override
     {
+        return;
         if (ec) {
             WPrintf(" code:%d length: %d ", ec.value(), (int)length);
         } else {
@@ -103,43 +104,95 @@ public:
     }
 };
 
-void StartClient()
+
+std::shared_ptr<network::TcpClient> StartClient(int n)
 {
     auto fac = std::make_shared<TestEventFactory<TestClientEvent>>();
-    g_client = std::make_shared<network::TcpClient>(fac);
-    g_client->Start(2);
+    auto p = std::make_shared<network::TcpClient>(fac);
+    p->Start(n);
+    return p;
+}
+
+void Test1()
+{
+    // 普通ping测试
+    const std::string host = "127.0.0.1";
+    std::uint16_t port = 8080;
+    auto g_client = StartClient(2);
+
+    auto conn = g_client->CreateConnector();
+    if (0) {
+        g_client->AsyncConnect(conn, host, port);
+    } else {
+        g_client->SyncConnect(conn, host, port);
+    }
+
+    int n = 0;
+    while (1) {
+        ++n;
+        if (conn->IsConnected()) {
+            conn->GetChannel()->SendMsg("aaaaaaaaaaaaaa " + std::to_string(n));
+        } else {
+            conn = g_client->CreateConnector();
+            auto succ = g_client->SyncConnect(conn, host, port);
+            if (succ) {
+                conn->GetChannel()->SendMsg("aaaaaaaaaaaaaa " + std::to_string(n));
+            } else {
+                WPrintf("connect failed.");
+            }
+        }
+        std::this_thread::sleep_for(std::chrono::seconds{ 1 });
+    }
+}
+
+void Test2()
+{
+    // 测试多客户端同时发送
+    const std::string host = "127.0.0.1";
+    std::uint16_t port = 8080;
+    auto p_client = StartClient(2);
+
+    std::vector<network::TcpConnectorPtr> vec{};
+    for (int i = 0; i != 10; ++i) {
+        auto conn = p_client->CreateConnector();
+        p_client->SyncConnect(conn, host, port);
+        if (!conn->IsConnected()) {
+            WPrintf("connect failed.");
+            return;
+        }
+        vec.push_back(conn);
+    }
+
+    std::string s{};
+    s.resize(1024, 'a');
+    int n = 0;
+    std::thread temp([&n]()
+        {
+            while (1) {
+                DPrintf("n: %d", n);
+                std::this_thread::sleep_for(std::chrono::seconds{ 1 });
+            }
+        });
+
+    temp.detach();
+
+    while (1) {
+        for (auto& conn : vec) {
+            if (conn->IsConnected()) {
+                ++n;
+                conn->GetChannel()->SendMsg(s + std::to_string(n));
+            } else {
+                WPrintf("connect shutdown");
+            }
+        }
+        //std::this_thread::sleep_for(std::chrono::microseconds{ 1 });
+    }
 }
 
 int main()
 {
-    const std::string host = "127.0.0.1";
-    std::uint16_t port = 8080;
     try {
-        StartClient();
-
-        auto conn = g_client->CreateConnector();
-        if (0) {
-            g_client->AsyncConnect(conn, host, port);
-        } else {
-            g_client->SyncConnect(conn, host, port);
-        }
-
-        int n = 0;
-        while (1) {
-            ++n;
-            if (conn->IsConnected()) {
-                conn->GetChannel()->SendMsg("aaaaaaaaaaaaaa " + std::to_string(n));
-            } else {
-                conn = g_client->CreateConnector();
-                auto succ = g_client->SyncConnect(conn, host, port);
-                if (succ) {
-                    conn->GetChannel()->SendMsg("aaaaaaaaaaaaaa " + std::to_string(n));
-                } else {
-                    WPrintf("connect failed.");
-                }
-            }
-            std::this_thread::sleep_for(std::chrono::seconds{ 1 });
-        }
+        Test2();
     } catch (const std::exception& e) {
         WPrintf("exception: %s ", e.what());
     }

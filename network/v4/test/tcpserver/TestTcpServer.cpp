@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <chrono>
 #include <thread>
+#include <atomic>
 
 #include "network/Network.h"
 
@@ -22,7 +23,29 @@ std::string TimeString()
 #define DPrintf(fmt, ...) printf("[%s] [%4d] [DEBUG  ] [%s] " fmt "\n", TimeString().c_str(), __LINE__, __FUNCTION__, ##__VA_ARGS__)
 #define WPrintf(fmt, ...) printf("[%s] [%4d] [WARNING] [%s] " fmt "\n", TimeString().c_str(), __LINE__, __FUNCTION__, ##__VA_ARGS__)
 
+struct Counter
+{
+    void AddCount(const std::thread::id& index)
+    {
+        std::ostringstream ostm{};
+        ostm << index;
+        ++m_cnt[ostm.str()];
+    }
+
+    std::string ToString() const
+    {
+        std::ostringstream ostm{};
+        for (const auto& it : m_cnt) {
+            ostm << it.first  << ":" << it.second.load() << " ";
+        }
+        return ostm.str();
+    }
+
+    std::unordered_map<std::string, std::atomic<int32_t>> m_cnt;
+};
+
 std::shared_ptr<network::TcpServer> g_server = nullptr;
+Counter g_count{};
 
 class TestServerEvent : public network::NetworkEvent
 {
@@ -51,6 +74,7 @@ public:
 
     virtual void OnRead(const boost::system::error_code& ec, std::size_t length, network::Channel& channel) override
     {
+        return;
         if (ec) {
             WPrintf(" code:%d length: %d %s", ec.value(), (int)length, ec.message().c_str());
         } else {
@@ -60,6 +84,7 @@ public:
 
     virtual void OnWrite(const boost::system::error_code& ec, std::size_t length, network::Channel& channel, const network::Message& msg) override
     {
+        return;
         if (ec) {
             WPrintf(" code:%d length: %d %s", ec.value(), (int)length, ec.message().c_str());
         } else {
@@ -71,7 +96,8 @@ public:
     {
         for (const auto& msg : msg_list) {
             std::string s(msg.BodyPtr(), msg.BodyPtr() + msg.BodyLength());
-            DPrintf(" msg:%s ", s.c_str());
+            //DPrintf(" msg:%s ", s.c_str());
+            g_count.AddCount(std::this_thread::get_id());
         }
     }
 
@@ -115,6 +141,8 @@ int main()
         StartServer();
         while (1) {
             std::this_thread::sleep_for(std::chrono::seconds{ 1 });
+            auto s = g_count.ToString();
+            DPrintf("gcount: %s", s.c_str());
         }
     } catch (const std::exception& e) {
         WPrintf("exception: %s ", e.what());

@@ -13,7 +13,6 @@ TcpServer::TcpServer(NetworkFactoryPtr fac, std::string host, std::uint16_t port
     : m_host(std::move(host))
     , m_port(port)
     , m_option(std::move(option))
-    , m_inited()
     , m_accept_pool()
     , m_io_pool()
     , m_event_factory(fac)
