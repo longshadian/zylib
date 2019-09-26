@@ -1,7 +1,6 @@
 #include "network/Channel.h"
 
 #include <chrono>
-#include <boost/date_time/posix_time/posix_time.hpp>
 #include "network/Message.h"
 #include "network/Event.h"
 
