@@ -10,6 +10,10 @@
 #include <algorithm>
 #include <iomanip>
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 namespace zylib {
 
 void Init()
@@ -366,8 +370,74 @@ std::string LocaltimeYYYMMDD_HHMMSS(std::time_t t)
     return s;
 }
 
-} // namespace zylib
+int Snprintf(char* buf, std::size_t buflen, const char* format, ...)
+{
+    int r;
+    va_list ap;
+    va_start(ap, format);
+    r = Vsnprintf(buf, buflen, format, ap);
+    va_end(ap);
+    return r;
+}
 
+int Vsnprintf(char* buf, std::size_t buflen, const char* format, va_list ap)
+{
+    int r = 0;
+    if (!buflen)
+        return 0;
+#if defined(_MSC_VER) || defined(_WIN32)
+    r = _vsnprintf(buf, buflen, format, ap);
+    if (r < 0)
+        r = _vscprintf(format, ap);
+#else
+    r = vsnprintf(buf, buflen, format, ap);
+#endif
+    buf[buflen - 1] = '\0';
+    return r;
+}
+
+void Localtime(std::time_t s, struct tm* tm)
+{
+#if defined(_WIN32)
+    localtime_s(tm, &s);
+#else
+    (void)localtime_r(&s, tm);
+#endif
+}
+
+void Gettimeofday(struct timeval* tp)
+{
+#if defined(_WIN32)
+    uint64_t intervals;
+    FILETIME ft;
+
+    GetSystemTimeAsFileTime(&ft);
+
+    /*
+     * A file time is a 64-bit value that represents the number
+     * of 100-nanosecond intervals that have elapsed since
+     * January 1, 1601 12:00 A.M. UTC.
+     *
+     * Between January 1, 1970 (Epoch) and January 1, 1601 there were
+     * 134744 days,
+     * 11644473600 seconds or
+     * 11644473600,000,000,0 100-nanosecond intervals.
+     *
+     * See also MSKB Q167296.
+     */
+
+    intervals = ((uint64_t)ft.dwHighDateTime << 32) | ft.dwLowDateTime;
+    intervals -= 116444736000000000;
+
+    tp->tv_sec = (long)(intervals / 10000000);
+    tp->tv_usec = (long)((intervals % 10000000) / 10);
+#else
+    ::gettimeofday(tp, nullptr);
+#endif // defined(_WIN32)
+}
+
+
+} // namespace zylib
 
 
 namespace zylib {

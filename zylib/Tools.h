@@ -69,6 +69,21 @@ static std::underlying_type_t<E> EnumValue(E e)
     return static_cast<std::underlying_type_t<E>>(e);
 }
 
+int Snprintf(char* buf, std::size_t buflen, const char* format, ...)
+#ifdef __GNUC__
+__attribute__((format(printf, 3, 4)))
+#endif
+;
+
+int Vsnprintf(char* buf, std::size_t buflen, const char* format, va_list ap)
+#ifdef __GNUC__
+__attribute__((format(printf, 3, 0)))
+#endif
+;
+
+void Localtime(std::time_t s, struct tm* tm);
+void Gettimeofday(struct timeval *tp);
+
 //////////////////////////////////////////////////////////////////////////
 }
 
