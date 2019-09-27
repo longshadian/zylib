@@ -46,7 +46,10 @@ size_t StringReplace(std::string* str, char src, char dest)
     return t;
 }
 
-
+void StringRemove(std::string* str, char src)
+{
+    str->erase(std::remove(str->begin(), str->end(), src), str->end());
+}
 
 // can't just use function pointers, or dll linkage can mess up
 static short(*_BigShort)(short l);

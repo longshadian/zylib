@@ -15,8 +15,11 @@ void Init();
 
 std::vector<std::string> StringSplit(const std::string& s, char c);
 
-//字符串替换,字符串str中的src字符替换成dest,返回替换个数
+// 字符串替换,字符串str中的src字符替换成dest,返回替换个数
 std::size_t StringReplace(std::string* str, char src, char dest);
+
+// 字符串删除，
+void StringRemove(std::string* str, char src);
 
 template <class RandomAccessIterator>
 void LinearRandomShuffle(RandomAccessIterator first, RandomAccessIterator last)
