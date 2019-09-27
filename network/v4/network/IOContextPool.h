@@ -46,7 +46,7 @@ public:
     IOContextPtr                    NextIOContext();
 private:
     std::atomic<std::uint64_t>      m_next_index;
-    std::vector<IOContextPtr>       m_iocxt_vec;
+    std::vector<IOContextPtr>       m_ioc_vec;
 };
 
 } // namespace network

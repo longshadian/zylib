@@ -151,7 +151,7 @@ TimerPtr Channel::CreateTimer(std::uint32_t seconds, bool read)
     return timer;
 }
 
-ChannelHdl Channel::Handle()
+ChannelHdl Channel::Handler()
 {
     return ChannelHdl(shared_from_this());
 }

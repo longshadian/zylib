@@ -115,7 +115,7 @@ std::shared_ptr<network::TcpClient> StartClient(int n)
 
 void Test1()
 {
-    // ÆÕÍ¨ping²âÊÔ
+    // æ™®é€špingæµ‹è¯•
     const std::string host = "127.0.0.1";
     std::uint16_t port = 8080;
     auto g_client = StartClient(2);
@@ -147,7 +147,7 @@ void Test1()
 
 void Test2()
 {
-    // ²âÊÔ¶à¿Í»§¶ËÍ¬Ê±·¢ËÍ
+    // æµ‹è¯•å¤šå®¢æˆ·ç«¯åŒæ—¶å‘é€
     const std::string host = "127.0.0.1";
     std::uint16_t port = 8080;
     auto p_client = StartClient(2);
@@ -192,7 +192,7 @@ void Test2()
 int main()
 {
     try {
-        Test2();
+        Test1();
     } catch (const std::exception& e) {
         WPrintf("exception: %s ", e.what());
     }

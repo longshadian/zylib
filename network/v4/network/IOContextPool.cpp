@@ -1,5 +1,7 @@
 #include "network/IOContextPool.h"
 
+#include "network/FakeLog.h"
+
 namespace network
 {
 
@@ -15,7 +17,9 @@ IOContext::IOContext(std::int32_t index)
 
 IOContext::~IOContext()
 {
-    Stop();
+    m_work.reset();
+    if (!m_ioctx.stopped())
+        m_ioctx.stop();
     if (m_thread.joinable()) {
         m_thread.join();
     }
@@ -33,10 +37,10 @@ void IOContext::Run()
     while (1) {
         try {
             m_ioctx.run();
+            NETWORK_DPrintf("ioconentxt: %d stop running", m_index);
             break;
         } catch (const std::exception& e) {
-            // TODO
-            (void)e;
+            NETWORK_WPrintf("iocontext: %d exception: %s", m_index, e.what());
             m_ioctx.restart();
         }
     }
@@ -47,7 +51,7 @@ void IOContext::Run()
  ******************************************************************************************/
 IOContextPool::IOContextPool()
     : m_next_index()
-    , m_iocxt_vec()
+    , m_ioc_vec()
 {
 }
 
@@ -61,21 +65,21 @@ void IOContextPool::Init(std::int32_t count)
         count = 1;
     for (std::int32_t i = 0; i != count; ++i) {
         auto ioctx = std::make_shared<IOContext>(i);
-        m_iocxt_vec.emplace_back(ioctx);
+        m_ioc_vec.emplace_back(ioctx);
     }
 }
 
 void IOContextPool::Stop()
 {
-    m_iocxt_vec.clear();
+    m_ioc_vec.clear();
 }
 
 IOContextPtr IOContextPool::NextIOContext()
 {
-    if (m_iocxt_vec.empty())
+    if (m_ioc_vec.empty())
         return nullptr;
-    auto idx = (++m_next_index) % m_iocxt_vec.size();
-    return m_iocxt_vec[idx];
+    auto idx = (++m_next_index) % m_ioc_vec.size();
+    return m_ioc_vec[idx];
 }
 
 } // namespace network

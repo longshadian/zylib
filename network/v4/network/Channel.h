@@ -44,7 +44,7 @@ public:
     void                            SendMsg(const void* data, std::size_t length);
     void                            SendMsg(const std::string& str);
     void                            Shutdown();
-    ChannelHdl                      Handle();
+    ChannelHdl                      Handler();
     bool                            IsOpened() const;
     std::string                     GetIP() const;
     std::uint16_t                   GetPort() const;

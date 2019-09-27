@@ -96,7 +96,7 @@ public:
     {
         for (const auto& msg : msg_list) {
             std::string s(msg.BodyPtr(), msg.BodyPtr() + msg.BodyLength());
-            //DPrintf(" msg:%s ", s.c_str());
+            DPrintf(" msg:%s ", s.c_str());
             g_count.AddCount(std::this_thread::get_id());
         }
     }
@@ -137,9 +137,15 @@ void StartServer()
 
 int main()
 {
+    int n = 0;
     try {
         StartServer();
         while (1) {
+            ++n;
+            if (n == 30) {
+                g_server->StopAccept();
+                DPrintf("stop accect");
+            }
             std::this_thread::sleep_for(std::chrono::seconds{ 1 });
             auto s = g_count.ToString();
             DPrintf("gcount: %s", s.c_str());

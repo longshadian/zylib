@@ -1,7 +1,10 @@
 #include "network/TcpServer.h"
 
+#include <boost/asio.hpp>
+
 #include "network/Channel.h"
 #include "network/Utilities.h"
+#include "network/FakeLog.h"
 
 namespace network
 {
@@ -18,12 +21,18 @@ TcpServer::TcpServer(NetworkFactoryPtr fac, std::string host, std::uint16_t port
     , m_event_factory(fac)
     , m_event(fac->CreateNetworkEvent())
     , m_acceptor()
+    , m_listening(false)
 {
 }
 
 TcpServer::~TcpServer()
 {
-    StopAccept();
+}
+
+TcpServerPtr TcpServer::Create(NetworkFactoryPtr fac, std::string host, std::uint16_t port, ServerOption opt)
+{
+    TcpServerPtr p{ new TcpServer(fac, std::move(host), port, std::move(opt)) };
+    return p;
 }
 
 bool TcpServer::Start(std::int32_t n)
@@ -32,6 +41,7 @@ bool TcpServer::Start(std::int32_t n)
     m_io_pool.Init(n);
     if (!InitAcceptor(m_host, m_port))
         return false;
+    m_listening.store(true);
     DoAccept();
     return true;
 }
@@ -43,14 +53,16 @@ void TcpServer::Stop()
 
 void TcpServer::StopAccept()
 {
-    /*
-    // TODO 析构时调用，会奔溃 是否需要关闭已经创建的连接
-    if (m_acceptor) {
-        boost::system::error_code ec;
-        //m_acceptor->cancel(ec);
-        m_acceptor->close(ec);
-    }
-    */
+    if (!m_acceptor)
+        return;
+    if (m_listening.exchange(true))
+        return;
+    boost::system::error_code ec{};
+    m_acceptor->cancel(ec);
+    //NETWORK_DPrintf("acceptor cancel: %d %s", ec.value(), ec.message().c_str());
+    ec.clear();
+    m_acceptor->close(ec);
+    //NETWORK_DPrintf("acceptor close: %d %s", ec.value(), ec.message().c_str());
 }
 
 void TcpServer::DoAccept()
@@ -66,14 +78,14 @@ void TcpServer::DoAccept()
         [this, new_socket, channel](const boost::system::error_code& ec) 
         { 
             if (ec) {
-                // TODO stop accept??
                 m_event->OnAccept(ec, *this, *channel);
-                StopAccept();
-                return;
+            } else {
+                channel->Init(new_socket);
+                m_event->OnAccept(ec, *this, *channel);
             }
-            channel->Init(new_socket);
-            m_event->OnAccept(ec, *this, *channel);
-            DoAccept();
+            if (m_listening.load()) {
+                DoAccept();
+            }
         });
 }
 
@@ -86,7 +98,13 @@ bool TcpServer::InitAcceptor(const std::string& host, std::uint16_t port)
 {
     try {
         auto ioc = m_accept_pool.NextIOContext();
-        m_acceptor = std::make_shared<boost::asio::ip::tcp::acceptor>(ioc->m_ioctx, Utilities::CreateEndpoint(host, port));
+
+        auto ep = Utilities::CreateEndpoint(host, port);
+        m_acceptor = std::make_shared<boost::asio::ip::tcp::acceptor>(ioc->m_ioctx);
+        m_acceptor->open(ep.protocol());
+        m_acceptor->set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
+        m_acceptor->bind(ep);
+        m_acceptor->listen();
         return true;
     } catch (const std::exception& e) {
         (void)e;

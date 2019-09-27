@@ -20,6 +20,7 @@ namespace network
 {
 
 class TcpServer;
+using TcpServerPtr = std::shared_ptr<TcpServer>;
 
 struct ServerOption
 {
@@ -28,7 +29,7 @@ struct ServerOption
     std::uint32_t   m_write_timeout_seconds{0};
 };
 
-class TcpServer
+class TcpServer : public std::enable_shared_from_this<TcpServer>
 {
 public:
     TcpServer(NetworkFactoryPtr fac, std::string host, std::uint16_t port, ServerOption option = {});
@@ -38,15 +39,17 @@ public:
     TcpServer(TcpServer&& rhs) = delete;
     TcpServer& operator=(TcpServer&& rhs) = delete;
 
+    static TcpServerPtr Create(NetworkFactoryPtr fac, std::string host, std::uint16_t port, ServerOption opt = {});
+
     bool Start(std::int32_t n);
     void Stop();
+    void StopAccept();
 
     const ServerOption& GetOption() const;
 private:
     bool InitAcceptor(const std::string& host, std::uint16_t port);
-    void StopAccept();
     void DoAccept();
-            
+
 private:
     std::string                                 m_host;
     std::uint16_t                               m_port;
@@ -56,6 +59,7 @@ private:
     NetworkFactoryPtr                           m_event_factory;
     NetworkEventPtr                             m_event;
     TcpAcceptorPtr                              m_acceptor;
+    std::atomic<bool>                           m_listening;
 };
 
 } // namespace network
