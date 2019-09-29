@@ -19,35 +19,12 @@ const char* SeverityString(int sev);
 typedef void(*LogCallback)(int severity, const char* msg);
 void SetLogCallback(LogCallback cb);
 
-
 void PrintfLog(int severity, const char* fmt, ...)
 #ifdef __GNUC__
-__attribute__((format(printf, 3, 4)))
+__attribute__((format(printf, 2, 3)))
 #endif
 ;
 
-} // namespace network
-
-
-namespace network
-{
-namespace detail
-{
-
-int Snprintf(char* buf, std::size_t buflen, const char* format, ...)
-#ifdef __GNUC__
-        __attribute__((format(printf, 3, 4)))
-#endif
-    ;
-
-int Vsnprintf(char* buf, std::size_t buflen, const char* format, va_list ap)
-#ifdef __GNUC__
-        __attribute__((format(printf, 3, 0)))
-#endif
-    ;
-
-
-} // namespace detail
 } // namespace network
 
 

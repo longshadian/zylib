@@ -1,7 +1,29 @@
 #include "network/FakeLog.h"
 
 #include <cstring>
-    
+
+namespace network
+{
+namespace detail
+{
+
+static int Snprintf(char* buf, std::size_t buflen, const char* format, ...)
+#ifdef __GNUC__
+        __attribute__((format(printf, 3, 4)))
+#endif
+    ;
+
+static int Vsnprintf(char* buf, std::size_t buflen, const char* format, va_list ap)
+#ifdef __GNUC__
+        __attribute__((format(printf, 3, 0)))
+#endif
+    ;
+
+} // namespace detail
+} // namespace network
+
+
+
 namespace network
 {
 static void FlushLog(int severity, const char *msg);

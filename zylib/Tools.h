@@ -9,6 +9,11 @@
 #include <iterator>
 #include <sstream>
 
+#ifdef _WIN32
+#include <windows.h>
+#else
+#endif
+
 namespace zylib {
 
 void Init();
@@ -51,12 +56,25 @@ std::string LocaltimeYYYMMDD_HHMMSS(std::time_t t);
 
 
 // little/big endian conversion
-short	BigShort(short l);
-short	LittleShort(short l);
-int		BigLong(int l);
-int		LittleLong(int l);
+std::int16_t BigInt16(std::int16_t l);
+std::int16_t LittleInt16(std::int16_t l);
+std::int32_t BigInt32(std::int32_t l);
+std::int32_t LittleInt32(std::int32_t l);
+std::int64_t BigInt64(std::int64_t l);
+std::int64_t LittleInt64(std::int64_t l);
+
+std::uint16_t BigUInt16(std::uint16_t l);
+std::uint16_t LittleUInt16(std::uint16_t l);
+std::uint32_t BigUInt32(std::uint32_t l);
+std::uint32_t LittleUInt32(std::uint32_t l);
+std::uint64_t BigUInt64(std::uint64_t l);
+std::uint64_t LittleUInt64(std::uint64_t l);
+
 float	BigFloat(float l);
 float	LittleFloat(float l);
+double	BigDouble(double l);
+double	LittleDouble(double l);
+
 void	BigRevBytes(void *bp, int elsize, int elcount);
 void	LittleRevBytes(void *bp, int elsize, int elcount);
 void	LittleBitField(void *bp, int elsize);

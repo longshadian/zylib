@@ -10,10 +10,6 @@
 #include <algorithm>
 #include <iomanip>
 
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
 namespace zylib {
 
 void Init()
@@ -56,60 +52,155 @@ void StringRemove(std::string* str, char src)
 }
 
 // can't just use function pointers, or dll linkage can mess up
-static short(*_BigShort)(short l);
-static short(*_LittleShort)(short l);
-static int(*_BigLong)(int l);
-static int(*_LittleLong)(int l);
-static float(*_BigFloat)(float l);
-static float(*_LittleFloat)(float l);
-static void(*_BigRevBytes)(void *bp, int elsize, int elcount);
-static void(*_LittleRevBytes)(void *bp, int elsize, int elcount);
-static void(*_LittleBitField)(void *bp, int elsize);
-static void(*_SixtetsForInt)(std::uint8_t *out, int src);
-static int(*_IntForSixtets)(std::uint8_t *in);
+static std::int16_t(*BigInt16_Ptr)(std::int16_t l);
+static std::int16_t(*LittleInt16_Ptr)(std::int16_t l);
+static std::int32_t(*BigInt32_Ptr)(std::int32_t l);
+static std::int32_t(*LittleInt32_Ptr)(std::int32_t l);
+static std::int64_t(*BigInt64_Ptr)(std::int64_t l);
+static std::int64_t(*LittleInt64_Ptr)(std::int64_t l);
 
-short	BigShort(short l) { return _BigShort(l); }
-short	LittleShort(short l) { return _LittleShort(l); }
-int		BigLong(int l) { return _BigLong(l); }
-int		LittleLong(int l) { return _LittleLong(l); }
-float	BigFloat(float l) { return _BigFloat(l); }
-float	LittleFloat(float l) { return _LittleFloat(l); }
-void	BigRevBytes(void *bp, int elsize, int elcount) { _BigRevBytes(bp, elsize, elcount); }
-void	LittleRevBytes(void *bp, int elsize, int elcount) { _LittleRevBytes(bp, elsize, elcount); }
-void	LittleBitField(void *bp, int elsize) { _LittleBitField(bp, elsize); }
+static std::uint16_t(*BigUInt16_Ptr)(std::uint16_t l);
+static std::uint16_t(*LittleUInt16_Ptr)(std::uint16_t l);
+static std::uint32_t(*BigUInt32_Ptr)(std::uint32_t l);
+static std::uint32_t(*LittleUInt32_Ptr)(std::uint32_t l);
+static std::uint64_t(*BigUInt64_Ptr)(std::uint64_t l);
+static std::uint64_t(*LittleUInt64_Ptr)(std::uint64_t l);
 
-void	SixtetsForInt(std::uint8_t *out, int src) { _SixtetsForInt(out, src); }
-int		IntForSixtets(std::uint8_t *in) { return _IntForSixtets(in); }
+static float(*BigFloat_Ptr)(float l);
+static float(*LittleFloat_Ptr)(float l);
+static double(*BigDouble_Ptr)(double l);
+static double(*LittleDouble_Ptr)(double l);
 
-short ShortSwap(short l) 
+static void(*BigRevBytes_Ptr)(void *bp, int elsize, int elcount);
+static void(*LittleRevBytes_Ptr)(void *bp, int elsize, int elcount);
+static void(*LittleBitField_Ptr)(void *bp, int elsize);
+static void(*SixtetsForInt_Ptr)(std::uint8_t *out, std::int32_t src);
+static int(*IntForSixtets_Ptr)(std::uint8_t *in);
+
+std::int16_t BigInt16(std::int16_t l) { return BigInt16_Ptr(l); }
+std::int16_t LittleInt16(std::int16_t l) { return LittleInt16_Ptr(l); }
+std::int32_t BigInt32(std::int32_t l) { return BigInt32_Ptr(l); }
+std::int32_t LittleInt32(std::int32_t l) { return LittleInt32_Ptr(l); }
+std::int64_t BigInt64(std::int64_t l) { return BigInt64_Ptr(l);  }
+std::int64_t LittleInt64(std::int64_t l) { return LittleInt64_Ptr(l); }
+
+std::uint16_t BigUInt16(std::uint16_t l) { return BigUInt16_Ptr(l); }
+std::uint16_t LittleUInt16(std::uint16_t l) { return LittleUInt16_Ptr(l); }
+std::uint32_t BigUInt32(std::uint32_t l) { return BigUInt32_Ptr(l); }
+std::uint32_t LittleUInt32(std::uint32_t l) { return LittleUInt32_Ptr(l); }
+std::uint64_t BigUInt64(std::uint64_t l) { return BigUInt64_Ptr(l); }
+std::uint64_t LittleUInt64(std::uint64_t l) { return LittleUInt64_Ptr(l); }
+
+
+float	BigFloat(float l) { return BigFloat_Ptr(l); }
+float	LittleFloat(float l) { return LittleFloat_Ptr(l); }
+double	BigDouble(double l) { return BigDouble_Ptr(l); }
+double	LittleDouble(double l) { return LittleDouble_Ptr(l); }
+
+void	BigRevBytes(void *bp, int elsize, int elcount) { BigRevBytes_Ptr(bp, elsize, elcount); }
+void	LittleRevBytes(void *bp, int elsize, int elcount) { LittleRevBytes_Ptr(bp, elsize, elcount); }
+void	LittleBitField(void *bp, int elsize) { LittleBitField_Ptr(bp, elsize); }
+
+void	SixtetsForInt(std::uint8_t *out, int src) { SixtetsForInt_Ptr(out, src); }
+int		IntForSixtets(std::uint8_t *in) { return IntForSixtets_Ptr(in); }
+
+static std::int16_t Int16Swap(std::int16_t l) 
 {
-    std::uint8_t    b1, b2;
+    std::uint8_t b1, b2;
     b1 = l & 255;
     b2 = (l >> 8) & 255;
-    return (b1 << 8) + b2;
+    return (std::int16_t)(b1 << 8) + b2;
 }
 
-short ShortNoSwap(short l) 
+static std::int16_t Int16NoSwap(std::int16_t l) 
 {
     return l;
 }
 
-int LongSwap(int l) 
+static std::int32_t Int32Swap(std::int32_t l) 
 {
     std::uint8_t    b1, b2, b3, b4;
     b1 = l & 255;
     b2 = (l >> 8) & 255;
     b3 = (l >> 16) & 255;
     b4 = (l >> 24) & 255;
-    return ((int)b1 << 24) + ((int)b2 << 16) + ((int)b3 << 8) + b4;
+    return ((std::int32_t)b1 << 24) + ((std::int32_t)b2 << 16) + ((std::int32_t)b3 << 8) + b4;
 }
 
-int	LongNoSwap(int l) 
+static std::int32_t	Int32NoSwap(std::int32_t l) 
 {
     return l;
 }
 
-float FloatSwap(float f) 
+static std::int64_t Int64Swap(std::int64_t l) 
+{
+    std::uint8_t    b1, b2, b3, b4, b5, b6, b7, b8;
+    b1 = l & 255;
+    b2 = (l >> 8) & 255;
+    b3 = (l >> 16) & 255;
+    b4 = (l >> 24) & 255;
+    b5 = (l >> 32) & 255;
+    b6 = (l >> 40) & 255;
+    b7 = (l >> 48) & 255;
+    b8 = (l >> 56) & 255;
+    return ((std::int64_t)b1 << 56) + ((std::int64_t)b2 << 48) + ((std::int64_t)b3 << 40) + ((std::int64_t)b4 << 32) +
+        ((std::int64_t)b5 << 24) + ((std::int64_t)b6 << 16) + ((std::int64_t)b7 << 8) + b8;
+}
+
+static std::int64_t	Int64NoSwap(std::int64_t l) 
+{
+    return l;
+}
+
+static std::uint16_t UInt16Swap(std::uint16_t l) 
+{
+    std::uint8_t b1, b2;
+    b1 = l & 255;
+    b2 = (l >> 8) & 255;
+    return (std::uint16_t)(b1 << 8) + b2;
+}
+
+static std::uint16_t UInt16NoSwap(std::uint16_t l) 
+{
+    return l;
+}
+
+static std::uint32_t UInt32Swap(std::uint32_t l) 
+{
+    std::uint8_t    b1, b2, b3, b4;
+    b1 = l & 255;
+    b2 = (l >> 8) & 255;
+    b3 = (l >> 16) & 255;
+    b4 = (l >> 24) & 255;
+    return ((std::uint32_t)b1 << 24) + ((std::uint32_t)b2 << 16) + ((std::uint32_t)b3 << 8) + b4;
+}
+
+static std::uint32_t UInt32NoSwap(std::uint32_t l) 
+{
+    return l;
+}
+
+static std::uint64_t UInt64Swap(std::uint64_t l) 
+{
+    std::uint8_t    b1, b2, b3, b4, b5, b6, b7, b8;
+    b1 = l & 255;
+    b2 = (l >> 8) & 255;
+    b3 = (l >> 16) & 255;
+    b4 = (l >> 24) & 255;
+    b5 = (l >> 32) & 255;
+    b6 = (l >> 40) & 255;
+    b7 = (l >> 48) & 255;
+    b8 = (l >> 56) & 255;
+    return ((std::uint64_t)b1 << 56) + ((std::uint64_t)b2 << 48) + ((std::uint64_t)b3 << 40) + ((std::uint64_t)b4 << 32) +
+        ((std::uint64_t)b5 << 24) + ((std::uint64_t)b6 << 16) + ((std::uint64_t)b7 << 8) + b8;
+}
+
+static std::uint64_t UInt64NoSwap(std::uint64_t l) 
+{
+    return l;
+}
+
+static float FloatSwap(float f) 
 {
     union {
         float	        f;
@@ -124,7 +215,31 @@ float FloatSwap(float f)
     return dat2.f;
 }
 
-float FloatNoSwap(float f) 
+static float FloatNoSwap(float f) 
+{
+    return f;
+}
+
+static double DoubleSwap(double f) 
+{
+    union {
+        double	        f;
+        std::uint8_t	b[8];
+    } dat1, dat2;
+
+    dat1.f = f;
+    dat2.b[0] = dat1.b[7];
+    dat2.b[1] = dat1.b[6];
+    dat2.b[2] = dat1.b[5];
+    dat2.b[3] = dat1.b[4];
+    dat2.b[4] = dat1.b[3];
+    dat2.b[5] = dat1.b[2];
+    dat2.b[6] = dat1.b[1];
+    dat2.b[7] = dat1.b[0];
+    return dat2.f;
+}
+
+static double DoubleNoSwap(double f) 
 {
     return f;
 }
@@ -207,17 +322,17 @@ void RevBitFieldSwap(void *bp, int elsize)
     }
 }
 
-void RevBytesNoSwap(void *bp, int elsize, int elcount) 
+static void RevBytesNoSwap(void *bp, int elsize, int elcount) 
 {
     return;
 }
 
-void RevBitFieldNoSwap(void *bp, int elsize) 
+static void RevBitFieldNoSwap(void *bp, int elsize) 
 {
     return;
 }
 
-void SixtetsForIntLittle(std::uint8_t *out, int src) 
+static void SixtetsForIntLittle(std::uint8_t* out, std::int32_t src) 
 {
     std::uint8_t *b = (std::uint8_t *)&src;
     out[0] = (b[0] & 0xfc) >> 2;
@@ -232,7 +347,7 @@ SixtetsForIntBig
 TTimo: untested - that's the version from initial base64 encode
 ================
 */
-void SixtetsForIntBig(std::uint8_t *out, int src) {
+void SixtetsForIntBig(std::uint8_t* out, std::int32_t src) {
     for (int i = 0; i < 4; i++) {
         out[i] = src & 0x3f;
         src >>= 6;
@@ -450,31 +565,56 @@ void Swap_Init()
     // set the byte swapping variables in a portable manner	
     if (*(short *)swaptest == 1) {
         // little endian ex: x86
-        _BigShort = ShortSwap;
-        _LittleShort = ShortNoSwap;
-        _BigLong = LongSwap;
-        _LittleLong = LongNoSwap;
-        _BigFloat = FloatSwap;
-        _LittleFloat = FloatNoSwap;
-        _BigRevBytes = RevBytesSwap;
-        _LittleRevBytes = RevBytesNoSwap;
-        _LittleBitField = RevBitFieldNoSwap;
-        _SixtetsForInt = SixtetsForIntLittle;
-        _IntForSixtets = IntForSixtetsLittle;
-    }
-    else {
+        BigInt16_Ptr = Int16Swap;
+        LittleInt16_Ptr = Int16NoSwap;
+        BigInt32_Ptr = Int32Swap;
+        LittleInt32_Ptr = Int32NoSwap;
+        BigInt64_Ptr = Int64Swap;
+        LittleInt64_Ptr = Int64NoSwap;
+
+        BigUInt16_Ptr = UInt16Swap;
+        LittleUInt16_Ptr = UInt16NoSwap;
+        BigUInt32_Ptr = UInt32Swap;
+        LittleUInt32_Ptr = UInt32NoSwap;
+        BigUInt64_Ptr = UInt64Swap;
+        LittleUInt64_Ptr = UInt64NoSwap;
+
+        BigFloat_Ptr = FloatSwap;
+        LittleFloat_Ptr = FloatNoSwap;
+        BigDouble_Ptr = DoubleSwap;
+        LittleDouble_Ptr = DoubleNoSwap;
+
+        BigRevBytes_Ptr = RevBytesSwap;
+        LittleRevBytes_Ptr = RevBytesNoSwap;
+        LittleBitField_Ptr = RevBitFieldNoSwap;
+        SixtetsForInt_Ptr = SixtetsForIntLittle;
+        IntForSixtets_Ptr = IntForSixtetsLittle;
+    } else {
         // big endian ex: ppc
-        _BigShort = ShortNoSwap;
-        _LittleShort = ShortSwap;
-        _BigLong = LongNoSwap;
-        _LittleLong = LongSwap;
-        _BigFloat = FloatNoSwap;
-        _LittleFloat = FloatSwap;
-        _BigRevBytes = RevBytesNoSwap;
-        _LittleRevBytes = RevBytesSwap;
-        _LittleBitField = RevBitFieldSwap;
-        _SixtetsForInt = SixtetsForIntBig;
-        _IntForSixtets = IntForSixtetsBig;
+        BigInt16_Ptr = Int16NoSwap;
+        LittleInt16_Ptr = Int16Swap;
+        BigInt32_Ptr = Int32NoSwap;
+        LittleInt32_Ptr = Int32Swap;
+        BigInt64_Ptr = Int64NoSwap;
+        LittleInt64_Ptr = Int64Swap;
+
+        BigUInt16_Ptr = UInt16NoSwap;
+        LittleUInt16_Ptr = UInt16Swap;
+        BigUInt32_Ptr = UInt32NoSwap;
+        LittleUInt32_Ptr = UInt32Swap;
+        BigUInt64_Ptr = UInt64NoSwap;
+        LittleUInt64_Ptr = UInt64Swap;
+
+        BigFloat_Ptr = FloatNoSwap;
+        LittleFloat_Ptr = FloatSwap;
+        BigDouble_Ptr = DoubleNoSwap;
+        LittleDouble_Ptr = DoubleSwap;
+
+        BigRevBytes_Ptr = RevBytesNoSwap;
+        LittleRevBytes_Ptr = RevBytesSwap;
+        LittleBitField_Ptr = RevBitFieldSwap;
+        SixtetsForInt_Ptr = SixtetsForIntBig;
+        IntForSixtets_Ptr = IntForSixtetsBig;
     }
 }
 
