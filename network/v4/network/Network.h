@@ -10,4 +10,5 @@
 #include "network/TcpConnector.h"
 #include "network/TcpServer.h"
 #include "network/Utilities.h"
+#include "network/FakeLog.h"
 

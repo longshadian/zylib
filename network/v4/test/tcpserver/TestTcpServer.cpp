@@ -135,14 +135,21 @@ void StartServer()
     g_server->Start(5);
 }
 
+void NetworkLogCallback(int severity, const char* msg)
+{
+    fprintf(stdout, "[%10s] %s\n", network::SeverityString(severity), msg);
+}
+
 int main()
 {
+    network::SetLogCallback(&NetworkLogCallback);
+
     int n = 0;
     try {
         StartServer();
         while (1) {
             ++n;
-            if (n == 30) {
+            if (n == 20) {
                 g_server->StopAccept();
                 DPrintf("stop accect");
             }

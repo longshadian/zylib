@@ -55,14 +55,14 @@ void TcpServer::StopAccept()
 {
     if (!m_acceptor)
         return;
-    if (m_listening.exchange(true))
+    if (!m_listening.exchange(false))
         return;
     boost::system::error_code ec{};
     m_acceptor->cancel(ec);
-    //NETWORK_DPrintf("acceptor cancel: %d %s", ec.value(), ec.message().c_str());
+    NETWORK_DPrintf("acceptor cancel: %d %s", ec.value(), ec.message().c_str());
     ec.clear();
     m_acceptor->close(ec);
-    //NETWORK_DPrintf("acceptor close: %d %s", ec.value(), ec.message().c_str());
+    NETWORK_DPrintf("acceptor close: %d %s", ec.value(), ec.message().c_str());
 }
 
 void TcpServer::DoAccept()
@@ -105,9 +105,10 @@ bool TcpServer::InitAcceptor(const std::string& host, std::uint16_t port)
         m_acceptor->set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
         m_acceptor->bind(ep);
         m_acceptor->listen();
+        NETWORK_DPrintf("init acceptor success ");
         return true;
     } catch (const std::exception& e) {
-        (void)e;
+        NETWORK_EPrintf("init acceptor exception: %s", e.what());
         return false;
     }
 }
