@@ -35,7 +35,7 @@ void Channel::SendMsg(Message msg)
 {
     if (!m_socket)
         return;
-    boost::asio::post(m_socket->get_executor(),
+    boost::asio::post(m_socket->m_socket.get_executor(),
         [this, pthis = shared_from_this(), msg = std::move(msg)]()
         {
             bool wait_write = !m_write_buffer.empty();
@@ -67,8 +67,8 @@ void Channel::SendMsg(const std::string& str)
 void Channel::DoWrite()
 {
     TimerPtr timer = CreateTimer(m_opt.m_write_timeout_seconds, false);
-    boost::asio::async_write(*m_socket
-        , boost::asio::buffer(m_write_buffer.front().HeadPtr(), m_write_buffer.front().Length()),
+    boost::asio::async_write(m_socket->m_socket,
+        boost::asio::buffer(m_write_buffer.front().HeadPtr(), m_write_buffer.front().Length()),
         [this, pthis = shared_from_this(), timer](boost::system::error_code ec, std::size_t length)
         {
             if (timer) {
@@ -92,7 +92,7 @@ void Channel::DoWrite()
 void Channel::DoRead()
 {
     TimerPtr timer = CreateTimer(m_opt.m_read_timeout_seconds, true);
-    m_socket->async_read_some(boost::asio::buffer(m_read_fixed_buffer),
+    m_socket->m_socket.async_read_some(boost::asio::buffer(m_read_fixed_buffer),
         [this, pthis = shared_from_this(), timer](boost::system::error_code ec, std::size_t read_length)
         {
             if (timer) {
@@ -116,8 +116,8 @@ void Channel::DoClosed(ECloseType type)
         return;
     m_is_opened = false;
     boost::system::error_code ec;
-    m_socket->shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
-    m_socket->close(ec);
+    m_socket->m_socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
+    m_socket->m_socket.close(ec);
     m_event->OnClosed(*this, type);
 }
 
@@ -125,7 +125,7 @@ void Channel::Shutdown()
 {
     if (!m_socket)
         return;
-    boost::asio::post(m_socket->get_executor(),
+    boost::asio::post(m_socket->m_socket.get_executor(),
         [this, pthis = shared_from_this()]() 
         {
             DoClosed(ECloseType::Active);
@@ -136,7 +136,7 @@ TimerPtr Channel::CreateTimer(std::uint32_t seconds, bool read)
 {
     if (seconds == 0)
         return nullptr;
-    auto timer = std::make_shared<boost::asio::steady_timer>(m_socket->get_executor());
+    auto timer = std::make_shared<boost::asio::steady_timer>(m_socket->m_socket.get_executor());
     timer->expires_from_now(std::chrono::seconds(seconds));
     timer->async_wait([this, pthis = shared_from_this(), read](const boost::system::error_code& ec) 
         {
@@ -166,7 +166,7 @@ std::string Channel::GetIP() const
     if (!m_socket)
         return "";
     try {
-        auto ep = m_socket->remote_endpoint();
+        auto ep = m_socket->m_socket.remote_endpoint();
         return ep.address().to_string();
     } catch (const std::exception& e) {
         (void)e;
@@ -179,7 +179,7 @@ std::uint16_t Channel::GetPort() const
     if (!m_socket)
         return 0;
     try {
-        auto ep = m_socket->remote_endpoint();
+        auto ep = m_socket->m_socket.remote_endpoint();
         return ep.port();
     } catch (const std::exception& e) {
         (void)e;

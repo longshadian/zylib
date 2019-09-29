@@ -29,7 +29,7 @@ bool TcpConnector::IsConnected() const
 void TcpConnector::AsyncConnect(const std::string& host, std::uint16_t port)
 {
     auto ep = Utilities::CreateEndpoint(host, port);
-    m_socket->async_connect(ep,
+    m_socket->m_socket.async_connect(ep,
         [this, pthis = shared_from_this()](const boost::system::error_code& ec)
         {
             if (ec) {
@@ -45,7 +45,7 @@ bool TcpConnector::SyncConnect(const std::string& host, std::uint16_t port)
 {
     boost::system::error_code ec{};
     auto ep = Utilities::CreateEndpoint(host, port);
-    m_socket->connect(ep, ec);
+    m_socket->m_socket.connect(ep, ec);
     if (ec) {
         return false;
     } 
@@ -62,7 +62,7 @@ bool TcpConnector::SyncConnectWaitFor(const std::string& host, std::uint16_t por
 
     auto pp = std::make_shared<std::promise<std::int32_t>>();
     auto ep = Utilities::CreateEndpoint(host, port);
-    m_socket->async_connect(ep,
+    m_socket->m_socket.async_connect(ep,
         [this, pthis = shared_from_this(), pp](const boost::system::error_code& ec)
         {
             if (ec) {
@@ -82,7 +82,7 @@ bool TcpConnector::SyncConnectWaitFor(const std::string& host, std::uint16_t por
         return false;
     } else {
         boost::system::error_code ec{};
-        m_socket->shutdown(boost::asio::socket_base::shutdown_both, ec);
+        m_socket->m_socket.shutdown(boost::asio::socket_base::shutdown_both, ec);
         return false;
     }
 }

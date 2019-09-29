@@ -5,6 +5,7 @@
 #include "network/Channel.h"
 #include "network/Utilities.h"
 #include "network/FakeLog.h"
+#include "network/TcpSocket.h"
 
 namespace network
 {
@@ -16,23 +17,17 @@ TcpServer::TcpServer(NetworkFactoryPtr fac, std::string host, std::uint16_t port
     : m_host(std::move(host))
     , m_port(port)
     , m_option(std::move(option))
-    , m_accept_pool()
-    , m_io_pool()
     , m_event_factory(fac)
     , m_event(fac->CreateNetworkEvent())
-    , m_acceptor()
     , m_listening(false)
+    , m_accept_pool()
+    , m_io_pool()
+    , m_acceptor()
 {
 }
 
 TcpServer::~TcpServer()
 {
-}
-
-TcpServerPtr TcpServer::Create(NetworkFactoryPtr fac, std::string host, std::uint16_t port, ServerOption opt)
-{
-    TcpServerPtr p{ new TcpServer(fac, std::move(host), port, std::move(opt)) };
-    return p;
 }
 
 bool TcpServer::Start(std::int32_t n)
@@ -68,13 +63,13 @@ void TcpServer::StopAccept()
 void TcpServer::DoAccept()
 {
     auto ioc = m_io_pool.NextIOContext();
-    auto new_socket = std::make_shared<boost::asio::ip::tcp::socket>(ioc->m_ioctx);
+    auto new_socket = std::make_shared<TcpSocket>(ioc);
 
     ChannelOption opt{};
     opt.m_read_timeout_seconds = m_option.m_read_timeout_seconds;
     opt.m_write_timeout_seconds = m_option.m_write_timeout_seconds;
     auto channel = std::make_shared<Channel>(m_event_factory, opt);
-    m_acceptor->async_accept(*new_socket,
+    m_acceptor->async_accept(new_socket->m_socket,
         [this, new_socket, channel](const boost::system::error_code& ec) 
         { 
             if (ec) {

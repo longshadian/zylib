@@ -39,8 +39,6 @@ public:
     TcpServer(TcpServer&& rhs) = delete;
     TcpServer& operator=(TcpServer&& rhs) = delete;
 
-    static TcpServerPtr Create(NetworkFactoryPtr fac, std::string host, std::uint16_t port, ServerOption opt = {});
-
     bool Start(std::int32_t n);
     void Stop();
     void StopAccept();
@@ -54,12 +52,12 @@ private:
     std::string                                 m_host;
     std::uint16_t                               m_port;
     ServerOption                                m_option;
-    IOContextPool                               m_accept_pool;
-    IOContextPool                               m_io_pool;
     NetworkFactoryPtr                           m_event_factory;
     NetworkEventPtr                             m_event;
-    TcpAcceptorPtr                              m_acceptor;
     std::atomic<bool>                           m_listening;
+    IOContextPool                               m_accept_pool;
+    IOContextPool                               m_io_pool;
+    TcpAcceptorPtr                              m_acceptor;
 };
 
 } // namespace network

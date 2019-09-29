@@ -13,6 +13,7 @@
 #include "network/MessageDecoder.h"
 #include "network/Define.h"
 #include "network/Timer.h"
+#include "network/TcpSocket.h"
 
 namespace network
 {

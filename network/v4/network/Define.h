@@ -8,7 +8,6 @@
 namespace network
 {
 
-using TcpSocketPtr = std::shared_ptr<boost::asio::ip::tcp::socket>;
 using TcpAcceptorPtr = std::shared_ptr<boost::asio::ip::tcp::acceptor>;
 
 enum class ECloseType : int

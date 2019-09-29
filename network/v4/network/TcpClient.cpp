@@ -24,10 +24,8 @@ bool TcpClient::Start(std::int32_t n)
 
 TcpConnectorPtr TcpClient::CreateConnector()
 {
-    auto ioc = m_io_pool.NextIOContext();
-    auto new_socket = std::make_shared<boost::asio::ip::tcp::socket>(ioc->m_ioctx);
+    auto new_socket = std::make_shared<TcpSocket>(m_io_pool.NextIOContext());
     auto channel = std::make_shared<Channel>(m_event_factory, ChannelOption{});
-
     auto conn = std::make_shared<TcpConnector>(new_socket, channel, m_event_factory->CreateNetworkEvent());
     return conn;
 }
