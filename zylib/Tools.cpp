@@ -471,7 +471,7 @@ struct tm* Localtime(const time_t* t, struct tm* output)
     return output;
 }
 
-std::string LocaltimeYYYMMDD_HHMMSS(std::time_t t)
+std::string LocaltimeYYYYMMDD_HHMMSS(std::time_t t)
 {
     struct tm cur_tm {};
     Localtime(&t, &cur_tm);
@@ -509,15 +509,6 @@ int Vsnprintf(char* buf, std::size_t buflen, const char* format, va_list ap)
 #endif
     buf[buflen - 1] = '\0';
     return r;
-}
-
-void Localtime(std::time_t s, struct tm* tm)
-{
-#if defined(_WIN32)
-    localtime_s(tm, &s);
-#else
-    (void)localtime_r(&s, tm);
-#endif
 }
 
 void Gettimeofday(struct timeval* tp)

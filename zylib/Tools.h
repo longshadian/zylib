@@ -52,7 +52,7 @@ std::string ToLowerCase(const std::string& src);
 std::string ToHex(const void* data, std::size_t len);
 
 struct tm* Localtime(const std::time_t* t, struct tm* output);
-std::string LocaltimeYYYMMDD_HHMMSS(std::time_t t);
+std::string LocaltimeYYYYMMDD_HHMMSS(std::time_t t);
 
 
 // little/big endian conversion
@@ -99,7 +99,6 @@ __attribute__((format(printf, 3, 0)))
 #endif
 ;
 
-void Localtime(std::time_t s, struct tm* tm);
 void Gettimeofday(struct timeval *tp);
 
 //////////////////////////////////////////////////////////////////////////
