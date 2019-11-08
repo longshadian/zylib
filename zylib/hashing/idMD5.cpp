@@ -1,4 +1,4 @@
-#include "zylib/hashing/MD5.h"
+#include "zylib/hashing/idMD5.h"
 
 #include "zylib/Tools.h"
 

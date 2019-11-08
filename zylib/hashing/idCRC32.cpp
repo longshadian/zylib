@@ -1,4 +1,4 @@
-#include "zylib/hashing/CRC32.h"
+#include "zylib/hashing/idCRC32.h"
 
 #include <cstdint>
 
