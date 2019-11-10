@@ -34,7 +34,7 @@ public:
     AsyncTask& operator=(AsyncTask&& rhs)
     {
         if (this != &rhs) {
-            m_impl = std::move(rhs.m_impl);
+            std::swap(m_impl, rhs.m_impl);
         }
         return *this;
     }
@@ -50,4 +50,6 @@ private:
     std::unique_ptr<Base>   m_impl;
 };
 
-}
+} // namespace zylib
+
+

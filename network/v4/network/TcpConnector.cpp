@@ -21,9 +21,9 @@ ChannelPtr& TcpConnector::GetChannel()
     return m_channel;
 }
 
-bool TcpConnector::IsConnected() const
+bool TcpConnector::Connected() const
 {
-    return m_channel->IsOpened();
+    return m_channel->Opened();
 }
 
 void TcpConnector::AsyncConnect(const std::string& host, std::uint16_t port)
@@ -49,7 +49,7 @@ bool TcpConnector::SyncConnect(const std::string& host, std::uint16_t port)
     if (ec) {
         return false;
     } 
-    //m_socket->non_blocking(true);
+    //m_socket->m_socket.non_blocking(true);
     m_channel->Init(m_socket);
     return true;
 }

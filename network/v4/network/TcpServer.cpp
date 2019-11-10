@@ -3,12 +3,11 @@
 #include <boost/asio.hpp>
 
 #include "network/Channel.h"
-#include "network/Utilities.h"
 #include "network/FakeLog.h"
 #include "network/TcpSocket.h"
+#include "network/Utilities.h"
 
-namespace network
-{
+namespace network {
 
 /**
  * class TcpServer
@@ -30,7 +29,7 @@ TcpServer::~TcpServer()
 {
 }
 
-bool TcpServer::Start(std::int32_t n)
+bool TcpServer::Init(std::int32_t n)
 {
     m_accept_pool.Init(1);
     m_io_pool.Init(n);
@@ -52,7 +51,7 @@ void TcpServer::StopAccept()
         return;
     if (!m_listening.exchange(false))
         return;
-    boost::system::error_code ec{};
+    boost::system::error_code ec {};
     m_acceptor->cancel(ec);
     NETWORK_DPrintf("acceptor cancel: %d %s", ec.value(), ec.message().c_str());
     ec.clear();
@@ -70,8 +69,7 @@ void TcpServer::DoAccept()
     opt.m_write_timeout_seconds = m_option.m_write_timeout_seconds;
     auto channel = std::make_shared<Channel>(m_event_factory, opt);
     m_acceptor->async_accept(new_socket->m_socket,
-        [this, new_socket, channel](const boost::system::error_code& ec) 
-        { 
+        [this, new_socket, channel](const boost::system::error_code& ec) {
             if (ec) {
                 m_event->OnAccept(ec, *this, *channel);
             } else {
@@ -84,7 +82,7 @@ void TcpServer::DoAccept()
         });
 }
 
-const ServerOption& TcpServer::GetOption() const
+const ServerOption& TcpServer::Option() const
 {
     return m_option;
 }

@@ -2,7 +2,7 @@
 #include <iostream>
 #include <thread>
 
-#include "zylib/Logger.h"
+#include "zylib/zylib.h"
 
 void testAsyncTextFile()
 {

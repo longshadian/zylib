@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
-project(zylib)
-set(OUTPUT zylib)
+project(test_zylib)
+set(OUTPUT test_zylib)
 
 message(STATUS "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
 if(TRUE)
@@ -13,15 +13,15 @@ if(TRUE)
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${OUTPUT_DIR}/release/lib)
 endif()
 
+include_directories("../../")
+
 file(GLOB SRC	./*.cpp ./*.h)
-file(GLOB SRC_HASHING hashing/*.cpp hashing/*.h)
 
 source_group("" FILES ${SRC})
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${SRC_HASHING})
 
-set(SRC_LIST 
-    ${SRC} 
-    ${SRC_HASHING}
+set(SRC_LIST
+    ${SRC}
 )
 
 #find_package(Boost COMPONENTS filesystem system REQUIRED)
@@ -35,5 +35,5 @@ add_definitions("/utf-8")     ### utf-8 no-bom warning C4819:
 #add_definitions("/D KNET_EXPORT=__declspec(dllexport)")
 include_directories(${CMAKE_HOME_DIRECTORY})
 
-add_library(${OUTPUT} STATIC ${SRC_LIST})
-target_link_libraries(${OUTPUT})
+add_executable(${OUTPUT} ${SRC_LIST})
+target_link_libraries(${OUTPUT} zylib)

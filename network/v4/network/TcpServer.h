@@ -29,7 +29,7 @@ struct ServerOption
     std::uint32_t   m_write_timeout_seconds{0};
 };
 
-class TcpServer : public std::enable_shared_from_this<TcpServer>
+class TcpServer
 {
 public:
     TcpServer(NetworkFactoryPtr fac, std::string host, std::uint16_t port, ServerOption option = {});
@@ -39,11 +39,11 @@ public:
     TcpServer(TcpServer&& rhs) = delete;
     TcpServer& operator=(TcpServer&& rhs) = delete;
 
-    bool Start(std::int32_t n);
+    bool Init(std::int32_t n);
     void Stop();
     void StopAccept();
 
-    const ServerOption& GetOption() const;
+    const ServerOption& Option() const;
 private:
     bool InitAcceptor(const std::string& host, std::uint16_t port);
     void DoAccept();

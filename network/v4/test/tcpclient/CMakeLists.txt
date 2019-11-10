@@ -24,7 +24,8 @@ set(SRC_LIST
     TestTcpClient.cpp
         )
 		
-include_directories(E:\\vcpkgVS2017\\vcpkg\\installed\\x64-windows\\include)		
+#include_directories(E:\\vcpkgVS2017\\vcpkg\\installed\\x64-windows\\include)
+include_directories(C:\\vcpkg\\installed\\x64-windows\\include)
 include_directories(${CMAKE_HOME_DIRECTORY})
 include_directories("../../")
 

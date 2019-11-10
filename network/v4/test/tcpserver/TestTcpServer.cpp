@@ -14,7 +14,7 @@ std::string TimeString()
     struct tm stm{};
     localtime_s(&stm, &t);
     std::array<char, 64> buf{};
-    sprintf_s(buf.data(), buf.size(), "%04d-%02d-%02d %02d:%02d:%02d", stm.tm_year + 1900, stm.tm_mon + 1, stm.tm_mday,
+    sprintf_s(buf.data(), buf.size(), "%04d/%02d/%02d %02d:%02d:%02d", stm.tm_year + 1900, stm.tm_mon + 1, stm.tm_mday,
         stm.tm_hour, stm.tm_min, stm.tm_sec);
     std::string s(buf.data());
     return s;
@@ -53,11 +53,6 @@ public:
     TestServerEvent() = default;
     virtual ~TestServerEvent() = default;
 
-    virtual void OnConnect(const boost::system::error_code& ec, network::TcpConnector& connector) override
-    {
-
-    }
-
     virtual void OnAccept(const boost::system::error_code& ec, network::TcpServer& server, network::Channel& channel) override
     {
         if (ec) {
@@ -74,7 +69,8 @@ public:
 
     virtual void OnRead(const boost::system::error_code& ec, std::size_t length, network::Channel& channel) override
     {
-        return;
+        if (1)
+            return;
         if (ec) {
             WPrintf(" code:%d length: %d %s", ec.value(), (int)length, ec.message().c_str());
         } else {
@@ -84,7 +80,8 @@ public:
 
     virtual void OnWrite(const boost::system::error_code& ec, std::size_t length, network::Channel& channel, const network::Message& msg) override
     {
-        return;
+        if (1)
+            return;
         if (ec) {
             WPrintf(" code:%d length: %d %s", ec.value(), (int)length, ec.message().c_str());
         } else {
@@ -132,7 +129,7 @@ void StartServer()
     opt.m_read_timeout_seconds = 10;
     opt.m_write_timeout_seconds = 10;
     g_server = std::make_shared<network::TcpServer>(fac, "0.0.0.0", 8080, opt);
-    g_server->Start(5);
+    g_server->Init(5);
 }
 
 void NetworkLogCallback(int severity, const char* msg)

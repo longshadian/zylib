@@ -13,7 +13,7 @@ std::string TimeString()
     struct tm stm {};
     localtime_s(&stm, &t);
     std::array<char, 64> buf{};
-    sprintf_s(buf.data(), buf.size(), "%04d-%02d-%02d %02d:%02d:%02d", stm.tm_year + 1900, stm.tm_mon + 1, stm.tm_mday,
+    sprintf_s(buf.data(), buf.size(), "%04d/%02d/%02d %02d:%02d:%02d", stm.tm_year + 1900, stm.tm_mon + 1, stm.tm_mday,
         stm.tm_hour, stm.tm_min, stm.tm_sec);
     std::string s(buf.data());
     return s;
@@ -38,15 +38,6 @@ public:
         }
     }
 
-    virtual void OnAccept(const boost::system::error_code& ec, network::TcpServer& server, network::Channel& channel) override
-    {
-        if (ec) {
-            WPrintf("error: %d ", ec.value());
-        } else {
-            DPrintf("success ");
-        }
-    }
-
     virtual void OnClosed(network::Channel& channel, network::ECloseType type) override
     {
         DPrintf(" closed: %d", (int)type);
@@ -54,7 +45,8 @@ public:
 
     virtual void OnRead(const boost::system::error_code& ec, std::size_t length, network::Channel& channel) override
     {
-        return;
+        if (1)
+            return;
         if (ec) {
             WPrintf(" code:%d length: %d ", ec.value(), (int)length);
         } else {
@@ -64,7 +56,8 @@ public:
 
     virtual void OnWrite(const boost::system::error_code& ec, std::size_t length, network::Channel& channel, const network::Message& msg) override
     {
-        return;
+        if (1)
+            return;
         if (ec) {
             WPrintf(" code:%d length: %d ", ec.value(), (int)length);
         } else {
@@ -78,11 +71,6 @@ public:
             std::string s(msg.BodyPtr(), msg.BodyPtr() + msg.BodyLength());
             DPrintf("msg:%s ", s.c_str());
         }
-    }
-
-    virtual void OnAcceptOverflow() override
-    {
-        WPrintf("xxx");
     }
 };
 
@@ -109,7 +97,7 @@ std::shared_ptr<network::TcpClient> StartClient(int n)
 {
     auto fac = std::make_shared<TestEventFactory<TestClientEvent>>();
     auto p = std::make_shared<network::TcpClient>(fac);
-    p->Start(n);
+    p->Init(n);
     return p;
 }
 
@@ -130,7 +118,7 @@ void Test1()
     int n = 0;
     while (1) {
         ++n;
-        if (conn->IsConnected()) {
+        if (conn->Connected()) {
             conn->GetChannel()->SendMsg("aaaaaaaaaaaaaa " + std::to_string(n));
         } else {
             conn = g_client->CreateConnector();
@@ -156,7 +144,7 @@ void Test2()
     for (int i = 0; i != 10; ++i) {
         auto conn = p_client->CreateConnector();
         p_client->SyncConnect(conn, host, port);
-        if (!conn->IsConnected()) {
+        if (!conn->Connected()) {
             WPrintf("connect failed.");
             return;
         }
@@ -178,7 +166,7 @@ void Test2()
 
     while (1) {
         for (auto& conn : vec) {
-            if (conn->IsConnected()) {
+            if (conn->Connected()) {
                 ++n;
                 conn->GetChannel()->SendMsg(s + std::to_string(n));
             } else {

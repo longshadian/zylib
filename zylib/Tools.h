@@ -9,23 +9,21 @@
 #include <iterator>
 #include <sstream>
 
-#ifdef _WIN32
-#include <windows.h>
-#else
-#endif
+struct timeval;
 
 namespace zylib {
 
 void Init();
 
-std::vector<std::string> StringSplit(const std::string& s, char c);
+std::vector<std::string> StrSplit(const std::string& s, char c);
 
 // 字符串替换,字符串str中的src字符替换成dest,返回替换个数
-std::size_t StringReplace(std::string* str, char src, char dest);
+std::size_t StrReplace(std::string* str, char src, char dest);
 
 // 字符串删除，
-void StringRemove(std::string* str, char src);
+std::size_t StrRemove(std::string* str, char src);
 
+/*
 template <class RandomAccessIterator>
 void LinearRandomShuffle(RandomAccessIterator first, RandomAccessIterator last)
 {
@@ -36,6 +34,7 @@ void LinearRandomShuffle(RandomAccessIterator first, RandomAccessIterator last)
         std::swap(first[n], first[rand() % (n + 1)]);
     }
 }
+*/
 
 template <typename T>
 void BZzero(T* t)
@@ -52,8 +51,16 @@ std::string ToLowerCase(const std::string& src);
 std::string ToHex(const void* data, std::size_t len);
 
 struct tm* Localtime(const std::time_t* t, struct tm* output);
-std::string LocaltimeYYYYMMDD_HHMMSS(std::time_t t);
 
+std::string Localtime_HHMMSS(const std::time_t* t);
+std::string Localtime_YYYYMMDD_HHMMSS(const std::time_t* t);
+std::string Localtime_HHMMSS_F();
+std::string Localtime_YYYYMMDD_HHMMSS_F();
+
+std::string UTC_HHMMSS(const std::time_t* t);
+std::string UTC_YYYYMMDD_HHMMSS(const std::time_t* t);
+std::string UTC_HHMMSS_F();
+std::string UTC_YYYYMMDD_HHMMSS_F();
 
 // little/big endian conversion
 std::int16_t BigInt16(std::int16_t l);
@@ -100,6 +107,7 @@ __attribute__((format(printf, 3, 0)))
 ;
 
 void Gettimeofday(struct timeval *tp);
+void Gmtime(const std::time_t* t, struct tm* output);
 
 //////////////////////////////////////////////////////////////////////////
 }

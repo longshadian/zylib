@@ -25,7 +25,7 @@ public:
     TcpClient(TcpClient&& rhs) = delete;
     TcpClient& operator=(TcpClient&& rhs) = delete;
 
-    bool Start(std::int32_t n);
+    bool Init(std::int32_t n);
     TcpConnectorPtr CreateConnector();
 
     void AsyncConnect(TcpConnectorPtr& conn, const std::string& host, std::uint16_t port);

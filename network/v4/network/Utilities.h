@@ -20,6 +20,8 @@ public:
         //static_assert(std::is_pod<T>::value, "T must be POD!");
         std::memset(t, 0, sizeof(T));
     }
+
+    static std::int64_t NextIndex();
 };
 
 } // namespace network

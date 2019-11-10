@@ -1,6 +1,7 @@
-#include "network/Buffer.h"
+#include "zylib/Buffer.h"
 
-namespace network {
+namespace zylib
+{
 
 bool FlatBuffer::Empty() const
 {
@@ -56,4 +57,5 @@ void FlatBuffer::Clear()
     m_buffer.clear();
 }
 
-} // namespace network
+} // namespace zylib
+

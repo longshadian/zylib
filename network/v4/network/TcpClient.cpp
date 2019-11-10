@@ -16,7 +16,7 @@ TcpClient::~TcpClient()
 {
 }
 
-bool TcpClient::Start(std::int32_t n)
+bool TcpClient::Init(std::int32_t n)
 {
     m_io_pool.Init(n);
     return true;

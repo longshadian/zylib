@@ -10,6 +10,11 @@
 #include <algorithm>
 #include <iomanip>
 
+#ifdef _WIN32
+#include <windows.h>
+#else
+#endif
+
 namespace zylib {
 
 void Init()
@@ -17,7 +22,7 @@ void Init()
     detail::Swap_Init();
 }
 
-std::vector<std::string> StringSplit(const std::string& s, char c)
+std::vector<std::string> StrSplit(const std::string& s, char c)
 {
     std::vector<std::string> out;
     if (s.empty())
@@ -31,7 +36,7 @@ std::vector<std::string> StringSplit(const std::string& s, char c)
     return out;
 }
 
-size_t StringReplace(std::string* str, char src, char dest)
+std::size_t StrReplace(std::string* str, char src, char dest)
 {
     size_t t = 0;
     std::transform(str->begin(), str->end(), str->begin(),
@@ -46,9 +51,12 @@ size_t StringReplace(std::string* str, char src, char dest)
     return t;
 }
 
-void StringRemove(std::string* str, char src)
+std::size_t StrRemove(std::string* str, char src)
 {
-    str->erase(std::remove(str->begin(), str->end(), src), str->end());
+    auto it = std::remove(str->begin(), str->end(), src);
+    auto n = std::distance(it, str->end());
+    str->erase(it, str->end());
+    return n;
 }
 
 // can't just use function pointers, or dll linkage can mess up
@@ -388,7 +396,7 @@ std::string CatFile(const char* f)
         return "";
 
     std::string content;
-    std::array<char, 1024> buffer{};
+    std::array<char, 1024 * 16> buffer{};
     while (1) {
         std::size_t readn = std::fread(buffer.data(), 1, buffer.size(), fp);
         if (readn == 0)
@@ -408,7 +416,7 @@ bool CatFile(const std::string& path, std::string* out)
 
     bool succ = true;
     std::string content;
-    std::array<char, 1024> buffer;
+    std::array<char, 1024 * 16> buffer;
     std::uint64_t total = 0;
     while (true) {
         std::size_t readn = std::fread(buffer.data(), 1, buffer.size(), f);
@@ -449,7 +457,7 @@ std::string ToLowerCase(const std::string& src)
     return dst;
 }
  
-static std::string ToHex(const void* data, std::size_t len)
+std::string ToHex(const void* data, std::size_t len)
 {
     const unsigned char* p = reinterpret_cast<const unsigned char*>(data);
     std::ostringstream out;
@@ -471,18 +479,122 @@ struct tm* Localtime(const time_t* t, struct tm* output)
     return output;
 }
 
-std::string LocaltimeYYYYMMDD_HHMMSS(std::time_t t)
+std::string Localtime_HHMMSS(const std::time_t* t)
 {
-    struct tm cur_tm {};
-    Localtime(&t, &cur_tm);
-    char buffer[128] = { 0 };
+    struct tm cur_tm = { 0 };
+    Localtime(t, &cur_tm);
+    char buffer[64] = { 0 };
 
-    snprintf(buffer, sizeof(buffer), "%04d%02d%02d-%02d%02d%02d"
+    snprintf(buffer, sizeof(buffer), "%02d:%02d:%02d"
+        , cur_tm.tm_hour, cur_tm.tm_min, cur_tm.tm_sec
+    );
+    return std::string(buffer);
+}
+
+std::string Localtime_YYYYMMDD_HHMMSS(const std::time_t* t)
+{
+    struct tm cur_tm = { 0 };
+    Localtime(t, &cur_tm);
+    char buffer[64] = { 0 };
+
+    snprintf(buffer, sizeof(buffer), "%04d/%02d/%02d %02d:%02d:%02d"
         , cur_tm.tm_year + 1900, cur_tm.tm_mon + 1, cur_tm.tm_mday
         , cur_tm.tm_hour, cur_tm.tm_min, cur_tm.tm_sec
     );
-    std::string s = buffer;
-    return s;
+    return std::string(buffer);
+}
+
+std::string Localtime_HHMMSS_F()
+{
+    struct timeval cur_tv = { 0 };
+    Gettimeofday(&cur_tv);
+
+    struct tm cur_tm = { 0 };
+    std::time_t cur_t = static_cast<std::time_t>(cur_tv.tv_sec);
+    Localtime(&cur_t, &cur_tm);
+
+    char buffer[64] = { 0 };
+    snprintf(buffer, sizeof(buffer), "%02d:%02d:%02d.%06d",
+        cur_tm.tm_hour, cur_tm.tm_min, cur_tm.tm_sec,
+        static_cast<std::int32_t>(cur_tv.tv_usec)
+    );
+    return std::string(buffer);
+}
+
+std::string Localtime_YYYYMMDD_HHMMSS_F()
+{
+    struct timeval cur_tv = { 0 };
+    Gettimeofday(&cur_tv);
+
+    struct tm cur_tm = { 0 };
+    std::time_t cur_t = static_cast<std::time_t>(cur_tv.tv_sec);
+    Localtime(&cur_t, &cur_tm);
+    char buffer[64] = { 0 };
+    snprintf(buffer, sizeof(buffer), "%04d/%02d/%02d %02d:%02d:%02d.%06d",
+        cur_tm.tm_year + 1900, cur_tm.tm_mon + 1, cur_tm.tm_mday,
+        cur_tm.tm_hour, cur_tm.tm_min, cur_tm.tm_sec,
+        static_cast<std::int32_t>(cur_tv.tv_usec)
+    );
+    return std::string(buffer);
+}
+
+std::string UTC_HHMMSS(const std::time_t* t)
+{
+    struct tm cur_tm = { 0 };
+    Gmtime(t, &cur_tm);
+    char buffer[64] = { 0 };
+
+    snprintf(buffer, sizeof(buffer), "%02d:%02d:%02d"
+        , cur_tm.tm_hour, cur_tm.tm_min, cur_tm.tm_sec
+    );
+    return std::string(buffer);
+}
+
+std::string UTC_YYYYMMDD_HHMMSS(const std::time_t* t)
+{
+    struct tm cur_tm = { 0 };
+    Gmtime(t, &cur_tm);
+    char buffer[64] = { 0 };
+
+    snprintf(buffer, sizeof(buffer), "%04d/%02d/%02d %02d:%02d:%02d"
+        , cur_tm.tm_year + 1900, cur_tm.tm_mon + 1, cur_tm.tm_mday
+        , cur_tm.tm_hour, cur_tm.tm_min, cur_tm.tm_sec
+    );
+    return std::string(buffer);
+}
+
+std::string UTC_HHMMSS_F()
+{
+    struct timeval cur_tv = { 0 };
+    Gettimeofday(&cur_tv);
+
+    struct tm cur_tm = { 0 };
+    std::time_t cur_t = static_cast<std::time_t>(cur_tv.tv_sec);
+    Gmtime(&cur_t, &cur_tm);
+
+    char buffer[64] = { 0 };
+    snprintf(buffer, sizeof(buffer), "%02d:%02d:%02d.%06d",
+        cur_tm.tm_hour, cur_tm.tm_min, cur_tm.tm_sec,
+        static_cast<std::int32_t>(cur_tv.tv_usec)
+    );
+    return std::string(buffer);
+}
+
+std::string UTC_YYYYMMDD_HHMMSS_F()
+{
+    struct timeval cur_tv = { 0 };
+    Gettimeofday(&cur_tv);
+
+    struct tm cur_tm = { 0 };
+    std::time_t cur_t = static_cast<std::time_t>(cur_tv.tv_sec);
+    Gmtime(&cur_t, &cur_tm);
+    char buffer[64] = { 0 };
+    snprintf(buffer, sizeof(buffer), "%04d/%02d/%02d %02d:%02d:%02d.%06d",
+        cur_tm.tm_year + 1900, cur_tm.tm_mon + 1, cur_tm.tm_mday,
+        cur_tm.tm_hour, cur_tm.tm_min, cur_tm.tm_sec,
+        static_cast<std::int32_t>(cur_tv.tv_usec)
+    );
+    return std::string(buffer);
 }
 
 int Snprintf(char* buf, std::size_t buflen, const char* format, ...)
@@ -542,6 +654,14 @@ void Gettimeofday(struct timeval* tp)
 #endif // defined(_WIN32)
 }
 
+void Gmtime(const std::time_t* t, struct tm* output)
+{
+#if defined(_WIN32)
+    gmtime_s(output, t);
+#else
+    gmtime_r(t, output);
+#endif
+}
 
 } // namespace zylib
 

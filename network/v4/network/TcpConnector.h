@@ -27,7 +27,7 @@ public:
     TcpConnector& operator=(TcpConnector&&) = delete;
 
     ChannelPtr& GetChannel();
-    bool IsConnected() const; 
+    bool Connected() const; 
 private:
     void AsyncConnect(const std::string& host, std::uint16_t port);
     bool SyncConnect(const std::string& host, std::uint16_t port);

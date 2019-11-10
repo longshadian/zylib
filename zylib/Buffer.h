@@ -3,9 +3,11 @@
 #include <cstdint>
 #include <vector>
 
-namespace network {
+namespace zylib
+{
 
-class FlatBuffer {
+class FlatBuffer
+{
 public:
     FlatBuffer() = default;
     ~FlatBuffer() = default;
@@ -28,4 +30,4 @@ private:
     std::vector<std::uint8_t> m_buffer;
 };
 
-} // namespace network
+} // namespace zylib 
