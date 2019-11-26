@@ -10,10 +10,12 @@
 #include <algorithm>
 #include <iomanip>
 
-#ifdef _WIN32
+#if defined(_WIN32)
 #include <windows.h>
 #else
 #endif
+
+#include "zylib/Sys.h"
 
 namespace zylib {
 
@@ -391,7 +393,7 @@ int IntForSixtetsBig(std::uint8_t *in) {
 
 std::string CatFile(const char* f)
 {
-    std::FILE* fp = std::fopen(f, "rb");
+    std::FILE* fp = Fopen(f, "rb");
     if (!fp)
         return "";
 
@@ -409,7 +411,7 @@ std::string CatFile(const char* f)
 
 bool CatFile(const std::string& path, std::string* out)
 {
-    std::FILE* f = std::fopen(path.c_str(), "rb");
+    std::FILE* f = Fopen(path.c_str(), "rb");
     if (!f) {
         return false;
     }
@@ -471,7 +473,7 @@ std::string ToHex(const void* data, std::size_t len)
 
 struct tm* Localtime(const time_t* t, struct tm* output)
 {
-#ifdef WIN32
+#if defined(_WIN32)
     localtime_s(output, t);
 #else
     localtime_r(t, output);
@@ -613,7 +615,7 @@ int Vsnprintf(char* buf, std::size_t buflen, const char* format, va_list ap)
     if (!buflen)
         return 0;
 #if defined(_MSC_VER) || defined(_WIN32)
-    r = _vsnprintf(buf, buflen, format, ap);
+    r = _vsnprintf_s(buf, buflen, buflen, format, ap);
     if (r < 0)
         r = _vscprintf(format, ap);
 #else

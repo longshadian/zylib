@@ -5,7 +5,7 @@
  */
 
 #include <cstring>
-#include "zylib/hashing/ngx_md5.h"
+#include "zylib/detail/ngx_md5.h"
 
 namespace zylib {
 namespace detail {

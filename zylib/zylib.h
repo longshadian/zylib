@@ -8,6 +8,7 @@
 #include "zylib/MD5.h"
 #include "zylib/Buffer.h"
 #include "zylib/String.h"
+#include "zylib/Sys.h"
 
 #ifdef ZYLIB_UBOOST
 #include "zylib/uboost/BoostPTime.h"

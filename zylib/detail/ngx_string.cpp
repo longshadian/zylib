@@ -4,7 +4,7 @@
  * Copyright (C) Nginx, Inc.
  */
 
-#include "zylib/hashing/ngx_string.h"
+#include "zylib/detail/ngx_string.h"
 
 namespace zylib {
 namespace detail {

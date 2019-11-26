@@ -14,14 +14,14 @@ if(TRUE)
 endif()
 
 file(GLOB SRC	./*.cpp ./*.h)
-file(GLOB SRC_HASHING hashing/*.cpp hashing/*.h)
+file(GLOB SRC_DETAIL detail/*.cpp detail/*.h)
 
 source_group("" FILES ${SRC})
-source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${SRC_HASHING})
+source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${SRC_DETAIL})
 
 set(SRC_LIST 
     ${SRC} 
-    ${SRC_HASHING}
+    ${SRC_DETAIL}
 )
 
 #find_package(Boost COMPONENTS filesystem system REQUIRED)
@@ -30,7 +30,7 @@ set(SRC_LIST
 add_definitions("/std:c++17")
 add_definitions("/D _WIN32_WINNT=0x0601")
 add_definitions("/D _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS")
-add_definitions("/D _CRT_SECURE_NO_WARNINGS")
+#add_definitions("/D _CRT_SECURE_NO_WARNINGS")
 add_definitions("/utf-8")     ### utf-8 no-bom warning C4819: 
 #add_definitions("/D KNET_EXPORT=__declspec(dllexport)")
 include_directories(${CMAKE_HOME_DIRECTORY})

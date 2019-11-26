@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <array>
 
-#include "zylib/hashing/ngx_md5.h"
+#include "zylib/detail/ngx_md5.h"
 
 namespace zylib {
 
