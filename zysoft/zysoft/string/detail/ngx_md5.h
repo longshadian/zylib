@@ -12,8 +12,10 @@
 #include <cstdint>
 #include <cstring>
 
-namespace zysoft {
-namespace detail {
+namespace zysoft 
+{
+namespace detail 
+{
 
 /*
  * The basic MD5 functions.
@@ -89,6 +91,8 @@ inline void ngx_md5_init(ngx_md5_t* ctx)
     ctx->d = 0x10325476;
     ctx->bytes = 0;
 }
+
+inline const std::uint8_t* ngx_md5_body(ngx_md5_t* ctx, const std::uint8_t* data, size_t size);
 
 inline void ngx_md5_update(ngx_md5_t *ctx, const void *data, size_t size)
 {

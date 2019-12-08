@@ -5,7 +5,8 @@
 
 #include "zysoft/string/detail/ngx_md5.h"
 
-namespace zysoft {
+namespace zysoft 
+{
 
 using MD5Context = detail::ngx_md5_t;
 

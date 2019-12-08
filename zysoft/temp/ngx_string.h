@@ -10,7 +10,7 @@
 #include <cstring>
 #include <cstdarg>
 
-namespace zylib {
+namespace zysoft {
 namespace detail {
 
 
@@ -24,12 +24,6 @@ using ssize_t = std::int64_t;
 
 #define  NGX_OK          0
 #define  NGX_ERROR      -1
-#define  NGX_AGAIN      -2
-#define  NGX_BUSY       -3
-#define  NGX_DONE       -4
-#define  NGX_DECLINED   -5
-#define  NGX_ABORT      -6
-
 
 
 typedef struct {
@@ -194,7 +188,6 @@ ssize_t ngx_atosz(u_char *line, size_t n);
 time_t ngx_atotm(u_char *line, size_t n);
 ngx_int_t ngx_hextoi(u_char *line, size_t n);
 
-u_char *ngx_hex_dump(u_char *dst, u_char *src, size_t len);
 
 
 #define ngx_base64_encoded_length(len)  (((len + 2) / 3) * 4)
@@ -226,27 +219,81 @@ void ngx_unescape_uri(u_char **dst, u_char **src, size_t size, ngx_uint_t type);
 uintptr_t ngx_escape_html(u_char *dst, u_char *src, size_t size);
 
 
-#if 0
-typedef struct {
-    ngx_rbtree_node_t         node;
-    ngx_str_t                 str;
-} ngx_str_node_t;
+inline u_char * ngx_hex_dump(u_char *dst, u_char *src, size_t len)
+{
+    static u_char  hex[] = "0123456789abcdef";
 
+    while (len--) {
+        *dst++ = hex[*src >> 4];
+        *dst++ = hex[*src++ & 0xf];
+    }
 
-void ngx_str_rbtree_insert_value(ngx_rbtree_node_t *temp,
-    ngx_rbtree_node_t *node, ngx_rbtree_node_t *sentinel);
-ngx_str_node_t *ngx_str_rbtree_lookup(ngx_rbtree_t *rbtree, ngx_str_t *name,
-    uint32_t hash);
-#endif
+    return dst;
+}
 
+inline void ngx_encode_base64(ngx_str_t *dst, ngx_str_t *src)
+{
+    u_char         *d, *s;
+    size_t          len;
+    static u_char   basis64[] =
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-void ngx_sort(void *base, size_t n, size_t size,
-    ngx_int_t (*cmp)(const void *, const void *));
-#define ngx_qsort             qsort
+    len = src->len;
+    s = src->data;
+    d = dst->data;
 
+    while (len > 2) {
+        *d++ = basis64[(s[0] >> 2) & 0x3f];
+        *d++ = basis64[((s[0] & 3) << 4) | (s[1] >> 4)];
+        *d++ = basis64[((s[1] & 0x0f) << 2) | (s[2] >> 6)];
+        *d++ = basis64[s[2] & 0x3f];
 
-#define ngx_value_helper(n)   #n
-#define ngx_value(n)          ngx_value_helper(n)
+        s += 3;
+        len -= 3;
+    }
+
+    if (len) {
+        *d++ = basis64[(s[0] >> 2) & 0x3f];
+
+        if (len == 1) {
+            *d++ = basis64[(s[0] & 3) << 4];
+            *d++ = '=';
+
+        } else {
+            *d++ = basis64[((s[0] & 3) << 4) | (s[1] >> 4)];
+            *d++ = basis64[(s[1] & 0x0f) << 2];
+        }
+
+        *d++ = '=';
+    }
+
+    dst->len = d - dst->data;
+}
+
+inline ngx_int_t ngx_decode_base64(ngx_str_t *dst, ngx_str_t *src)
+{
+    static u_char   basis64[] = {
+        77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77,
+        77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77,
+        77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 62, 77, 77, 77, 63,
+        52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 77, 77, 77, 77, 77, 77,
+        77,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14,
+        15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 77, 77, 77, 77, 77,
+        77, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+        41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 77, 77, 77, 77, 77,
+
+        77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77,
+        77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77,
+        77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77,
+        77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77,
+        77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77,
+        77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77,
+        77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77,
+        77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77
+    };
+
+    return ngx_decode_base64_internal(dst, src, basis64);
+}
 
 
 }
