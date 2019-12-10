@@ -3,12 +3,14 @@
 #include <cstdio>
 #include <cassert>
 
+#include "zysoft/sys.h"
+
 int TestMD5()
 {
     if (0) {
         PerformanceTimer pt{};
         const char* fname = "C:/a.zip";
-        std::FILE* f = std::fopen(fname, "rb");
+        std::FILE* f = zysoft::fopen(fname, "rb");
         assert(f);
 
         zysoft::MD5Context ctx{};

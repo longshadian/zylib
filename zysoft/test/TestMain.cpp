@@ -9,7 +9,6 @@ int main(int argc, char** argv)
     system("chcp 65001");
 #endif
 
-    assert(TestMisc()==0);
     assert(TestMD5()==0);
 
 #if defined(_WIN32)

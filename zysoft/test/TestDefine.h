@@ -9,11 +9,10 @@
 #include <chrono>
 #include <thread>
 
+#include "zysoft/utility.h"
 #include "zysoft/string/md5.h"
 #include "zysoft/string/base64.h"
-#include "zysoft/string/utility.h"
 
-int TestMisc();
 int TestMD5();
 
 bool IsEqual(const std::vector<std::uint8_t>& s1, const std::vector<std::uint8_t>& s2);
