@@ -1,7 +1,9 @@
-#include "TestDefine.h"
-
 #include <cassert>
+#include <vector>
 
+
+#include "TestDefine.h"
+#include "test_auto_buffer.h"
 
 int main(int argc, char** argv)
 {
@@ -10,6 +12,10 @@ int main(int argc, char** argv)
 #endif
 
     assert(TestMD5()==0);
+
+    test_auto_buffer();
+
+    std::vector<char> v;
 
 #if defined(_WIN32)
     system("pause");

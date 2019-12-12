@@ -13,14 +13,17 @@ if(TRUE)
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${OUTPUT_DIR}/release/lib)
 endif()
 
+## zysoft
 file(GLOB SRC	./*.cpp ./*.h)
 file(GLOB SRC_ZYSOFT zysoft/*.cpp zysoft/*.h)
 file(GLOB SRC_ZYSOFT_STRING zysoft/string/*.cpp zysoft/string/*.h)
 file(GLOB SRC_ZYSOFT_STRING_DETAIL zysoft/string/detail/*.cpp zysoft/string/detail/*.h)
 
+## network
+file(GLOB SRC_NETWORK network/*.cpp network/*.h)
+
 ## test code
 file(GLOB SRC_TEST test/*.cpp test/*.h)
-
 
 source_group("" FILES ${SRC})
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${SRC_ZYSOFT})
@@ -28,12 +31,18 @@ source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${SRC_ZYSOFT})
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${SRC_ZYSOFT_STRING})
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${SRC_ZYSOFT_STRING_DETAIL})
 
+source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${SRC_NETWORK})
+
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${SRC_TEST})
+
+
 
 set(SRC_LIST 
     ${SRC_ZYSOFT} 
     ${SRC_ZYSOFT_STRING}
     ${SRC_ZYSOFT_STRING_DETAIL}
+
+    ${SRC_NETWORK}
 
     ${SRC_TEST}
 )
@@ -49,5 +58,6 @@ add_definitions("/utf-8")     ### utf-8 no-bom warning C4819:
 #add_definitions("/D KNET_EXPORT=__declspec(dllexport)")
 include_directories(${CMAKE_HOME_DIRECTORY})
 
-add_library(${OUTPUT} ${SRC_LIST})
-#target_link_libraries(${OUTPUT})
+#add_library(${OUTPUT} ${SRC_LIST})
+#target_link_libraries(${OUTPUT} ${SRC_LIST})
+add_executable(${OUTPUT} ${SRC_LIST})
