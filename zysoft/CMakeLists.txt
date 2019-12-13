@@ -19,8 +19,13 @@ file(GLOB SRC_ZYSOFT zysoft/*.cpp zysoft/*.h)
 file(GLOB SRC_ZYSOFT_STRING zysoft/string/*.cpp zysoft/string/*.h)
 file(GLOB SRC_ZYSOFT_STRING_DETAIL zysoft/string/detail/*.cpp zysoft/string/detail/*.h)
 
+## winsoft
+file(GLOB SRC_WINSOFT winsoft/*.cpp winsoft/*.h)
+
+
 ## network
 file(GLOB SRC_NETWORK network/*.cpp network/*.h)
+
 
 ## test code
 file(GLOB SRC_TEST test/*.cpp test/*.h)
@@ -30,6 +35,8 @@ source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${SRC_ZYSOFT})
 
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${SRC_ZYSOFT_STRING})
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${SRC_ZYSOFT_STRING_DETAIL})
+
+source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${SRC_WINSOFT})
 
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${SRC_NETWORK})
 
@@ -41,6 +48,8 @@ set(SRC_LIST
     ${SRC_ZYSOFT} 
     ${SRC_ZYSOFT_STRING}
     ${SRC_ZYSOFT_STRING_DETAIL}
+
+    ${SRC_WINSOFT}
 
     ${SRC_NETWORK}
 
