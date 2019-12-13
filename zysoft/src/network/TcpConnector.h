@@ -73,7 +73,7 @@ private:
         return true;
     }
 
-    bool SyncConnectWaitFor(const std::string& host, std::uint16_t port, std::uint32_t sec);
+    bool SyncConnectWaitFor(const std::string& host, std::uint16_t port, std::uint32_t sec)
     {
         if (sec == 0) {
             return SyncConnect(host, port);

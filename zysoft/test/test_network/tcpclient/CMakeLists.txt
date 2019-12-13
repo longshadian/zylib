@@ -1,9 +1,10 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS On)
 
-project(TcpServer)
-set(OUTPUT TcpServer)
+project(TcpClient)
+set(OUTPUT TcpClient)
 set(OUTPUT_DIR ${CMAKE_BINARY_DIR}/output)
+option(KNET_SHARD "output type is shared" ON)
 
 if(WIN32)
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG ${OUTPUT_DIR}/debug/lib)
@@ -20,13 +21,13 @@ elseif(UNIX)
 endif(WIN32)
 
 set(SRC_LIST 
-    TestTcpServer.cpp
+    TestTcpClient.cpp
         )
 		
 #include_directories(E:\\vcpkgVS2017\\vcpkg\\installed\\x64-windows\\include)
 include_directories(C:\\vcpkg\\installed\\x64-windows\\include)
-include_directories(${CMAKE_HOME_DIRECTORY})
-include_directories("../../")
+include_directories(${CMAKE_HOME_DIRECTORY}/src)
+# include_directories("../../")
 
     
 if(WIN32)
@@ -44,4 +45,3 @@ elseif(UNIX)
 endif()
 
 add_executable(${OUTPUT} ${SRC_LIST})
-TARGET_LINK_LIBRARIES(${OUTPUT} Network4)

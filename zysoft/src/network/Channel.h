@@ -168,7 +168,7 @@ private:
         m_event->OnClosed(*this, type);
     }
 
-    void DoWrite();
+    void DoWrite()
     {
         TimerPtr timer = CreateTimer(m_opt.m_write_timeout_seconds, false);
         boost::asio::async_write(m_socket->m_socket,

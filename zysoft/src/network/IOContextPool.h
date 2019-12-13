@@ -4,7 +4,12 @@
 #include <thread>
 #include <atomic>
 #include <memory>
+#include <vector>
+#include <functional>
+
 #include <boost/asio.hpp>
+
+#include "network/FakeLog.h"
 
 namespace network
 {

@@ -6,6 +6,9 @@
 #include <vector>
 #include <string>
 
+#include "network/Define.h"
+#include "network/Utilities.h"
+
 namespace network
 {
 
