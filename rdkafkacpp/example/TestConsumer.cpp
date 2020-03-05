@@ -5,7 +5,12 @@
 #include <csignal>
 #include <cstring>
 
-#include "rdkafkacpp.h"
+#include <librdkafka/rdkafkacpp.h>
+
+#include "Log.h"
+
+namespace test_consumer 
+{
 
 static bool run = true;
 static bool exit_eof = false;
@@ -21,10 +26,9 @@ static void sigterm(int sig) {
 class ExampleRebalanceCb : public RdKafka::RebalanceCb {
 private:
     static void part_list_print(const std::vector<RdKafka::TopicPartition*>&partitions) {
-        for (unsigned int i = 0; i < partitions.size(); i++)
-            std::cerr << partitions[i]->topic() <<
-            "[" << partitions[i]->partition() << "], ";
-        std::cerr << "\n";
+        for (unsigned int i = 0; i < partitions.size(); i++) {
+            LOG_WARN("index: %d %s %d", i, partitions[i]->topic().c_str(), partitions[i]->partition());
+        }
     }
 
 public:
@@ -74,11 +78,7 @@ void msg_consume(RdKafka::Message* message, void* opaque) {
         }
         if (verbosity >= 1) {
             //std::cout << (const char*)message->payload() << " offset " << message->offset() << "\n";
-            /*
-            printf("%.*s\n",
-                static_cast<int>(message->len()),
-                static_cast<const char *>(message->payload()));
-                */
+            LOG_DEBUG("%.*s", static_cast<int>(message->len()), static_cast<const char *>(message->payload()));
         }
         break;
 
@@ -112,9 +112,9 @@ public:
     }
 };
 
-int main() 
+int TestConsumer() 
 {
-    std::string brokers = "127.0.0.1:9092";
+    std::string brokers = "192.168.97.226:9092";
     std::string errstr;
     std::string topic_str;
     std::string mode;
@@ -125,19 +125,18 @@ int main()
     */
     RdKafka::Conf *conf = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
     RdKafka::Conf *tconf = RdKafka::Conf::create(RdKafka::Conf::CONF_TOPIC);
-    conf->set("group.id", "xxx", errstr);
+    conf->set("group.id", "group.id.test", errstr);
 
     ExampleRebalanceCb ex_rebalance_cb;
     conf->set("rebalance_cb", &ex_rebalance_cb, errstr);
-    std::vector<std::string> topics = { "tp.test" };
+    //std::vector<std::string> topics = { "test" };
 
     /*
     * Set configuration properties
     */
     conf->set("metadata.broker.list", brokers, errstr);
     //conf->set("enable.auto.commit", "true", errstr);
-    //tconf->set("auto.offset.reset", "end", errstr);
-    std::cout << "tconf error : " << errstr << "\n";
+    tconf->set("auto.offset.reset", "latest", errstr);
 
     ExampleConsumeCb ex_consume_cb;
     conf->set("consume_cb", &ex_consume_cb, errstr);
@@ -162,7 +161,7 @@ int main()
     delete conf;
 
     std::cout << "% Created consumer " << consumer->name() << std::endl;
-    auto* p = RdKafka::TopicPartition::create("tp.test2", 0); //RdKafka::Topic::PARTITION_UA
+    auto* p = RdKafka::TopicPartition::create("test", 0); //RdKafka::Topic::PARTITION_UA
         //, RdKafka::Topic::OFFSET_END);
     auto err3 = consumer->assign({ p });
     if (err3) {
@@ -205,8 +204,7 @@ int main()
     consumer->close();
     delete consumer;
 
-    std::cerr << "% Consumed " << msg_cnt << " messages ("
-        << msg_bytes << " bytes)" << std::endl;
+    //std::cerr << "% Consumed " << msg_cnt << " messages (" << msg_bytes << " bytes)" << std::endl;
 
     /*
     * Wait for RdKafka to decommission.
@@ -218,4 +216,6 @@ int main()
     RdKafka::wait_destroyed(5000);
 
     return 0;
+}
+
 }
