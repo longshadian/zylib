@@ -1,9 +1,10 @@
 #include <cassert>
 #include <vector>
 
-
 #include "TestDefine.h"
-#include "test_auto_buffer.h"
+
+#define DOCTEST_CONFIG_IMPLEMENT
+#include "../doctest/doctest.h"
 
 int main(int argc, char** argv)
 {
@@ -11,14 +12,13 @@ int main(int argc, char** argv)
     system("chcp 65001");
 #endif
 
-    assert(TestMD5()==0);
-
-    test_auto_buffer();
-
-    std::vector<char> v;
-
-#if defined(_WIN32)
-    system("pause");
-#endif
-    return 0;
+    doctest::Context context;
+    context.applyCommandLine(argc, argv);
+    int res = context.run(); // run doctest
+    // important - query flags (and --exit) rely on the user doing this
+    if (context.shouldExit()) {
+        // propagate the result of the tests
+        return res;
+    }
+    return EXIT_SUCCESS;
 }

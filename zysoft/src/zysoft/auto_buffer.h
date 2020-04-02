@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <memory>
+#include <type_traits>
 
 namespace zysoft
 {
@@ -28,6 +29,7 @@ public:
     typedef const reverse_iterator const_reverse_iterator;
     typedef A                   allocator_type;
 
+    static_assert(std::is_pod<T>::value, "auto_buffer T must be POD!");
 public:
     explicit                    auto_buffer(size_type n);
                                 ~auto_buffer();
@@ -42,7 +44,7 @@ public:
                 m_buffer = &m_internal[0];
             }
             m_items = n;
-            return;
+            return true;
         }
 
         if (m_items < n) {
@@ -74,10 +76,17 @@ public:
         return true;
     }
 
-    void                        swap(class_type& rhs);
+    void                        swap(class_type& rhs)
+    {
+        std::swap(this->m_internal, rhs.m_internal);
+        std::swap(this->m_buffer, rhs.m_buffer);
+        std::swap(this->m_items, rhs.m_items);
+        std::swap(this->m_external, rhs.m_external);
+    }
+
     bool                        empty() const
     {
-        return m_items = 0;
+        return m_items == 0;
     }
 
     size_type                   size() const

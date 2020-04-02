@@ -1,14 +1,24 @@
-#include "test_auto_buffer.h"
-
 #include "TestDefine.h"
 #include "test_log.h"
 #include "zysoft/auto_buffer.h"
 
-void test_auto_buffer()
+#include "../doctest/doctest.h"
+
+#define member_v(a) (decltype(a))
+
+TEST_CASE("test zysoft auto buffer")
 {
-    zysoft::auto_buffer<std::int8_t, 10> ab{100};
-    std::fill(ab.begin(), ab.end(), 0);
+    {
+        zysoft::auto_buffer<std::int8_t, 10> ab{100};
+        std::fill(ab.begin(), ab.end(), 0);
+        CHECK(ab.size() == 100);
 
-    LogInfo("array size %llu", ab.size());
+    }
+
+    {
+        // auto_buffer::resize()
+        zysoft::auto_buffer<std::int8_t, 10> ab{1};
+        CHECK(ab.resize(10));
+    }
+
 }
-

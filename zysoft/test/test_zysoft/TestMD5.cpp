@@ -5,14 +5,15 @@
 
 #include "zysoft/sys.h"
 
+#include "../doctest/doctest.h"
+
 int TestMD5()
 {
     if (0) {
         PerformanceTimer pt{};
-        const char* fname = "C:/a.zip";
+        const char* fname = "c:/a.zip";
         std::FILE* f = zysoft::fopen(fname, "rb");
-        assert(f);
-
+        assert(f != nullptr);
         zysoft::MD5Context ctx{};
         zysoft::MD5_Init(&ctx);
 
@@ -39,4 +40,9 @@ int TestMD5()
     }
 
     return 0;
+}
+
+TEST_CASE("test zysof md5")
+{
+
 }
