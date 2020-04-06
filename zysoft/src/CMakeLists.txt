@@ -14,10 +14,10 @@ if(TRUE)
 endif()
 
 ## zysoft
-file(GLOB SRC	./*.cpp ./*.h)
-file(GLOB SRC_ZYSOFT zysoft/*.cpp zysoft/*.h)
-file(GLOB SRC_ZYSOFT_STRING zysoft/string/*.cpp zysoft/string/*.h)
-file(GLOB SRC_ZYSOFT_STRING_DETAIL zysoft/string/detail/*.cpp zysoft/string/detail/*.h)
+set(CMAKE_MODULE_PATH "${CMAKE_HOME_DIRECTORY}/cmake" ${CMAKE_MODULE_PATH})
+
+#### cmake模块
+include(Functions)
 
 ## winsoft
 file(GLOB SRC_WINSOFT winsoft/*.cpp winsoft/*.h)
