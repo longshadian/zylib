@@ -16,7 +16,8 @@ include(Functions)
 set(SRC_DIR "${CMAKE_HOME_DIRECTORY}/STLSoft/include")
 auto_sources(SRC_FILES "*.cpp" "RECURSE" "${SRC_DIR}")
 auto_sources(SRC_HFILES "*.h" "RECURSE" "${SRC_DIR}")
-auto_source_group(STLSoft ${SRC_DIR} ${SRC_FILES} ${SRC_HFILES})
+auto_sources(SRC_HPPFILES "*.hpp" "RECURSE" "${SRC_DIR}")
+auto_source_group(STLSoft ${SRC_DIR} ${SRC_FILES} ${SRC_HFILES} ${SRC_HPPFILES})
 
 #### 编译选项
 if(WIN32)
@@ -34,4 +35,4 @@ elseif(UNIX)
 endif()
 
 include_directories("${CMAKE_HOME_DIRECTORY}/STLSoft/include")
-add_executable(${OUTPUT} ${SRC_FILES} ${SRC_HFILES})
+add_executable(${OUTPUT} ${SRC_FILES} ${SRC_HFILES} ${SRC_HPPFILES})

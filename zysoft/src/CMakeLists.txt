@@ -19,33 +19,11 @@ set(CMAKE_MODULE_PATH "${CMAKE_HOME_DIRECTORY}/cmake" ${CMAKE_MODULE_PATH})
 #### cmake模块
 include(Functions)
 
-## winsoft
-file(GLOB SRC_WINSOFT winsoft/*.cpp winsoft/*.h)
-
-## network
-file(GLOB SRC_NETWORK network/*.cpp network/*.h)
-
-source_group("" FILES ${SRC})
-source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${SRC_ZYSOFT})
-
-source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${SRC_ZYSOFT_STRING})
-source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${SRC_ZYSOFT_STRING_DETAIL})
-
-source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${SRC_WINSOFT})
-
-source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${SRC_NETWORK})
-
-
-set(SRC_LIST 
-    ${SRC}
-    ${SRC_ZYSOFT} 
-    ${SRC_ZYSOFT_STRING}
-    ${SRC_ZYSOFT_STRING_DETAIL}
-
-    ${SRC_WINSOFT}
-
-    ${SRC_NETWORK}
-)
+set(SRC_DIR "${CMAKE_SOURCE_DIR}/src")
+auto_sources(SRC_FILES "*.cpp" "RECURSE" "${SRC_DIR}")
+auto_sources(SRC_HFILES "*.h" "RECURSE" "${SRC_DIR}")
+auto_sources(SRC_HPPFILES "*.hpp" "RECURSE" "${SRC_DIR}")
+auto_source_group(src ${SRC_DIR} ${SRC_FILES} ${SRC_HFILES} ${SRC_HPPFILES})
 
 #find_package(Boost COMPONENTS filesystem system REQUIRED)
 #include_directories(${Boost_INCLUDE_DIRS})
@@ -56,5 +34,5 @@ add_definitions("/D _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS")
 #add_definitions("/D _CRT_SECURE_NO_WARNINGS")
 add_definitions("/utf-8")     ### utf-8 no-bom warning C4819: 
 
-add_executable(${OUTPUT} ${SRC_LIST})
+add_executable(${OUTPUT} ${SRC_FILES} ${SRC_HFILES} ${SRC_HPPFILES})
 #add_library(${OUTPUT} ${SRC_LIST})
