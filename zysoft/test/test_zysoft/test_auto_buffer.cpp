@@ -1,6 +1,6 @@
 #include "TestDefine.h"
 #include "test_log.h"
-#include "zysoft/auto_buffer.h"
+#include <zysoft/memory/auto_buffer.h>
 
 #include "../doctest/doctest.h"
 
