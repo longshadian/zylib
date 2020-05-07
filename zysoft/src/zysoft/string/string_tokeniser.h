@@ -2,10 +2,10 @@
 
 # include <iterator>                     // for std::distance()
 
-#if 0
-
 namespace zysoft
 {
+
+#if 0
 
 template <int V_shouldSkip>
 struct skip_discriminator_type_
@@ -15,22 +15,6 @@ template <>
 struct skip_discriminator_type_<0>
 {};
 
-/** A tokenising policy for specifying whether blanks will be included or ignored
- *
- * \ingroup group__library__String
- *
- * This policy determines whether a tokenisation will ignore blanks, or will present them as
- * (empty) entries in the sequence to the caller.
- *
- * \param B A boolean as to whether blanks should be ignored (\c true) or preserved (\c false)
- *
- * \note This supercedes string_tokeniser_ignore_blanks
- */
-template <bool B>
-struct skip_blank_tokens
-{
-    enum { value = B };
-};
 
 
 // string_tokeniser_type_traits
@@ -812,6 +796,280 @@ private:
 /// @}
 };
 
+
+template <bool B>
+struct skip_blank_tokens
+{
+    enum { value = B };
+};
+
+template< typename S
+        , typename D
+        , typename B = skip_blank_tokens<true>
+        , typename V = S
+        >
+class string_tokeniser
+    : public stl_collection_tag
+{
+public:
+    /// The current parameterisation of the type
+    typedef string_tokeniser<S, D, B, V>                    class_type;
+    /// The sequence string type
+    typedef S                                               string_type;
+    /// The delimiter type
+    typedef D                                               delimiter_type;
+    /// The blanks policy type
+    typedef B                                               blanks_policy_type;
+    /// The value type
+    typedef V                                               value_type;
+    /// The size type
+    ///
+    /// \note This no longer relies on a size_type member type of the traits type (T). It is defined
+    /// as size_t
+    typedef std::size_t                                     size_type;
+    /// The difference type
+    ///
+    /// \note This no longer relies on a difference_type member type of the traits type (T). It is defined
+    /// as ptrdiff_t
+    typedef std::ptrdiff_t                                 difference_type;
+    /// The non-mutating (const) reference type
+    typedef const value_type                                const_reference;
+    /// The non-mutating (const) iterator type
+    class                                                   const_iterator;
+public:
+
+    class const_iterator
+        : public iterator_base< STLSOFT_NS_QUAL_STD(forward_iterator_tag)
+        , value_type
+        , ss_ptrdiff_t
+        , void
+        , value_type
+        >
+    {
+        /// \name Member Types
+        /// @{
+    public:
+        /// The type
+        typedef const_iterator                                      class_type;
+        /// The delimiter type
+        typedef typename tokeniser_type::delimiter_type             delimiter_type;
+        /// The value type
+        typedef typename tokeniser_type::value_type                 value_type;
+        /// The traits type
+        typedef typename tokeniser_type::traits_type                traits_type;
+        typedef value_type                                          effective_const_reference;
+    private:
+        typedef typename traits_type::const_iterator_type           underlying_iterator_type;
+# if defined(STLSOFT_STRING_TOKENISER_CF_REQUIRE_DELIMITER_INDIRECTION)
+        typedef delimiter_type const* delimiter_ref_type;
+# else /* ? STLSOFT_STRING_TOKENISER_CF_REQUIRE_DELIMITER_INDIRECTION */
+        typedef delimiter_type                                      delimiter_ref_type;
+# endif /* STLSOFT_STRING_TOKENISER_CF_REQUIRE_DELIMITER_INDIRECTION */
+        /// @}
+
+        /// \name Construction
+        /// @{
+    private:
+        friend class    string_tokeniser<S, D, B, V, T, P>;
+
+        /// Conversion constructor
+        const_iterator(underlying_iterator_type first, underlying_iterator_type last, delimiter_type const& delimiter)
+            : m_find0(first)
+            , m_find1(first)
+            , m_next(first)
+            , m_end(last)
+# if defined(STLSOFT_STRING_TOKENISER_CF_REQUIRE_DELIMITER_INDIRECTION)
+            , m_delimiter(&delimiter)
+# else /* ? STLSOFT_STRING_TOKENISER_CF_REQUIRE_DELIMITER_INDIRECTION */
+            , m_delimiter(delimiter)
+# endif /* STLSOFT_STRING_TOKENISER_CF_REQUIRE_DELIMITER_INDIRECTION */
+            , m_cchDelimiter(comparator_type::length(delimiter))
+        {
+            if (m_end != m_find0)
+            {
+                increment_();
+            }
+        }
+    public:
+        /// Default constructor
+        const_iterator()
+            : m_find0(NULL)
+            , m_find1(NULL)
+            , m_next(NULL)
+            , m_end(NULL)
+            , m_delimiter(delimiter_ref_type())
+            , m_cchDelimiter(0)
+        {}
+
+        /// Copy constructor
+        ///
+        /// \param rhs The iterator whose current search position will be copied
+        const_iterator(class_type const& rhs)
+            : m_find0(rhs.m_find0)
+            , m_find1(rhs.m_find1)
+            , m_next(rhs.m_next)
+            , m_end(rhs.m_end)
+            , m_delimiter(rhs.m_delimiter)
+            , m_cchDelimiter(comparator_type::length(get_delim_ref_(rhs.m_delimiter)))
+        {}
+
+        /// Copy-assignment operator
+        ///
+        /// \param rhs The iterator whose current search position will be copied
+        class_type const& operator =(class_type const& rhs)
+        {
+            m_find0 = rhs.m_find0;
+            m_find1 = rhs.m_find1;
+            m_next = rhs.m_next;
+            m_end = rhs.m_end;
+            m_delimiter = rhs.m_delimiter;
+            m_cchDelimiter = rhs.m_cchDelimiter;
+
+            return *this;
+        }
+        /// @}
+
+        /// \name Forward Iterator Methods
+        /// @{
+    public:
+        /// Dereference operator
+        //
+        // This has to be V, rather than value_type, because Visual C++ thinks that S is the value_type!!
+        const V operator *() const
+        {
+            return traits_type::create(m_find0, m_find1);
+        }
+
+        /// Pre-increment operator
+        class_type& operator ++()
+        {
+            increment_();
+
+            return *this;
+        }
+
+        /// Post-increment operator
+        const class_type operator ++(int)
+        {
+            class_type  ret(*this);
+
+            operator ++();
+
+            return ret;
+        }
+
+        /// Evaluates whether \c this and \c rhs are equivalent
+        bool equal(class_type const& rhs) const
+        {
+            ZYSOFT_MESSAGE_ASSERT("Comparing iterators from different tokenisers", m_end == rhs.m_end);
+
+            return m_find0 == rhs.m_find0;
+        }
+
+        /// Evaluates whether \c this and \c rhs are equivalent
+        bool operator == (class_type const& rhs) const
+        {
+            return equal(rhs);
+        }
+
+        /// Evaluates whether \c this and \c rhs are not equivalent
+        bool operator != (class_type const& rhs) const
+        {
+            return !equal(rhs);
+        }
+        /// @}
+
+        /// \name Implementation
+        /// @{
+    private:
+        static delimiter_type const& get_delim_ref_(delimiter_ref_type const& delim)
+        {
+# if defined(STLSOFT_STRING_TOKENISER_CF_REQUIRE_DELIMITER_INDIRECTION)
+            return *delim;
+# else /* ? STLSOFT_STRING_TOKENISER_CF_REQUIRE_DELIMITER_INDIRECTION */
+            return delim;
+# endif /* STLSOFT_STRING_TOKENISER_CF_REQUIRE_DELIMITER_INDIRECTION */
+        }
+
+        void increment_()
+        {
+            ZYSOFT_MESSAGE_ASSERT("Attempting to increment an invalid iterator", m_find0 != m_end);
+
+            // This is a two-phase algorithm:
+            //
+            // 1. If skipping blanks, then do that. Otherwise, locate the the start-of-item
+            //     iterator (m_find0) to the previously identified start of the next item (m_next)
+            // 2. Starting from m_find0, determine the end-of-item (m_find1)
+
+            skip_blanks_if_(skip_discriminator_type_<blanks_policy_type::value != 0>());
+
+            determine_end_();
+        }
+
+        void skip_blanks_if_(skip_discriminator_type_<1>)
+        {
+            // 1. Skip blanks until at start of next item
+            for (m_find0 = m_next; m_find0 != m_end; )
+            {
+                if (comparator_type::not_equal(get_delim_ref_(m_delimiter), m_find0))
+                {
+                    break;
+                }
+                else
+                {
+                    m_find0 += static_cast<ss_ptrdiff_t>(m_cchDelimiter);
+                }
+            }
+        }
+
+        void skip_blanks_if_(skip_discriminator_type_<0>)
+        {
+            m_find0 = m_next;
+        }
+
+        void determine_end_()
+        {
+            // 2. Determine the end-of-item (m_find1), starting from m_find0
+            for (m_find1 = m_find0; ; )
+            {
+                if (m_find1 == m_end)
+                {
+                    // End of sequence. Item will be [m_find0, m_end (== m_find1))
+                    m_next = m_find1;
+                    break;
+                }
+                else if (comparator_type::not_equal(get_delim_ref_(m_delimiter), m_find1))
+                {
+                    // current item does not hold a delimiter, so advance one position
+                    ++m_find1;
+                }
+                else
+                {
+                    // Determine the start of the next potential element, ready
+                    // for the next call of increment_()
+                    m_next = m_find1 + static_cast<ss_ptrdiff_t>(m_cchDelimiter);
+
+                    break;
+                }
+            }
+        }
+        /// @}
+
+        /// \name Members
+        /// @{
+    private:
+        underlying_iterator_type    m_find0;        // the start of the current item
+        underlying_iterator_type    m_find1;        // the end of the current item
+        underlying_iterator_type    m_next;         // the start of the next valid (non-null) item
+        underlying_iterator_type    m_end;          // end point of controlled sequence
+        delimiter_ref_type          m_delimiter;    // The delimiter
+        std::size_t                 m_cchDelimiter;
+        /// @}
+    }
+
+};
+#endif
+
 } // namespace zysoft
 
-#endif
+
