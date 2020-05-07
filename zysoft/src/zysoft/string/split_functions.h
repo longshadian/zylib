@@ -3,6 +3,9 @@
 #include <algorithm>
 #include <cstddef>
 
+#include <zysoft/zysoft.h>
+#include <zysoft/shims/access/string.h>
+
 namespace zysoft
 {
 
@@ -39,7 +42,7 @@ template< typename S
         >
 inline std::size_t
 split_impl(
-    C const*    s
+    const C*    s
 ,   std::size_t n
 ,   C           delim
 ,   S&          s0
@@ -92,7 +95,7 @@ split_impl(
     const C* const  b   = s;
     const C* const  e   = s + n;
     const C*        it0 = b;
-    const C*        it1 = std:find(it0, e, delim);
+    const C*        it1 = std::find(it0, e, delim);
     std::size_t     cnt = (it1 != e) ? 1 : 0;
     s0 = S(it0, it1);
 
@@ -271,7 +274,7 @@ template< typename S1
         , typename S2
         , typename C
         >
-inline bool
+inline std::size_t
 split(
     const S1&   s
 ,   C           delim
@@ -279,8 +282,8 @@ split(
 ,   S2&         s1
 )
 {
-    static_assert(static_cast<void const*>(&s) != static_cast<void const*>(&s0), "Source string specified as recipient!");
-    static_assert(static_cast<void const*>(&s) != static_cast<void const*>(&s1), "Source string specified as recipient!");
+    ZYSOFT_MESSAGE_ASSERT(static_cast<void const*>(&s) != static_cast<void const*>(&s0), "Source string specified as recipient!");
+    ZYSOFT_MESSAGE_ASSERT(static_cast<void const*>(&s) != static_cast<void const*>(&s1), "Source string specified as recipient!");
     return detail::split_impl(c_str_data(s), c_str_len(s), delim, s0, s1);
 }
 
@@ -304,9 +307,9 @@ split(
 ,   S2&         s2
 )
 {
-    static_assert(static_cast<void const*>(&s) != static_cast<void const*>(&s0), "Source string specified as recipient!");
-    static_assert(static_cast<void const*>(&s) != static_cast<void const*>(&s1), "Source string specified as recipient!");
-    static_assert(static_cast<void const*>(&s) != static_cast<void const*>(&s2), "Source string specified as recipient!");
+    ZYSOFT_MESSAGE_ASSERT(static_cast<void const*>(&s) != static_cast<void const*>(&s0), "Source string specified as recipient!");
+    ZYSOFT_MESSAGE_ASSERT(static_cast<void const*>(&s) != static_cast<void const*>(&s1), "Source string specified as recipient!");
+    ZYSOFT_MESSAGE_ASSERT(static_cast<void const*>(&s) != static_cast<void const*>(&s2), "Source string specified as recipient!");
     return detail::split_impl(c_str_data(s), c_str_len(s), delim, s0, s1, s2);
 }
 
@@ -331,10 +334,10 @@ split(
 ,   S2&         s3
 )
 {
-    static_assert(static_cast<void const*>(&s) != static_cast<void const*>(&s0), "Source string specified as recipient!");
-    static_assert(static_cast<void const*>(&s) != static_cast<void const*>(&s1), "Source string specified as recipient!");
-    static_assert(static_cast<void const*>(&s) != static_cast<void const*>(&s2), "Source string specified as recipient!");
-    static_assert(static_cast<void const*>(&s) != static_cast<void const*>(&s3), "Source string specified as recipient!");
+    ZYSOFT_MESSAGE_ASSERT(static_cast<void const*>(&s) != static_cast<void const*>(&s0), "Source string specified as recipient!");
+    ZYSOFT_MESSAGE_ASSERT(static_cast<void const*>(&s) != static_cast<void const*>(&s1), "Source string specified as recipient!");
+    ZYSOFT_MESSAGE_ASSERT(static_cast<void const*>(&s) != static_cast<void const*>(&s2), "Source string specified as recipient!");
+    ZYSOFT_MESSAGE_ASSERT(static_cast<void const*>(&s) != static_cast<void const*>(&s3), "Source string specified as recipient!");
     return detail::split_impl(c_str_data(s), c_str_len(s), delim, s0, s1, s2, s3);
 }
 
@@ -360,11 +363,11 @@ split(
 ,   S2&         s4
 )
 {
-    static_assert(static_cast<void const*>(&s) != static_cast<void const*>(&s0), "Source string specified as recipient!");
-    static_assert(static_cast<void const*>(&s) != static_cast<void const*>(&s1), "Source string specified as recipient!");
-    static_assert(static_cast<void const*>(&s) != static_cast<void const*>(&s2), "Source string specified as recipient!");
-    static_assert(static_cast<void const*>(&s) != static_cast<void const*>(&s3), "Source string specified as recipient!");
-    static_assert(static_cast<void const*>(&s) != static_cast<void const*>(&s4), "Source string specified as recipient!");
+    ZYSOFT_MESSAGE_ASSERT(static_cast<void const*>(&s) != static_cast<void const*>(&s0), "Source string specified as recipient!");
+    ZYSOFT_MESSAGE_ASSERT(static_cast<void const*>(&s) != static_cast<void const*>(&s1), "Source string specified as recipient!");
+    ZYSOFT_MESSAGE_ASSERT(static_cast<void const*>(&s) != static_cast<void const*>(&s2), "Source string specified as recipient!");
+    ZYSOFT_MESSAGE_ASSERT(static_cast<void const*>(&s) != static_cast<void const*>(&s3), "Source string specified as recipient!");
+    ZYSOFT_MESSAGE_ASSERT(static_cast<void const*>(&s) != static_cast<void const*>(&s4), "Source string specified as recipient!");
     return detail::split_impl(c_str_data(s), c_str_len(s), delim, s0, s1, s2, s3, s4);
 }
 
@@ -391,12 +394,12 @@ split(
 ,   S2&         s5
 )
 {
-    static_assert(static_cast<void const*>(&s) != static_cast<void const*>(&s0), "Source string specified as recipient!");
-    static_assert(static_cast<void const*>(&s) != static_cast<void const*>(&s1), "Source string specified as recipient!");
-    static_assert(static_cast<void const*>(&s) != static_cast<void const*>(&s2), "Source string specified as recipient!");
-    static_assert(static_cast<void const*>(&s) != static_cast<void const*>(&s3), "Source string specified as recipient!");
-    static_assert(static_cast<void const*>(&s) != static_cast<void const*>(&s4), "Source string specified as recipient!");
-    static_assert(static_cast<void const*>(&s) != static_cast<void const*>(&s5), "Source string specified as recipient!");
+    ZYSOFT_MESSAGE_ASSERT(static_cast<void const*>(&s) != static_cast<void const*>(&s0), "Source string specified as recipient!");
+    ZYSOFT_MESSAGE_ASSERT(static_cast<void const*>(&s) != static_cast<void const*>(&s1), "Source string specified as recipient!");
+    ZYSOFT_MESSAGE_ASSERT(static_cast<void const*>(&s) != static_cast<void const*>(&s2), "Source string specified as recipient!");
+    ZYSOFT_MESSAGE_ASSERT(static_cast<void const*>(&s) != static_cast<void const*>(&s3), "Source string specified as recipient!");
+    ZYSOFT_MESSAGE_ASSERT(static_cast<void const*>(&s) != static_cast<void const*>(&s4), "Source string specified as recipient!");
+    ZYSOFT_MESSAGE_ASSERT(static_cast<void const*>(&s) != static_cast<void const*>(&s5), "Source string specified as recipient!");
     return detail::split_impl(c_str_data(s), c_str_len(s), delim, s0, s1, s2, s3, s4, s5);
 }
 
