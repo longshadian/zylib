@@ -10,7 +10,7 @@ template <typename T>
 class BasicTimer
 {
 public:
-	using Duration = T;
+    using Duration = T;
 
 public:
     BasicTimer() = default;
@@ -18,32 +18,32 @@ public:
     BasicTimer(const BasicTimer&) = default;
     BasicTimer& operator=(const BasicTimer&) = default;
 
-	template <typename D>
-	BasicTimer(D d) 
+    template <typename D>
+    BasicTimer(D d) 
         : m_flag() , m_start() , m_expire(d)
-	{
-	}
+    {
+    }
 
-	void Update(Duration delta)
-	{
-		m_start += delta;
-	}
+    void Update(Duration delta)
+    {
+        m_start += delta;
+    }
 
-	bool Passed() const
-	{
-		return m_expire <= m_start;
-	}
+    bool Passed() const
+    {
+        return m_expire <= m_start;
+    }
 
-	void Reset()
-	{
-		m_start = Duration::zero();
+    void Reset()
+    {
+        m_start = Duration::zero();
         m_flag = 0;
-	}
+    }
 
-	Duration Remain() const
-	{
-		return m_expire - m_start;
-	}
+    Duration Remain() const
+    {
+        return m_expire - m_start;
+    }
 
     void SetFlag(std::int32_t flag)
     {
@@ -56,8 +56,8 @@ public:
     }
 
     std::int32_t    m_flag;
-	Duration        m_start;
-	Duration        m_expire;
+    Duration        m_start;
+    Duration        m_expire;
 };
 
 using SimpleTimer = BasicTimer<std::chrono::milliseconds>;
@@ -66,12 +66,12 @@ using Milliseconds = std::chrono::milliseconds;
 using TimePoint = std::chrono::steady_clock::time_point;
 inline TimePoint SteadyTimePoint()
 {
-	return std::chrono::steady_clock::now();
+    return std::chrono::steady_clock::now();
 }
 
 inline Milliseconds GetDelta(TimePoint b, TimePoint e)
 {
-	return std::chrono::duration_cast<Milliseconds>(e - b);
+    return std::chrono::duration_cast<Milliseconds>(e - b);
 }
 
 class PerformanceTimer

@@ -13,7 +13,7 @@ namespace base64
 {
 
 inline bool is_base64(unsigned char c) {
-	return (std::isalnum(c) || (c == '+') || (c == '/'));
+    return (std::isalnum(c) || (c == '+') || (c == '/'));
 }
 
 inline std::size_t encoded_length(std::size_t len)

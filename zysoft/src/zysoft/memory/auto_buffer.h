@@ -4,38 +4,51 @@
 #include <memory>
 #include <type_traits>
 
+
+#include <zysoft/zysoft.h>
+#include <zysoft/memory/util/allocator_selector.h>
+
 namespace zysoft
 {
 
+// TODO 
+
 template< typename T
         , std::size_t N = 256
-        , typename A = typename std::allocator<T>
+        , typename A = typename allocator_selector<T>::allocator_type
         >
 class auto_buffer
-    : public A
+    : protected A
 {
+    typedef typename allocator_selector<A>::allocator_traits_type alloc_traits;
+
     enum {space = N};
 public:
-    typedef auto_buffer<T, N, A> class_type;
-    typedef T                   value_type;
-    typedef std::size_t         size_type;
-    typedef T&                  reference;
-    typedef const T&            const_reference;
-    typedef T*                  pointer;
-    typedef const T*            const_pointer;
-    typedef T*                  iterator;
-    typedef const iterator      const_iterator;
-    typedef std::reverse_iterator<T> reverse_iterator;
-    typedef const reverse_iterator const_reverse_iterator;
-    typedef A                   allocator_type;
+    typedef auto_buffer<T, N, A>                    class_type;
+    typedef typename alloc_traits::allocator_type   allocator_type;
+    typedef typename alloc_traits::value_type       value_type;
+    typedef typename alloc_traits::size_type        size_type;
+    typedef typename alloc_traits::pointer          pointer;
+    typedef typename alloc_traits::const_pointer    const_pointer;
 
-    static_assert(std::is_pod<T>::value, "auto_buffer T must be POD!");
+    typedef T&                                      reference;
+    typedef const T&                                const_reference;
+    typedef T*                                      iterator;
+    typedef const iterator                          const_iterator;
+    typedef std::reverse_iterator<T>                reverse_iterator;
+    typedef const reverse_iterator                  const_reverse_iterator;
+
+    static_assert(std::is_pod_v<T>, "auto_buffer T must be POD!");
 public:
-    explicit                    auto_buffer(size_type n);
-                                ~auto_buffer();
+
+    explicit    auto_buffer(size_type n);
+                ~auto_buffer();
+
+                auto_buffer(const class_type&) = delete;
+    class_type& operator=(const class_type&) = delete;
 
 public:
-    bool                        resize(size_type n)
+    bool resize(size_type n)
     {
         if (n == 0) {
             if (external_buffer()) {
@@ -76,7 +89,7 @@ public:
         return true;
     }
 
-    void                        swap(class_type& rhs)
+    void swap(class_type& rhs)
     {
         std::swap(this->m_internal, rhs.m_internal);
         std::swap(this->m_buffer, rhs.m_buffer);
@@ -84,97 +97,97 @@ public:
         std::swap(this->m_external, rhs.m_external);
     }
 
-    bool                        empty() const
+    bool empty() const
     {
         return m_items == 0;
     }
 
-    size_type                   size() const
+    size_type size() const
     {
         return m_items;
     }
 
-    static size_type            internal_size()
+    static size_type internal_size()
     {
         return space;
     }
 
-    reference                   operator[](size_type index)
+    reference operator[](size_type index)
     {
         return m_buffer[index];
     }
 
-    const_reference             operator[](size_type index) const
+    const_reference operator[](size_type index) const
     {
         return m_buffer[index];
     }
 
-    pointer                     data()
+    pointer data()
     {
         return m_buffer;
     }
 
-    const_pointer               data() const
+    const_pointer data() const
     {
         return m_buffer;
     }
 
-    iterator                    begin()
+    iterator begin()
     {
         return m_buffer;
     }
 
-    iterator                    end()
+    iterator end()
     {
         return m_buffer + m_items;
     }
 
-    const_iterator              begin() const
+    const_iterator begin() const
     {
         return m_buffer;
     }
 
-    const_iterator              end() const
+    const_iterator end() const
     {
         return m_buffer + m_items;
     }
 
-    const_iterator              cbegin() const
+    const_iterator cbegin() const
     {
         return m_buffer + m_items;
     }
 
-    const_iterator              cend() const
+    const_iterator cend() const
     {
         return m_buffer + m_items;
     }
 
-    reverse_iterator            rbegin()
+    reverse_iterator rbegin()
     {
         return reverse_iterator(end());
     }
 
-    reverse_iterator            rend()
+    reverse_iterator rend()
     {
         return reverse_iterator(begin());
     }
 
-    const_reverse_iterator      rbegin() const
+    const_reverse_iterator rbegin() const
     {
         return const_reverse_iterator(end());
     }
 
-    const_reverse_iterator      rend() const
+    const_reverse_iterator rend() const
     {
         return const_reverse_iterator(begin());
     }
 
-    const_reverse_iterator      crbegin() const
+    const_reverse_iterator crbegin() const
     {
         return const_reverse_iterator(end());
     }
 
-    const_reverse_iterator      crend() const
+    const_reverse_iterator crend() const
     {
         return const_reverse_iterator(begin());
     }
@@ -186,17 +199,16 @@ private:
     bool                    m_external;
 
 private:
-                                auto_buffer(const class_type&) = delete;
-    class_type&                 operator=(const class_type&) = delete;
-
     pointer alloc(size_type n)
     {
-        return get_allocator().allocate(n);
+        return alloc_traits::allocate(get_allocator(), n);
+        //return get_allocator().allocate(n);
     }
 
     void dealloc(pointer p, size_type n)
     {
-        get_allocator().deallocate(p, n);
+        return alloc_traits::deallocate(get_allocator(), p, n);
+        //get_allocator().deallocate(p, n);
     }
 
     pointer realloc(pointer current_p, size_type current_n, size_type new_n)

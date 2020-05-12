@@ -49,9 +49,8 @@ public:
     std::string gen_rand_str(std::size_t size) 
     {
         static const std::string VALID_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        std::string str;
-        str.reserve(size);
-        std::generate_n(std::back_inserter(str), size, [&]() { return VALID_CHARS[rand(VALID_CHARS.size() - 1)]; });
+        std::string str(size, '\0');
+        std::generate(std::begin(str), std::end(str), [&]() { return VALID_CHARS[rand(VALID_CHARS.size() - 1)]; });
         return str;
     }
 

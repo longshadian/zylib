@@ -14,8 +14,8 @@ enum class token_type
     Unknown = 0,
     Letter = 1,
     Number = 2,
-    Identifier = 4,		// name
-    Puncatuation = 5,	// punctuation
+    Identifier = 4,        // name
+    Puncatuation = 5,    // punctuation
     Keyword = 6,        // keyword
     Eof = 7,            // end of file or stream 
 };
