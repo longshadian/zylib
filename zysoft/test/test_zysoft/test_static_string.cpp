@@ -29,7 +29,7 @@ static void Test_Print()
 #if 1
 TEST_CASE("test static_string")
 {
-    LogInfo("test static_string");
+    PrintInfo("test static_string");
     try {
         Test_Print();
     } catch (const std::exception& e) {

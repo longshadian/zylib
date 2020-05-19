@@ -8,7 +8,7 @@
 
 TEST_CASE("test auto buffer")
 {
-    LogInfo("test auto buffer");
+    PrintInfo("test auto buffer");
     {
         zysoft::auto_buffer<std::int8_t, 10> ab{100};
         std::fill(ab.begin(), ab.end(), 0);

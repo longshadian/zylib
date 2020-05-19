@@ -8,7 +8,7 @@
 
 TEST_CASE("test string case functions")
 {
-    LogInfo("test string case functions");
+    PrintInfo("test string case functions");
     {
         std::string sl;
         std::string su;

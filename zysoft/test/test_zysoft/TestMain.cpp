@@ -8,7 +8,7 @@
 
 int main(int argc, char** argv)
 {
-#if defined(_WIN32)
+#if defined(_MSC_VER)
     system("chcp 65001");
 #endif
 

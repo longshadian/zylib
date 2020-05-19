@@ -6,10 +6,10 @@
 
 TEST_CASE("test allocator")
 {
-    LogInfo("test allocator");
+    PrintDebug("test allocator");
     {
         zysoft::null_allocator<std::string> alloc;
-        (void)alloc.allocate(111);
+        //(void)alloc.allocate(111);
     }
 
 }

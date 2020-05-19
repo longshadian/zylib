@@ -1,7 +1,12 @@
 #pragma once
 
-#include <cstdio>
+#include <zysoft/console_log.h>
 
-#define LogInfo(fmt, ...) printf("[INFO] [%s] [line:%d] " fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__)
-#define LogWarn(fmt, ...) printf("[WARN] [%s] [line:%d] " fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+#define PrintDebug  CONSOLE_PRINT_DEBUG
+#define PrintInfo   CONSOLE_PRINT_INFO
+#define PrintWarn   CONSOLE_PRINT_WARN
+
+#define LogDebug    CONSOLE_LOG_DEBUG
+#define LogInfo     CONSOLE_LOG_INFO
+#define LogWarn     CONSOLE_LOG_WARN
 

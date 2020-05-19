@@ -8,7 +8,7 @@
 
 TEST_CASE("test string split functions")
 {
-    LogInfo("test string split functions");
+    PrintInfo("test string split functions");
     {
         std::string src = "192.168";
         std::string s1, s2;
@@ -63,7 +63,7 @@ TEST_CASE("test string split functions")
 
 TEST_CASE("test string split functions incorrect")
 {
-    LogInfo("test string split functions incorrect");
+    PrintInfo("test string split functions incorrect");
     {
         std::string src = "192.168.123";
         std::string s1, s2;

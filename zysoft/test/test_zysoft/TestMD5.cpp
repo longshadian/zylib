@@ -6,6 +6,7 @@
 #include "zysoft/sys.h"
 
 #include "../doctest/doctest.h"
+#include "test_log.h"
 
 int TestMD5()
 {
@@ -36,7 +37,7 @@ int TestMD5()
         //std::string md5_str = zysoft::hex_dump(signature.data(), signature.size());
         //md5_str = zysoft::ToUpperCase(md5_str);
         pt.Stop();
-        DPrintf("file path: %s md5: %s cost: %d sec", fname, md5_str.c_str(), (std::int32_t)pt.CostSeconds());
+        PrintDebug("file path: %s md5: %s cost: %d sec", fname, md5_str.c_str(), (std::int32_t)pt.CostSeconds());
     }
 
     return 0;
