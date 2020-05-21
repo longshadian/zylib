@@ -24,9 +24,7 @@ static void Test_Print()
     print_static_string(s);
 }
 
-
-
-#if 1
+#if 0
 TEST_CASE("test static_string")
 {
     PrintInfo("test static_string");

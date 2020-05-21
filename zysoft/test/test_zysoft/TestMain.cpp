@@ -9,7 +9,7 @@
 int main(int argc, char** argv)
 {
 #if defined(_MSC_VER)
-    system("chcp 65001");
+    //system("chcp 65001");
 #endif
 
     doctest::Context context;

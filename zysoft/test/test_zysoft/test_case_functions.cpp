@@ -6,6 +6,7 @@
 
 // TODO 测试宽字符
 
+#if 0
 TEST_CASE("test string case functions")
 {
     PrintInfo("test string case functions");
@@ -59,4 +60,5 @@ TEST_CASE("test string case functions")
         }
     }
 }
+#endif
 

@@ -6,7 +6,7 @@
 
 // TODO 测试宽字符
 
-TEST_CASE("test string split functions")
+static void Test_1()
 {
     PrintInfo("test string split functions");
     {
@@ -61,7 +61,7 @@ TEST_CASE("test string split functions")
     }
 }
 
-TEST_CASE("test string split functions incorrect")
+static void Test_2()
 {
     PrintInfo("test string split functions incorrect");
     {
@@ -114,4 +114,19 @@ TEST_CASE("test string split functions incorrect")
     }
 
 }
+
+#if 0
+TEST_CASE("test string split functions")
+{
+    PrintInfo("test string split functions");
+    try {
+        Test_1();
+        Test_2();
+    } catch (const std::exception& e) {
+        std::cout << e.what() << "\n";
+        CHECK(false);
+    }
+}
+
+#endif
 
