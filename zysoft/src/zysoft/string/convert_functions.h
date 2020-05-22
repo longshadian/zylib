@@ -29,9 +29,27 @@ template< typename V
         >
 struct convert
 {
-    typedef V value_type;
+    typedef std::remove_cv_t<V> value_type;
     typedef typename std::char_traits<C>::char_type char_type;
     typedef SS skip_space_type;
+
+static_assert(
+    std::is_same_v<value_type, char>
+    || std::is_same_v<value_type, signed char> 
+    || std::is_same_v<value_type, short int> 
+    || std::is_same_v<value_type, int>
+    || std::is_same_v<value_type, long int>
+    || std::is_same_v<value_type, long long int>
+    || std::is_same_v<value_type, unsigned char>
+    || std::is_same_v<value_type, unsigned short int>
+    || std::is_same_v<value_type, unsigned int>
+    || std::is_same_v<value_type, unsigned long int>
+    || std::is_same_v<value_type, unsigned long long int>
+    || std::is_same_v<value_type, float>
+    || std::is_same_v<value_type, double>
+    || std::is_same_v<value_type, long double>
+    , " value_type must be char, int, float, double, long double or unsigned"
+);
 
     static value_type to_number(std::string_view sv, std::error_code& ec)
     {
@@ -89,9 +107,7 @@ private:
         }
         return v;
     }
-
 };
-
 
 }
 

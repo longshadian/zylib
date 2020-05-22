@@ -38,12 +38,34 @@ static void Test_1()
     }
 }
 
+static void Test_2()
+{
+    PrintInfo("test string convert functions float double long double");
+    {
+        const char* s1  = " 3.1415926";
+        std::error_code ec{};
+        LogInfo <<zysoft::convert<float>::to_number(s1, ec);
+        LogInfo << ec.value() << " " << ec.message() << "\n";
+
+        ec.clear();
+        LogInfo <<zysoft::convert<float, zysoft::skip_blank<false>>::to_number(s1, ec);
+        LogInfo << ec.value() << " " << ec.message() << "\n";
+        //CHECK(zysoft::convert<char, zysoft::skip_blank<false>>::to_number_default(s1, 11) == 11);
+
+        std::string s2 = "-65536.123";
+        ec.clear();
+        LogInfo << zysoft::convert<float>::to_number(s2, ec);
+        LogInfo << ec.value() << " " << ec.message() << "\n";
+    }
+}
+
 #if 1
 TEST_CASE("test string convert functions")
 {
     PrintInfo("test string convert functions");
     try {
-        Test_1();
+        //Test_1();
+        Test_2();
     } catch (const std::exception& e) {
         std::cout << e.what() << "\n";
         CHECK(false);
