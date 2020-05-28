@@ -38,6 +38,8 @@ public:
     typedef basic_token<T>          token_type;
     typedef typename T::value_type  value_type;
     typedef typename T::const_iterator const_iterator;
+    typedef std::string_view        string_view_type;
+    typedef std::size_t             size_type;
 public:
 
     lexer() {}
@@ -55,7 +57,9 @@ public:
     }
 
 private:
-    int read_letter(token_type* t)
+
+    // [a-zA-Z]+
+    int read_pure_letter(token_type* t)
     {
         const_iterator pb = p0_;
         while (!eof()) {
@@ -66,23 +70,34 @@ private:
                 break;
             }
         }
-
         return pb != p0_;
     }
 
-    int read_number(token_type* t)
+    // [0-9]+
+    int read_pure_number(token_type* t)
     {
         const_iterator pb = p0_;
         while (!eof()) {
-            if ((value_type('a') <= *p0_ && *p0_ <= value_type('z'))
-                || (value_type('A') <= *p0_ && * p0_ <= value_type('Z'))) {
+            if (value_type('0') <= *p0_ && *p0_ <= value_type('9')) {
                 ++p0_;
             } else {
                 break;
             }
         }
-
         return pb != p0_;
+    }
+
+    int read_string_view(token_type* t, string_view_type dst)
+    {
+        const_iterator pb = p0_;
+        for (size_type i = 0; i != dst.length(); ++i) {
+            if (eof() || *p0_ != dst[i]) {
+                p0_ = pb;
+                return 0;
+            }
+            ++p0_;
+        }
+        return 1;
     }
 
     const T             src_;

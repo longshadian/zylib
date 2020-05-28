@@ -60,13 +60,13 @@ void Gettimeofday(struct timeval* tp)
 inline
 void Localtime_YYYYMMDD_HHMMSS_F(char* buffer, size_t len)
 {
-    struct timeval cur_tv = { 0 };
+    struct timeval cur_tv{};
     Gettimeofday(&cur_tv);
 
-    struct tm cur_tm = { 0 };
+    struct tm cur_tm{};
     std::time_t cur_t = static_cast<std::time_t>(cur_tv.tv_sec);
     Localtime(&cur_t, &cur_tm);
-    //char buffer[64] = { 0 };
+    //char buffer[32] = { 0 };
 
 #if defined(_MSC_VER)
     sprintf_s
@@ -83,8 +83,8 @@ void Localtime_YYYYMMDD_HHMMSS_F(char* buffer, size_t len)
 inline
 std::string Localtime_YYYYMMDD_HHMMSS_F()
 {
-    char buffer[64] = {0};
-    Localtime_YYYYMMDD_HHMMSS_F(buffer, 63);
+    char buffer[32] = {0};
+    Localtime_YYYYMMDD_HHMMSS_F(buffer, sizeof(buffer));
     return std::string(buffer);
 }
 
