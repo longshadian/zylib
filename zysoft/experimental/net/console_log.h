@@ -158,3 +158,9 @@ const char* file_name(const char* s)
 #define CONSOLE_PRINT_WARN(fmt, ...)   CONSOLE_PRINT_IMPL("WARN ", fmt, ##__VA_ARGS__)
 #define CONSOLE_PRINT_CRIT(fmt, ...)   CONSOLE_PRINT_IMPL("CRIT ", fmt, ##__VA_ARGS__)
 
+
+#define NET_LOG_TRACE           CONSOLE_LOG_TRACE
+#define NET_LOG_DEBUG           CONSOLE_LOG_DEBUG 
+#define NET_LOG_INFO            CONSOLE_LOG_INFO
+#define NET_LOG_WARN            CONSOLE_LOG_WARN        
+#define NET_LOG_CRIT            CONSOLE_LOG_CRIT    

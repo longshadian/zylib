@@ -45,6 +45,10 @@ public:
     }
 
 private:
+    enum class EState
+    {
+    };
+
     void AsyncConnect(const std::string& host, std::uint16_t port)
     {
         auto ep = Utilities::CreateEndpoint(host, port);

@@ -59,7 +59,7 @@ static void Test_2()
     }
 }
 
-#if 1
+#if 0
 TEST_CASE("test string convert functions")
 {
     PrintInfo("test string convert functions");
